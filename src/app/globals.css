@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+:root {
+  /* Typography */
+  --font-en: var(--font-jetbrains-mono), Consolas, monospace;
+  --font-kr: 'D2Coding', Consolas, monospace;
+
+  /* Colors */
+  --bg-color: #f4f5f7;
+  --sidebar-bg: #1e2227;
+  --sidebar-text: #abb2bf;
+  --card-bg: #ffffff;
+  --text-primary: #282c34;
+  --accent-color: #0066ff;
+  --border-color: #e1e4e8;
+
+  /* Layout */
+  --sidebar-width: 280px;
+  --header-height: 64px;
+}
+
+@theme inline {
+  --font-mono: var(--font-en);
+  --font-sans: var(--font-kr);
+  
+  --color-bg-color: var(--bg-color);
+  --color-sidebar-bg: var(--sidebar-bg);
+  --color-sidebar-text: var(--sidebar-text);
+  --color-card-bg: var(--card-bg);
+  --color-text-primary: var(--text-primary);
+  --color-accent-color: var(--accent-color);
+  --color-border-color: var(--border-color);
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  font-family: var(--font-en), var(--font-kr);
+  line-height: 1.4;
+  overflow-x: hidden;
+}
+
+/* Scrollbar for sidebar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
+}
