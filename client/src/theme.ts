@@ -1,16 +1,16 @@
 import { createTheme, MantineColorsTuple, MantineTheme } from '@mantine/core';
 
-const luxuriousGold: MantineColorsTuple = [
-    '#fbf9f2', // 0
-    '#f5f1e3', // 1
-    '#ece1c2', // 2
-    '#e2d09e', // 3
-    '#dabf80', // 4
-    '#d5b46d', // 5
-    '#d2ae62', // 6
-    '#b9954f', // 7
-    '#a58443', // 8
-    '#907234', // 9
+const auroraGold: MantineColorsTuple = [
+    '#fdfdf2', // 0 - 배경색 (bg-color)
+    '#faf7e8', // 1
+    '#f5edcf', // 2
+    '#efe2b3', // 3
+    '#e8d494', // 4
+    '#E4C778', // 5
+    '#E0B861', // 6 - 주요 포인트 색상 (Aurora Gold)
+    '#c9a254', // 7
+    '#b08d47', // 8
+    '#96783a', // 9
 ];
 
 const deepCharcoal: MantineColorsTuple = [
@@ -27,9 +27,9 @@ const deepCharcoal: MantineColorsTuple = [
 ];
 
 export const theme = createTheme({
-    primaryColor: 'luxurious-gold',
+    primaryColor: 'aurora-gold',
     colors: {
-        'luxurious-gold': luxuriousGold,
+        'aurora-gold': auroraGold,
         'deep-charcoal': deepCharcoal,
     },
     fontFamily: 'var(--font-jetbrains-mono), monospace',
@@ -66,7 +66,7 @@ export const theme = createTheme({
                     '&:hover': {
                         transform: 'translateY(-4px)',
                         boxShadow: theme.shadows.md,
-                        borderColor: theme.colors['luxurious-gold'][4],
+                        borderColor: theme.colors['aurora-gold'][4],
                     },
                 },
             }),
@@ -79,6 +79,6 @@ export const theme = createTheme({
         }
     },
     other: {
-        // Add custom variables here if needed
+        // Custom variables
     }
 });

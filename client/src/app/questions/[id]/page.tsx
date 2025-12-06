@@ -63,7 +63,7 @@ export default function QuestionDetailPage() {
 
             <Container size="xl" pb={100}>
                 <Grid gutter="xl">
-                    {question.answers.map((answer) => (
+                    {(question.answers || []).map((answer) => (
                         <Grid.Col key={answer.id} span={{ base: 12, md: 6, lg: 4 }}>
                             <AnswerCard
                                 modelName={answer.modelName}

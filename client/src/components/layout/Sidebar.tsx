@@ -1,214 +1,291 @@
 "use client";
 
-import React from 'react';
-import Link from 'next/link';
-import { useFilterStore, FilterCategory } from '@/store/useFilterStore';
+import React, { useEffect, useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { useAppStore } from '@/store/useAppStore';
 import {
     Accordion,
-    ActionIcon,
     Box,
     Button,
     Group,
     ScrollArea,
     Text,
-    ThemeIcon,
     Title,
-    rem,
-    MantineProvider,
-    Badge
+    Divider,
+    ThemeIcon,
+    Loader
 } from '@mantine/core';
-import { theme } from '@/theme';
-import { IconChevronRight } from '@tabler/icons-react';
+import {
+    IconHome,
+    IconBook2,
+    IconGitCompare,
+    IconSparkles,
+    IconLogout
+} from '@tabler/icons-react';
 
-const FACET_GROUPS = [
-    {
-        id: 'domain',
-        label: '관심 분야',
-        subLabel: '어떤 분야에 관심이 있으신가요?',
-        options: [
-            '개발/코딩',
-            '데이터 분석',
-            '디자인/예술',
-            '비즈니스/사업',
-            '인문/철학',
-            '학습/교육',
-            '연구/리서치',
-            '콘텐츠 제작'
-        ]
-    },
-    {
-        id: 'usageStyle',
-        label: 'AI 활용 패턴',
-        subLabel: '주로 어떻게 AI를 쓰시나요?',
-        options: [
-            '단순 질문해결',
-            '티키타카 대화',
-            '체계적인 지시',
-            '템플릿 활용',
-            '단계별 문제해결',
-            '자유로운 실험'
-        ]
-    },
-    {
-        id: 'experience',
-        label: 'AI 숙련도',
-        subLabel: 'AI 사용 경험은 어느 정도인가요?',
-        options: [
-            '입문자 (3개월 미만)',
-            '초보자 (6개월)',
-            '경험자 (1년 이상)',
-            '숙련자 (2년 이상)',
-            '전문가 (심화 활용)'
-        ]
-    },
-    {
-        id: 'cognitiveStyle',
-        label: '선호하는 사고 방식',
-        subLabel: '어떤 설명 방식을 좋아하시나요?',
-        options: [
-            '핵심 요약형',
-            '스토리텔링형',
-            '논리 분석형',
-            '팩트/데이터형',
-            '개념 정의형',
-            '예시 중심형',
-            '직관적 이해형'
-        ]
-    },
-    {
-        id: 'toolStack',
-        label: '사용 중인 AI 모델',
-        subLabel: '주로 쓰는 도구',
-        options: [
-            'ChatGPT',
-            'Gemini',
-            'Claude',
-            'Perplexity',
-            'Local LLM'
-        ]
-    },
-    {
-        id: 'outputPreference',
-        label: '선호 답변 스타일',
-        subLabel: '어떤 형태의 답변을 원하시나요?',
-        options: [
-            '간결한 핵심만',
-            '친절하고 상세하게',
-            '코드/예제 위주',
-            '깔끔한 문서 형식',
-            '표/비교 분석',
-            '프레임워크/구조'
-        ]
-    }
+// 도메인별 지침 카테고리
+const DOMAIN_CATEGORIES = [
+    { id: 'Tech', label: '개발/기술', emoji: '💻' },
+    { id: 'Creative', label: '디자인/예술', emoji: '🎨' },
+    { id: 'Business', label: '비즈니스', emoji: '📊' },
+    { id: 'Academia', label: '학술/연구', emoji: '📚' },
+    { id: 'Healthcare', label: '의료/상담', emoji: '🏥' },
+    { id: 'Education', label: '교육/학습', emoji: '🎓' },
+    { id: 'Legal', label: '법률', emoji: '⚖️' },
+    { id: 'Finance', label: '금융', emoji: '💰' },
 ];
 
-
-
-export default function Sidebar() {
-    const { filters, toggleFilter } = useFilterStore();
+// NavItem 컴포넌트 - Link 중첩 문제 해결
+function NavItem({
+    href,
+    icon: Icon,
+    label,
+    isActive,
+    onClick
+}: {
+    href: string;
+    icon: React.ComponentType<{ size: number }>;
+    label: string;
+    isActive: boolean;
+    onClick?: () => void;
+}) {
+    const router = useRouter();
 
     return (
-        <MantineProvider theme={theme} forceColorScheme="dark">
+        <Button
+            fullWidth
+            variant={isActive ? 'filled' : 'subtle'}
+            color={isActive ? 'yellow' : 'gray'}
+            justify="flex-start"
+            leftSection={<Icon size={18} />}
+            mb="xs"
+            onClick={() => {
+                if (onClick) onClick();
+                router.push(href);
+            }}
+            styles={{
+                root: {
+                    borderRadius: 8,
+                    backgroundColor: isActive ? '#E0B861' : 'transparent',
+                    color: isActive ? '#fff' : 'var(--sidebar-text)',
+                    '&:hover': {
+                        backgroundColor: isActive ? '#c9a254' : 'rgba(255,255,255,0.08)'
+                    }
+                }
+            }}
+        >
+            {label}
+        </Button>
+    );
+}
+
+export default function Sidebar() {
+    const [mounted, setMounted] = useState(false);
+    const pathname = usePathname();
+    const router = useRouter();
+    const setHasSeenLanding = useAppStore((state) => state.setHasSeenLanding);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    const isActive = (path: string) => pathname === path;
+
+    // 마운트 전 로딩 상태
+    if (!mounted) {
+        return (
             <Box
                 component="aside"
                 w={280}
                 h="100vh"
                 style={{
-                    borderRight: '1px solid var(--mantine-color-default-border)',
-                    backgroundColor: 'var(--mantine-color-body)',
-                    position: 'sticky',
-                    top: 0,
+                    borderRight: '1px solid var(--border-color)',
+                    backgroundColor: 'var(--sidebar-bg)',
                     display: 'flex',
-                    flexDirection: 'column'
+                    alignItems: 'center',
+                    justifyContent: 'center',
                 }}
             >
-                <Box p="md">
-                    <Link href="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-                        <Title order={3}>YourAI</Title>
-                    </Link>
-                </Box>
-
-                <ScrollArea style={{ flex: 1 }} type="scroll">
-                    <Box px="md" mb="xl">
-                        <Text size="xs" fw={700} c="dimmed" tt="uppercase" mb="xs">
-                            Categories
-                        </Text>
-                        <Group gap="xs">
-                            {['Social_Issues', 'Philosophy', 'Relationship', 'Career'].map((item) => (
-                                <Button
-                                    key={item}
-                                    variant="subtle"
-                                    size="sm"
-                                    fullWidth
-                                    justify="flex-start"
-                                    styles={{ root: { height: 'auto', padding: '8px 12px' } }}
-                                >
-                                    # {item}
-                                </Button>
-                            ))}
-                        </Group>
-                    </Box>
-
-                    <Box px="md">
-                        <Text size="xs" fw={700} c="dimmed" tt="uppercase" mb="xs">
-                            Filters
-                        </Text>
-                        <Accordion
-                            multiple
-                            defaultValue={FACET_GROUPS.map(g => g.id)}
-                            variant="default"
-                            chevronPosition="right"
-                            styles={{
-                                item: { border: 'none' },
-                                control: { padding: '8px 0', '&:hover': { backgroundColor: 'transparent' } },
-                                content: { padding: '0 0 16px 0' }
-                            }}
-                        >
-                            {FACET_GROUPS.map((group) => {
-                                const selectedCount = filters[group.id as FilterCategory].length;
-
-                                return (
-                                    <Accordion.Item key={group.id} value={group.id}>
-                                        <Accordion.Control>
-                                            <Group justify="space-between">
-                                                <Text size="sm" fw={500}>{group.label}</Text>
-                                                {selectedCount > 0 && (
-                                                    <Badge size="xs" circle color="gray">
-                                                        {selectedCount}
-                                                    </Badge>
-                                                )}
-                                            </Group>
-                                        </Accordion.Control>
-                                        <Accordion.Panel>
-                                            <Group gap={8}>
-                                                {group.options.map((option) => {
-                                                    const isSelected = filters[group.id as FilterCategory].includes(option);
-                                                    return (
-                                                        <Button
-                                                            key={option}
-                                                            onClick={() => toggleFilter(group.id as FilterCategory, option)}
-                                                            variant={isSelected ? 'filled' : 'default'}
-                                                            size="xs"
-                                                            radius="xl"
-                                                            color={isSelected ? 'black' : 'gray'}
-                                                            styles={{ root: { height: 'auto', padding: '4px 10px' } }}
-                                                        >
-                                                            {option}
-                                                        </Button>
-                                                    );
-                                                })}
-                                            </Group>
-                                        </Accordion.Panel>
-                                    </Accordion.Item>
-                                );
-                            })}
-                        </Accordion>
-                    </Box>
-                </ScrollArea>
-                <Box p="md" mt="auto">
-                    <Text size="xs" c="dimmed">v.1.0.0 (2025-12)</Text>
-                </Box>
+                <Loader color="yellow" size="md" />
             </Box>
-        </MantineProvider>
+        );
+    }
+
+    return (
+        <Box
+            component="aside"
+            w={280}
+            h="100vh"
+            style={{
+                borderRight: '1px solid var(--border-color)',
+                backgroundColor: 'var(--sidebar-bg)',
+                position: 'sticky',
+                top: 0,
+                display: 'flex',
+                flexDirection: 'column'
+            }}
+        >
+            {/* 로고 영역 */}
+            <Box p="lg" pb="md">
+                <Box
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => {
+                        setHasSeenLanding(true);
+                        router.push('/');
+                    }}
+                >
+                    <Group gap="xs" align="center">
+                        <ThemeIcon
+                            size={32}
+                            radius="md"
+                            style={{ backgroundColor: '#E0B861' }}
+                        >
+                            <IconSparkles size={18} color="white" />
+                        </ThemeIcon>
+                        <Title order={4} c="white" style={{ fontFamily: 'var(--font-en)' }}>
+                            Your AI
+                        </Title>
+                    </Group>
+                </Box>
+                <Text size="xs" c="dimmed" mt="xs">
+                    Custom Instructions Hub
+                </Text>
+            </Box>
+
+            <Divider color="dark.5" />
+
+            <ScrollArea style={{ flex: 1 }} type="scroll" p="md">
+                {/* 메인 네비게이션 */}
+                <Box mb="xl">
+                    <Text size="xs" fw={600} c="dimmed" tt="uppercase" mb="xs" px="sm">
+                        메뉴
+                    </Text>
+
+                    <NavItem
+                        href="/"
+                        icon={IconHome}
+                        label="홈"
+                        isActive={isActive('/')}
+                        onClick={() => setHasSeenLanding(true)}
+                    />
+
+                    <NavItem
+                        href="/instructions"
+                        icon={IconBook2}
+                        label="지침 라이브러리"
+                        isActive={isActive('/instructions')}
+                    />
+
+                    <NavItem
+                        href="/compare"
+                        icon={IconGitCompare}
+                        label="지침 비교"
+                        isActive={isActive('/compare')}
+                    />
+                </Box>
+
+                {/* 도메인 필터 */}
+                <Box mb="xl">
+                    <Text size="xs" fw={600} c="dimmed" tt="uppercase" mb="xs" px="sm">
+                        도메인별 탐색
+                    </Text>
+
+                    <Accordion
+                        multiple
+                        defaultValue={['domains']}
+                        variant="default"
+                        chevronPosition="right"
+                        styles={{
+                            item: {
+                                border: 'none',
+                                backgroundColor: 'transparent'
+                            },
+                            control: {
+                                padding: '8px 12px',
+                                '&:hover': { backgroundColor: 'rgba(255,255,255,0.05)' },
+                                borderRadius: 8
+                            },
+                            content: { padding: '4px 0 16px 8px' }
+                        }}
+                    >
+                        <Accordion.Item value="domains">
+                            <Accordion.Control>
+                                <Text size="sm" fw={500} c="white">분야 선택</Text>
+                            </Accordion.Control>
+                            <Accordion.Panel>
+                                <Group gap={6}>
+                                    {DOMAIN_CATEGORIES.map((domain) => (
+                                        <Button
+                                            key={domain.id}
+                                            variant="default"
+                                            size="xs"
+                                            radius="xl"
+                                            onClick={() => router.push(`/instructions?domain=${domain.id}`)}
+                                            styles={{
+                                                root: {
+                                                    height: 'auto',
+                                                    padding: '6px 12px',
+                                                    backgroundColor: 'rgba(255,255,255,0.08)',
+                                                    borderColor: 'transparent',
+                                                    color: 'var(--sidebar-text)',
+                                                    '&:hover': {
+                                                        backgroundColor: 'rgba(224, 184, 97, 0.2)',
+                                                        borderColor: '#E0B861'
+                                                    }
+                                                }
+                                            }}
+                                        >
+                                            {domain.emoji} {domain.label}
+                                        </Button>
+                                    ))}
+                                </Group>
+                            </Accordion.Panel>
+                        </Accordion.Item>
+                    </Accordion>
+                </Box>
+
+                {/* 빠른 액션 */}
+                <Box mb="xl">
+                    <Text size="xs" fw={600} c="dimmed" tt="uppercase" mb="sm" px="sm">
+                        빠른 시작
+                    </Text>
+
+                    <Button
+                        fullWidth
+                        variant="light"
+                        color="yellow"
+                        leftSection={<IconSparkles size={16} />}
+                        onClick={() => router.push('/compare')}
+                        styles={{
+                            root: {
+                                justifyContent: 'flex-start',
+                                backgroundColor: 'rgba(224, 184, 97, 0.15)',
+                                '&:hover': {
+                                    backgroundColor: 'rgba(224, 184, 97, 0.25)'
+                                }
+                            }
+                        }}
+                    >
+                        지침 비교 시작
+                    </Button>
+                </Box>
+            </ScrollArea>
+
+            {/* 하단 영역 */}
+            <Box p="md" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                <Group justify="space-between" align="center">
+                    <Text size="xs" c="dimmed">v1.0.0</Text>
+                    <Button
+                        variant="subtle"
+                        size="xs"
+                        color="gray"
+                        leftSection={<IconLogout size={14} />}
+                        onClick={() => setHasSeenLanding(false)}
+                    >
+                        처음으로
+                    </Button>
+                </Group>
+            </Box>
+        </Box>
     );
 }
