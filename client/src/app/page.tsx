@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence } from 'framer-motion';
-import QuestionFeed from "@/components/home/QuestionFeed";
+import InstructionsHome from "@/components/home/InstructionsHome";
 import ScrollLanding from "@/components/home/ScrollLanding";
 import { useAppStore } from "@/store/useAppStore";
 
@@ -14,6 +14,7 @@ export default function Home() {
     return <ScrollLanding onEnter={() => setHasSeenLanding(true)} />;
   }
 
-  // 랜딩을 본 경우 메인 피드 표시
-  return <QuestionFeed />;
+  // 랜딩을 본 경우 지침 라이브러리 표시
+  return <InstructionsHome />;
 }
+

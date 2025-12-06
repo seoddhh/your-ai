@@ -17,7 +17,7 @@ import {
 } from '@mantine/core';
 import {
     IconHome,
-    IconBook2,
+    IconMessageCircle,
     IconGitCompare,
     IconSparkles,
     IconLogout
@@ -170,10 +170,10 @@ export default function Sidebar() {
                     />
 
                     <NavItem
-                        href="/instructions"
-                        icon={IconBook2}
-                        label="지침 라이브러리"
-                        isActive={isActive('/instructions')}
+                        href="/questions"
+                        icon={IconMessageCircle}
+                        label="질문 목록"
+                        isActive={isActive('/questions')}
                     />
 
                     <NavItem
