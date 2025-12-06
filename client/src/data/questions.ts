@@ -353,5 +353,8 @@ export function getQuestionById(id: string): Question | undefined {
 }
 
 export function getAllQuestions(): Omit<Question, 'answers'>[] {
+    if (!questionsData || !Array.isArray(questionsData)) {
+        return [];
+    }
     return questionsData.map(({ answers, ...rest }) => rest);
 }

@@ -3,16 +3,20 @@
 :root {
     /* Typography */
     --font-en: var(--font-jetbrains-mono), Consolas, monospace;
-    --font-kr: 'D2Coding', Consolas, monospace;
+    --font-kr: 'D2Coding', 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
 
-    /* Colors */
-    --bg-color: #fafaf8;
-    --sidebar-bg: #1A1A1A;
-    --sidebar-text: #abb2bf;
+    /* Colors - Aurora Gold Theme */
+    --bg-color: #fdfdf2;
+    --sidebar-bg: #2a2a28;
+    --sidebar-text: #c9c9c0;
     --card-bg: #ffffff;
-    --text-primary: #282c34;
-    --accent-color: #0066ff;
-    --border-color: #e1e4e8;
+    --text-primary: #2a2a28;
+    --text-secondary: #5a5a52;
+    --accent-color: #E0B861;
+    --accent-hover: #c9a254;
+    --border-color: #e8e4d9;
+    --gold-light: #faf7e8;
+    --gold-medium: #E4C778;
 
     /* Layout */
     --sidebar-width: 280px;
