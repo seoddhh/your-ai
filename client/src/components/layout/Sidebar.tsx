@@ -23,7 +23,7 @@ import {
     IconLogout
 } from '@tabler/icons-react';
 
-// 도메인별 지침 카테고리
+// 도메인별 응답 규칙 카테고리
 const DOMAIN_CATEGORIES = [
     { id: 'Tech', label: '개발/기술', emoji: '💻' },
     { id: 'Creative', label: '디자인/예술', emoji: '🎨' },
@@ -179,8 +179,15 @@ export default function Sidebar() {
                     <NavItem
                         href="/compare"
                         icon={IconGitCompare}
-                        label="지침 비교"
+                        label="응답 규칙 비교"
                         isActive={isActive('/compare')}
+                    />
+
+                    <NavItem
+                        href="/my-ai"
+                        icon={IconSparkles}
+                        label="나의 AI 만들기"
+                        isActive={isActive('/my-ai')}
                     />
                 </Box>
 
@@ -266,7 +273,7 @@ export default function Sidebar() {
                             }
                         }}
                     >
-                        지침 비교 시작
+                        응답 규칙 비교 시작
                     </Button>
                 </Box>
             </ScrollArea>

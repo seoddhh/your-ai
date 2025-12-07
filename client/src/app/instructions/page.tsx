@@ -50,7 +50,7 @@ export default function InstructionsLibraryPage() {
         setMounted(true);
     }, []);
 
-    // 필터링된 지침 목록
+    // 필터링된 응답 규칙 목록
     const filteredInstructions = useMemo(() => {
         if (!customInstructions || !Array.isArray(customInstructions)) {
             return [];
@@ -112,7 +112,7 @@ export default function InstructionsLibraryPage() {
                             </Link>
                             <div>
                                 <Title order={3} style={{ fontFamily: 'var(--font-en)' }}>
-                                    지침 라이브러리
+                                    응답 규칙 라이브러리
                                 </Title>
                                 <Text size="sm" c="dimmed">
                                     도메인별 검증된 Custom Instructions 탐색
@@ -125,7 +125,7 @@ export default function InstructionsLibraryPage() {
                                 color="yellow"
                                 leftSection={<IconScale size={16} />}
                             >
-                                지침 비교하기
+                                응답 규칙 비교하기
                             </Button>
                         </Link>
                     </Group>
@@ -171,11 +171,11 @@ export default function InstructionsLibraryPage() {
                             ))}
                         </Paper>
 
-                        {/* 인기 지침 */}
+                        {/* 인기 응답 규칙 */}
                         <Paper p="lg" radius="lg" withBorder mt="lg">
                             <Group mb="md">
                                 <IconHeart size={16} color="#E0B861" />
-                                <Text size="sm" fw={700}>인기 지침</Text>
+                                <Text size="sm" fw={700}>인기 응답 규칙</Text>
                             </Group>
 
                             {popularInstructions.slice(0, 3).map((instruction) => (
@@ -210,7 +210,7 @@ export default function InstructionsLibraryPage() {
                     <Box style={{ flex: 1 }}>
                         {/* 검색 */}
                         <TextInput
-                            placeholder="지침 검색... (예: 코드, 마케팅, 논문)"
+                            placeholder="응답 규칙 검색... (예: 코드, 마케팅, 논문)"
                             size="lg"
                             radius="xl"
                             mb="xl"
@@ -232,11 +232,11 @@ export default function InstructionsLibraryPage() {
                         <Group justify="space-between" mb="lg">
                             <Text c="dimmed">
                                 {selectedDomain === 'all' ? '전체' : (DOMAIN_META[selectedDomain]?.label || selectedDomain)}에서{' '}
-                                <strong>{filteredInstructions.length}개</strong>의 지침
+                                <strong>{filteredInstructions.length}개</strong>의 응답 규칙
                             </Text>
                         </Group>
 
-                        {/* 지침 그리드 */}
+                        {/* 응답 규칙 그리드 */}
                         <SimpleGrid cols={{ base: 1, md: 2 }} spacing="lg">
                             <AnimatePresence mode="popLayout">
                                 {filteredInstructions.map((instruction, index) => (
@@ -267,7 +267,7 @@ export default function InstructionsLibraryPage() {
     );
 }
 
-// 지침 카드 컴포넌트
+// 응답 규칙 카드 컴포넌트
 function InstructionCard({
     instruction,
     index,
