@@ -94,42 +94,29 @@ export default function InstructionsLibraryPage() {
             {/* 헤더 */}
             <Box
                 py="lg"
+                px="xl"
                 style={{
                     borderBottom: '1px solid var(--border-color)',
                     backgroundColor: '#fff',
-                    position: 'sticky',
-                    top: 0,
-                    zIndex: 100,
                 }}
             >
-                <Container size="xl">
-                    <Group justify="space-between" align="center">
-                        <Group>
-                            <Link href="/" onClick={() => setHasSeenLanding(true)}>
-                                <ActionIcon variant="subtle" size="lg">
-                                    <IconArrowLeft size={20} />
-                                </ActionIcon>
-                            </Link>
-                            <div>
-                                <Title order={3} style={{ fontFamily: 'var(--font-en)' }}>
-                                    응답 규칙 라이브러리
-                                </Title>
-                                <Text size="sm" c="dimmed">
-                                    도메인별 검증된 Custom Instructions 탐색
-                                </Text>
-                            </div>
-                        </Group>
-                        <Link href="/compare">
-                            <Button
-                                variant="light"
-                                color="yellow"
-                                leftSection={<IconScale size={16} />}
-                            >
-                                응답 규칙 비교하기
-                            </Button>
-                        </Link>
-                    </Group>
-                </Container>
+                <Group justify="space-between" align="center">
+                    <div>
+                        <Title order={2}>응답 규칙 라이브러리</Title>
+                        <Text size="sm" c="dimmed">
+                            도메인별 검증된 Custom Instructions 탐색
+                        </Text>
+                    </div>
+                    <Link href="/compare">
+                        <Button
+                            variant="light"
+                            color="yellow"
+                            leftSection={<IconScale size={16} />}
+                        >
+                            응답 규칙 비교하기
+                        </Button>
+                    </Link>
+                </Group>
             </Box>
 
             <Container size="xl" py="xl">
@@ -150,7 +137,7 @@ export default function InstructionsLibraryPage() {
                                     root: selectedDomain === 'all' ? { backgroundColor: '#E0B861' } : {}
                                 }}
                             >
-                                🌐 전체 보기
+                                전체 보기
                             </Button>
 
                             <Divider my="sm" />
@@ -164,7 +151,6 @@ export default function InstructionsLibraryPage() {
                                     justify="flex-start"
                                     mb="xs"
                                     onClick={() => setSelectedDomain(domain)}
-                                    leftSection={<span>{DOMAIN_META[domain]?.emoji || '📌'}</span>}
                                 >
                                     {DOMAIN_META[domain]?.label || domain}
                                 </Button>
@@ -191,7 +177,6 @@ export default function InstructionsLibraryPage() {
                                     onClick={() => setExpandedId(instruction.id)}
                                 >
                                     <Group gap="xs">
-                                        <Text size="lg">{instruction.emoji}</Text>
                                         <div style={{ flex: 1 }}>
                                             <Text size="sm" fw={500} lineClamp={1}>
                                                 {instruction.name}
@@ -304,7 +289,6 @@ function InstructionCard({
                 {/* 헤더 */}
                 <Group justify="space-between" mb="sm">
                     <Group gap="sm">
-                        <Text size="2rem">{instruction.emoji}</Text>
                         <div>
                             <Text fw={700}>{instruction.name}</Text>
                             <Text size="xs" c="dimmed">{instruction.targetRole}</Text>
@@ -314,7 +298,7 @@ function InstructionCard({
                         variant="light"
                         style={{ backgroundColor: `${domainMeta?.color || '#ccc'}20`, color: domainMeta?.color || '#666' }}
                     >
-                        {domainMeta?.emoji || '📌'} {domainMeta?.label || instruction.domain}
+                        {domainMeta?.label || instruction.domain}
                     </Badge>
                 </Group>
 
@@ -416,7 +400,7 @@ function InstructionCard({
                 {/* 푸터 */}
                 <Group justify="space-between" mt="md">
                     <Text size="xs" c="dimmed">
-                        ❤️ {instruction.popularity}명 사용
+                        {instruction.popularity}명 사용
                     </Text>
                     {instruction.author && (
                         <Text size="xs" c="dimmed">
