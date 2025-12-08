@@ -22,26 +22,26 @@ import { useAppStore } from '@/store/useAppStore';
 import { Domain, DOMAIN_META } from '@/data/customInstructions';
 import Sidebar from '@/components/layout/Sidebar';
 
-// 도메인 옵션 생성
+// 도메인 옵션 생성 (이모지 제거)
 const DOMAIN_OPTIONS = Object.entries(DOMAIN_META).map(([key, value]) => ({
     value: key,
-    label: `${value.emoji} ${value.label}`
+    label: value.label
 }));
 
-// 이모지 옵션
-const EMOJI_OPTIONS = [
-    { value: '👨‍💻', label: '👨‍💻 개발자' },
-    { value: '🎨', label: '🎨 디자이너' },
-    { value: '📊', label: '📊 분석가' },
-    { value: '📚', label: '📚 연구원' },
-    { value: '👨‍🏫', label: '👨‍🏫 교육자' },
-    { value: '🏥', label: '🏥 의료인' },
-    { value: '⚖️', label: '⚖️ 법률가' },
-    { value: '💰', label: '💰 금융인' },
-    { value: '🚀', label: '🚀 스타트업' },
-    { value: '🎬', label: '🎬 크리에이터' },
-    { value: '🔬', label: '🔬 과학자' },
-    { value: '🗺️', label: '🗺️ PM' },
+// 직업 옵션
+const JOB_OPTIONS = [
+    { value: 'developer', label: '개발자' },
+    { value: 'designer', label: '디자이너' },
+    { value: 'analyst', label: '분석가' },
+    { value: 'researcher', label: '연구원' },
+    { value: 'educator', label: '교육자' },
+    { value: 'healthcare', label: '의료인' },
+    { value: 'legal', label: '법률가' },
+    { value: 'finance', label: '금융인' },
+    { value: 'startup', label: '스타트업' },
+    { value: 'creator', label: '크리에이터' },
+    { value: 'scientist', label: '과학자' },
+    { value: 'pm', label: 'PM' },
 ];
 
 export default function RegisterPage() {
@@ -141,10 +141,10 @@ export default function RegisterPage() {
                                             onChange={(e) => setName(e.target.value)}
                                         />
                                         <Select
-                                            label="이모지"
+                                            label="직업"
                                             placeholder="선택"
                                             required
-                                            data={EMOJI_OPTIONS}
+                                            data={JOB_OPTIONS}
                                             value={emoji}
                                             onChange={setEmoji}
                                         />
@@ -193,6 +193,7 @@ export default function RegisterPage() {
 클린 코드와 최적화된 솔루션을 선호하며, 실전에서 바로 적용 가능한 코드를 원합니다.`}
                                     required
                                     minRows={5}
+                                    autosize
                                     value={userProfile}
                                     onChange={(e) => setUserProfile(e.target.value)}
                                     styles={{
@@ -220,6 +221,7 @@ export default function RegisterPage() {
 5. 성능 최적화 팁이 있다면 함께 알려주세요`}
                                     required
                                     minRows={5}
+                                    autosize
                                     value={responsePreference}
                                     onChange={(e) => setResponsePreference(e.target.value)}
                                     styles={{

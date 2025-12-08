@@ -30,14 +30,14 @@ import {
 
 // 도메인별 응답 규칙 카테고리
 const DOMAIN_CATEGORIES = [
-    { id: 'Tech', label: '개발/기술', emoji: '💻' },
-    { id: 'Creative', label: '디자인/예술', emoji: '🎨' },
-    { id: 'Business', label: '비즈니스', emoji: '📊' },
-    { id: 'Academia', label: '학술/연구', emoji: '📚' },
-    { id: 'Healthcare', label: '의료/상담', emoji: '🏥' },
-    { id: 'Education', label: '교육/학습', emoji: '🎓' },
-    { id: 'Legal', label: '법률', emoji: '⚖️' },
-    { id: 'Finance', label: '금융', emoji: '💰' },
+    { id: 'Tech', label: '개발/기술' },
+    { id: 'Creative', label: '디자인/예술' },
+    { id: 'Business', label: '비즈니스' },
+    { id: 'Academia', label: '학술/연구' },
+    { id: 'Healthcare', label: '의료/상담' },
+    { id: 'Education', label: '교육/학습' },
+    { id: 'Legal', label: '법률' },
+    { id: 'Finance', label: '금융' },
 ];
 
 // NavItem 컴포넌트 - 사이드바 상태에 따라 축소/확장
@@ -114,12 +114,12 @@ export default function Sidebar() {
     const isActive = (path: string) => pathname === path;
     const isCollapsed = !isSidebarOpen;
 
-    // 마운트 전 로딩 상태
+    // 마운트 전 로딩 상태 - 최소 너비로 표시하여 깜빡임 방지
     if (!mounted) {
         return (
             <Box
                 component="aside"
-                w={280}
+                w={64}
                 h="100vh"
                 style={{
                     borderRight: '1px solid var(--border-color)',
@@ -129,7 +129,7 @@ export default function Sidebar() {
                     justifyContent: 'center',
                 }}
             >
-                <Loader color="yellow" size="md" />
+                <Loader color="yellow" size="sm" />
             </Box>
         );
     }
@@ -303,7 +303,7 @@ export default function Sidebar() {
                                                     }
                                                 }}
                                             >
-                                                {domain.emoji} {domain.label}
+                                                {domain.label}
                                             </Button>
                                         ))}
                                     </Group>
