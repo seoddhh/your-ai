@@ -288,41 +288,25 @@ ${selectedFormat === 'structured' ? '| 항목 | 설명 |\n|------|------|\n| 핵
             <main className="main-content" style={{ backgroundColor: '#fdfdf2', minHeight: '100vh' }}>
                 {/* 헤더 */}
                 <Box
-                    py="md"
+                    py="lg"
+                    px="xl"
                     style={{
-                        backgroundColor: 'rgba(255,255,255,0.95)',
-                        backdropFilter: 'blur(10px)',
-                        borderBottom: '1px solid #e5e5e5',
-                        position: 'sticky',
-                        top: 0,
-                        zIndex: 100
+                        backgroundColor: '#fff',
+                        borderBottom: '1px solid var(--border-color)',
                     }}
                 >
-                    <Container size="lg">
-                        <Group justify="space-between">
-                            <Group>
-                                <ActionIcon
-                                    component={Link}
-                                    href="/"
-                                    variant="subtle"
-                                    size="lg"
-                                    color="gray"
-                                >
-                                    <IconArrowLeft size={20} />
-                                </ActionIcon>
-                                <div>
-                                    <Title order={3}>나의 AI 만들기</Title>
-                                    <Text size="sm" c="dimmed">
-                                        나만의 맞춤 응답 규칙을 만들어보세요
-                                    </Text>
-                                </div>
-                            </Group>
-                            <Badge color="yellow" variant="light" size="lg">Beta</Badge>
-                        </Group>
-                    </Container>
+                    <Group justify="space-between" align="center">
+                        <div>
+                            <Title order={2}>나의 AI 만들기</Title>
+                            <Text size="sm" c="dimmed">
+                                나만의 맞춤 응답 규칙을 만들어보세요
+                            </Text>
+                        </div>
+                        <Badge color="yellow" variant="light" size="lg">Beta</Badge>
+                    </Group>
                 </Box>
 
-                <Container size="lg" py="xl">
+                <Box px="xl" py="xl">
                     {/* Stepper */}
                     <Paper p="xl" radius="lg" withBorder mb="xl" style={{ backgroundColor: '#fff' }}>
                         <Stepper
@@ -664,7 +648,7 @@ ${selectedFormat === 'structured' ? '| 항목 | 설명 |\n|------|------|\n| 핵
                             </Paper>
                         </motion.div>
                     </AnimatePresence>
-                </Container>
+                </Box>
             </main>
         </div>
     );

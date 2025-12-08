@@ -43,7 +43,6 @@ interface Instruction {
     domain: Domain;
     targetRole: string;
     description: string;
-    emoji: string;
 }
 
 const DOMAIN_COLORS: Record<Domain, string> = {
@@ -67,7 +66,6 @@ const INSTRUCTIONS: Instruction[] = [
         domain: 'Tech',
         targetRole: '풀스택 개발자',
         description: '코드 예제 중심의 실용적인 답변',
-        emoji: '👨‍💻'
     },
     {
         id: 'tech-backend',
@@ -75,7 +73,6 @@ const INSTRUCTIONS: Instruction[] = [
         domain: 'Tech',
         targetRole: '백엔드 시니어 개발자',
         description: '시스템 설계와 아키텍처 관점 조언',
-        emoji: '🏗️'
     },
     {
         id: 'creative-uxui',
@@ -83,7 +80,6 @@ const INSTRUCTIONS: Instruction[] = [
         domain: 'Creative',
         targetRole: 'UX/UI 디자이너',
         description: '트렌디한 시각적 레퍼런스 제안',
-        emoji: '🎨'
     },
     {
         id: 'business-marketer',
@@ -91,7 +87,6 @@ const INSTRUCTIONS: Instruction[] = [
         domain: 'Business',
         targetRole: '디지털 마케터',
         description: '데이터 기반의 ROI 분석 위주',
-        emoji: '📊'
     },
     {
         id: 'academia-researcher',
@@ -99,7 +94,6 @@ const INSTRUCTIONS: Instruction[] = [
         domain: 'Academia',
         targetRole: '대학원생/연구원',
         description: '논문 작성과 학술적 분석',
-        emoji: '🔬'
     }
 ];
 
@@ -111,7 +105,7 @@ const SAMPLE_QUESTIONS = [
 
 // 모의 AI 응답 생성
 function generateMockResponse(instruction: Instruction, question: string): string {
-    return `[${instruction.emoji} ${instruction.name}의 답변]
+    return `[${instruction.name}의 답변]
 
 "${question}"에 대해 ${instruction.targetRole} 관점에서 답변합니다.
 
@@ -200,41 +194,25 @@ export default function ComparePage() {
             <main className="main-content" style={{ backgroundColor: '#fdfdf2', minHeight: '100vh' }}>
                 {/* Sticky Header */}
                 <Box
-                    py="md"
+                    py="lg"
+                    px="xl"
                     style={{
-                        backgroundColor: 'rgba(255,255,255,0.95)',
-                        backdropFilter: 'blur(10px)',
-                        borderBottom: '1px solid #e5e5e5',
-                        position: 'sticky',
-                        top: 0,
-                        zIndex: 100
+                        backgroundColor: '#fff',
+                        borderBottom: '1px solid var(--border-color)',
                     }}
                 >
-                    <Container size="xl">
-                        <Group justify="space-between">
-                            <Group>
-                                <ActionIcon
-                                    component={Link}
-                                    href="/"
-                                    variant="subtle"
-                                    size="lg"
-                                    color="gray"
-                                >
-                                    <IconArrowLeft size={20} />
-                                </ActionIcon>
-                                <div>
-                                    <Title order={3}>응답 규칙 비교</Title>
-                                    <Text size="sm" c="dimmed">
-                                        같은 질문, 다른 응답 규칙으로 AI 응답 비교하기
-                                    </Text>
-                                </div>
-                            </Group>
-                            <Badge color="yellow" variant="light" size="lg">Beta</Badge>
-                        </Group>
-                    </Container>
+                    <Group justify="space-between" align="center">
+                        <div>
+                            <Title order={2}>응답 규칙 비교</Title>
+                            <Text size="sm" c="dimmed">
+                                같은 질문, 다른 응답 규칙으로 AI 응답 비교하기
+                            </Text>
+                        </div>
+                        <Badge color="yellow" variant="light" size="lg">Beta</Badge>
+                    </Group>
                 </Box>
 
-                <Container size="xl" py="xl">
+                <Box px="xl" py="xl">
                     {/* Control Panel */}
                     <Paper
                         p="xl"
@@ -267,7 +245,6 @@ export default function ComparePage() {
                                                 style={{ borderColor: color, borderWidth: 2 }}
                                             >
                                                 <Group justify="space-between" align="start" mb="xs">
-                                                    <Text size="xl">{inst.emoji}</Text>
                                                     <ActionIcon
                                                         variant="subtle"
                                                         color="gray"
@@ -315,7 +292,6 @@ export default function ComparePage() {
                                                 {availableInstructions.map(inst => (
                                                     <Menu.Item
                                                         key={inst.id}
-                                                        leftSection={<Text size="lg">{inst.emoji}</Text>}
                                                         onClick={() => handleAddInstruction(inst.id)}
                                                     >
                                                         <Text size="sm" fw={500}>{inst.name}</Text>
@@ -426,7 +402,6 @@ export default function ComparePage() {
                                                     }}
                                                 >
                                                     <Group gap="sm">
-                                                        <Text size="xl">{inst.emoji}</Text>
                                                         <div>
                                                             <Text fw={700} size="sm">{inst.name}</Text>
                                                             <Badge
@@ -477,7 +452,7 @@ export default function ComparePage() {
                             </SimpleGrid>
                         </Box>
                     )}
-                </Container>
+                </Box>
             </main>
         </div>
     );

@@ -105,27 +105,17 @@ export default function RegisterPage() {
                     }}
                 >
                     <Group justify="space-between" align="center">
-                        <Group gap="md">
-                            <Button
-                                variant="subtle"
-                                color="gray"
-                                leftSection={<IconArrowLeft size={18} />}
-                                onClick={() => router.back()}
-                            >
-                                뒤로
-                            </Button>
-                            <div>
-                                <Title order={2}>응답 규칙 등록</Title>
-                                <Text size="sm" c="dimmed">
-                                    나만의 AI 응답 규칙을 등록하고 공유하세요
-                                </Text>
-                            </div>
-                        </Group>
+                        <div>
+                            <Title order={2}>응답 규칙 등록</Title>
+                            <Text size="sm" c="dimmed">
+                                나만의 AI 응답 규칙을 등록하고 공유하세요
+                            </Text>
+                        </div>
                     </Group>
                 </Box>
 
                 {/* 폼 영역 */}
-                <Container size="md" py="xl">
+                <Box px="xl" py="xl">
                     <Paper p="xl" radius="lg" withBorder>
                         <Stack gap="lg">
                             {/* 기본 정보 */}
@@ -282,7 +272,7 @@ export default function RegisterPage() {
                             </Group>
                         </Stack>
                     </Paper>
-                </Container>
+                </Box>
             </main>
         </div>
     );

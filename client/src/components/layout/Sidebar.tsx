@@ -100,26 +100,22 @@ function NavItem({
 }
 
 export default function Sidebar() {
-    const [mounted, setMounted] = useState(false);
     const pathname = usePathname();
     const router = useRouter();
     const setHasSeenLanding = useAppStore((state) => state.setHasSeenLanding);
     const isSidebarOpen = useAppStore((state) => state.isSidebarOpen);
     const toggleSidebar = useAppStore((state) => state.toggleSidebar);
-
-    useEffect(() => {
-        setMounted(true);
-    }, []);
+    const hasHydrated = useAppStore((state) => state._hasHydrated);
 
     const isActive = (path: string) => pathname === path;
     const isCollapsed = !isSidebarOpen;
 
-    // 마운트 전 로딩 상태 - 최소 너비로 표시하여 깜빡임 방지
-    if (!mounted) {
+    // Hydration 전 로딩 상태 - 열려있는 상태로 표시하여 깜빡임 방지
+    if (!hasHydrated) {
         return (
             <Box
                 component="aside"
-                w={64}
+                w={280}
                 h="100vh"
                 style={{
                     borderRight: '1px solid var(--border-color)',
@@ -134,6 +130,7 @@ export default function Sidebar() {
         );
     }
 
+
     return (
         <Box
             component="aside"
@@ -147,7 +144,9 @@ export default function Sidebar() {
                 display: 'flex',
                 flexDirection: 'column',
                 transition: 'width 0.3s ease',
-                overflow: 'hidden'
+                overflow: 'hidden',
+                flexShrink: 0,
+                minWidth: isCollapsed ? 64 : 280,
             }}
         >
             {/* 로고 영역 */}

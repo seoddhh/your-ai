@@ -28,7 +28,8 @@ import {
     IconHeart,
     IconChevronRight,
     IconEye,
-    IconTrendingUp
+    IconTrendingUp,
+    IconTrash
 } from '@tabler/icons-react';
 import {
     customInstructions,
@@ -123,7 +124,7 @@ export default function InstructionsHome() {
                 {/* 헤더 영역 */}
                 <Box
                     py="lg"
-                    px="xl"
+                    px={48}
                     style={{
                         borderBottom: '1px solid var(--border-color)',
                         backgroundColor: '#fff',
@@ -151,7 +152,7 @@ export default function InstructionsHome() {
                 </Box>
 
                 {/* 검색바 */}
-                <Box px="xl" py="lg" style={{ backgroundColor: '#fefcf8' }}>
+                <Box px={48} py="lg" style={{ backgroundColor: '#fefcf8' }}>
                     <TextInput
                         placeholder="나에게 맞는 AI 응답 스타일을 검색해보세요"
                         size="lg"
@@ -219,7 +220,7 @@ export default function InstructionsHome() {
                 </Box>
 
                 {/* 메인 콘텐츠 영역 */}
-                <Box px="xl" py="lg">
+                <Box px={48} py="lg">
                     {/* 인기 응답 규칙 섹션 */}
                     <SimpleGrid cols={{ base: 1, md: 2 }} spacing="xl" mb="xl">
                         {/* 이번 주 인기 */}
@@ -279,6 +280,7 @@ export default function InstructionsHome() {
                                     onToggle={() => setExpandedId(
                                         expandedId === instruction.id ? null : instruction.id
                                     )}
+                                    isUserOwned={userInstructions.some(ui => ui.id === instruction.id)}
                                 />
                             ))}
                         </AnimatePresence>
@@ -327,7 +329,7 @@ function PopularCard({
                 />
                 <div style={{ flex: 1 }}>
                     <Text size="sm" fw={600} lineClamp={1}>
-                        {instruction.emoji} {instruction.name}
+                        {instruction.name}
                     </Text>
                     <Text size="xs" c="dimmed" lineClamp={1}>
                         {instruction.description}
@@ -347,14 +349,24 @@ function InstructionCard({
     instruction,
     index,
     isExpanded,
-    onToggle
+    onToggle,
+    isUserOwned = false
 }: {
     instruction: CustomInstruction;
     index: number;
     isExpanded: boolean;
     onToggle: () => void;
+    isUserOwned?: boolean;
 }) {
     const domainMeta = DOMAIN_META[instruction.domain];
+    const deleteUserInstruction = useAppStore((state) => state.deleteUserInstruction);
+
+    const handleDelete = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (confirm('이 응답 규칙을 삭제하시겠습니까?')) {
+            deleteUserInstruction(instruction.id);
+        }
+    };
 
     return (
         <motion.div
@@ -379,18 +391,34 @@ function InstructionCard({
                 {/* 헤더 */}
                 <Group justify="space-between" mb="sm">
                     <Group gap="sm">
-                        <Text size="2rem">{instruction.emoji}</Text>
                         <div>
-                            <Text fw={700}>{instruction.name}</Text>
+                            <Group gap="xs">
+                                <Text fw={700}>{instruction.name}</Text>
+                                {isUserOwned && (
+                                    <Badge color="yellow" variant="light" size="xs">내가 등록</Badge>
+                                )}
+                            </Group>
                             <Text size="xs" c="dimmed">{instruction.targetRole}</Text>
                         </div>
                     </Group>
-                    <Badge
-                        variant="light"
-                        style={{ backgroundColor: `${domainMeta?.color || '#ccc'}20`, color: domainMeta?.color || '#666' }}
-                    >
-                        {domainMeta?.emoji || '📌'} {domainMeta?.label || instruction.domain}
-                    </Badge>
+                    <Group gap="xs">
+                        <Badge
+                            variant="light"
+                            style={{ backgroundColor: `${domainMeta?.color || '#ccc'}20`, color: domainMeta?.color || '#666' }}
+                        >
+                            {domainMeta?.label || instruction.domain}
+                        </Badge>
+                        {isUserOwned && (
+                            <ActionIcon
+                                variant="subtle"
+                                color="red"
+                                size="sm"
+                                onClick={handleDelete}
+                            >
+                                <IconTrash size={16} />
+                            </ActionIcon>
+                        )}
+                    </Group>
                 </Group>
 
                 {/* 설명 */}
@@ -491,7 +519,7 @@ function InstructionCard({
                 {/* 푸터 */}
                 <Group justify="space-between" mt="md">
                     <Text size="xs" c="dimmed">
-                        ❤️ {instruction.popularity}명 사용
+                        {instruction.popularity}명 사용
                     </Text>
                     {instruction.author && (
                         <Text size="xs" c="dimmed">
