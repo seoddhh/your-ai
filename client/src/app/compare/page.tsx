@@ -120,7 +120,7 @@ function generateMockResponse(instruction: Instruction, question: string): strin
 3. 결론 및 제안 - 실행 가능한 액션 아이템
 
 ---
-*이 응답은 "${instruction.name}" 지침이 적용되었습니다.*`;
+*이 응답은 "${instruction.name}" 응답 규칙이 적용되었습니다.*`;
 }
 
 // ============================================================
@@ -220,9 +220,9 @@ export default function ComparePage() {
                                 <IconArrowLeft size={20} />
                             </ActionIcon>
                             <div>
-                                <Title order={3}>지침 비교</Title>
+                                <Title order={3}>응답 규칙 비교</Title>
                                 <Text size="sm" c="dimmed">
-                                    같은 질문, 다른 지침으로 AI 응답 비교하기
+                                    같은 질문, 다른 응답 규칙으로 AI 응답 비교하기
                                 </Text>
                             </div>
                         </Group>

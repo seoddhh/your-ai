@@ -42,7 +42,7 @@ export default function QuestionsPage() {
                         <div>
                             <Title order={2}>질문 목록</Title>
                             <Text size="sm" c="dimmed">
-                                같은 질문에 대해 지침마다 어떻게 다르게 답변하는지 확인해보세요
+                                같은 질문에 대해 응답 규칙마다 어떻게 다르게 답변하는지 확인해보세요
                             </Text>
                         </div>
                         <Button

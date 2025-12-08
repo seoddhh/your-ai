@@ -44,7 +44,7 @@ export const customInstructions: CustomInstruction[] = [
         name: '풀스택 개발자',
         domain: 'Tech',
         targetRole: '풀스택 개발자',
-        description: '코드 예제 중심의 실용적인 답변을 제공받고 싶은 개발자를 위한 지침',
+        description: '코드 예제 중심의 실용적인 답변을 제공받고 싶은 개발자를 위한 응답 규칙',
         userProfile: `저는 3년차 풀스택 개발자입니다. 주로 React, Next.js, Node.js, TypeScript를 사용합니다. 
 클린 코드와 최적화된 솔루션을 선호하며, 실전에서 바로 적용 가능한 코드를 원합니다.`,
         responsePreference: `1. 코드 예제를 먼저 보여주세요
@@ -62,7 +62,7 @@ export const customInstructions: CustomInstruction[] = [
         name: '백엔드 아키텍트',
         domain: 'Tech',
         targetRole: '백엔드 시니어 개발자',
-        description: '시스템 설계와 아키텍처 관점에서 조언을 받고 싶은 개발자를 위한 지침',
+        description: '시스템 설계와 아키텍처 관점에서 조언을 받고 싶은 개발자를 위한 응답 규칙',
         userProfile: `저는 7년차 백엔드 개발자이며, 현재 서비스의 아키텍트 역할을 맡고 있습니다.
 Java/Kotlin, Spring Boot, MSA, Kubernetes, AWS 환경에서 작업합니다.`,
         responsePreference: `1. 아키텍처 다이어그램이나 구조를 텍스트로 설명해주세요
@@ -78,7 +78,7 @@ Java/Kotlin, Spring Boot, MSA, Kubernetes, AWS 환경에서 작업합니다.`,
         name: '데이터 사이언티스트',
         domain: 'Tech',
         targetRole: '머신러닝/데이터 분석가',
-        description: '데이터 분석과 ML 모델링에 특화된 답변을 원하는 분석가를 위한 지침',
+        description: '데이터 분석과 ML 모델링에 특화된 답변을 원하는 분석가를 위한 응답 규칙',
         userProfile: `저는 데이터 사이언티스트로 Python, pandas, scikit-learn, PyTorch를 주로 사용합니다.
 통계적 검증과 모델 해석을 중요시합니다.`,
         responsePreference: `1. Python 코드와 함께 설명해주세요
@@ -96,7 +96,7 @@ Java/Kotlin, Spring Boot, MSA, Kubernetes, AWS 환경에서 작업합니다.`,
         name: 'UX/UI 디자이너',
         domain: 'Creative',
         targetRole: 'UX/UI 디자이너',
-        description: '사용자 중심 디자인과 최신 트렌드를 반영한 조언을 원하는 디자이너를 위한 지침',
+        description: '사용자 중심 디자인과 최신 트렌드를 반영한 조언을 원하는 디자이너를 위한 응답 규칙',
         userProfile: `저는 5년차 UX/UI 디자이너입니다. Figma를 주로 사용하며, 
 사용자 리서치부터 시각 디자인까지 전 과정을 담당합니다.`,
         responsePreference: `1. 시각적 레퍼런스나 예시 이미지 설명을 포함해주세요
@@ -113,7 +113,7 @@ Java/Kotlin, Spring Boot, MSA, Kubernetes, AWS 환경에서 작업합니다.`,
         name: '콘텐츠 크리에이터',
         domain: 'Creative',
         targetRole: '유튜버/블로거',
-        description: '매력적인 콘텐츠 기획과 스토리텔링을 원하는 크리에이터를 위한 지침',
+        description: '매력적인 콘텐츠 기획과 스토리텔링을 원하는 크리에이터를 위한 응답 규칙',
         userProfile: `저는 IT/테크 분야 콘텐츠 크리에이터입니다. 
 유튜브와 블로그를 운영하며, 복잡한 기술을 쉽게 설명하는 것이 강점입니다.`,
         responsePreference: `1. 썸네일 아이디어나 제목 후보를 여러 개 제안해주세요
@@ -131,7 +131,7 @@ Java/Kotlin, Spring Boot, MSA, Kubernetes, AWS 환경에서 작업합니다.`,
         name: '퍼포먼스 마케터',
         domain: 'Business',
         targetRole: '디지털 마케터',
-        description: '데이터 기반 마케팅 분석과 전략 수립을 원하는 마케터를 위한 지침',
+        description: '데이터 기반 마케팅 분석과 전략 수립을 원하는 마케터를 위한 응답 규칙',
         userProfile: `저는 퍼포먼스 마케터로 Google Ads, Meta Ads, GA4 등을 주로 다룹니다.
 ROI 최적화와 데이터 기반 의사결정을 중요시합니다.`,
         responsePreference: `1. 데이터와 수치를 기반으로 설명해주세요
@@ -147,7 +147,7 @@ ROI 최적화와 데이터 기반 의사결정을 중요시합니다.`,
         name: '프로덕트 매니저',
         domain: 'Business',
         targetRole: 'PM/PO',
-        description: '제품 전략과 로드맵 수립에 도움이 필요한 PM을 위한 지침',
+        description: '제품 전략과 로드맵 수립에 도움이 필요한 PM을 위한 응답 규칙',
         userProfile: `저는 B2B SaaS 스타트업의 PM입니다. 
 고객 인터뷰, 요구사항 정의, 스프린트 계획을 주로 담당합니다.`,
         responsePreference: `1. PRD, 유저 스토리 형식으로 작성해주세요
@@ -165,7 +165,7 @@ ROI 최적화와 데이터 기반 의사결정을 중요시합니다.`,
         name: '학술 연구자',
         domain: 'Academia',
         targetRole: '대학원생/연구원',
-        description: '논문 작성과 학술적 분석에 도움이 필요한 연구자를 위한 지침',
+        description: '논문 작성과 학술적 분석에 도움이 필요한 연구자를 위한 응답 규칙',
         userProfile: `저는 컴퓨터공학 박사과정 학생으로 NLP/LLM 분야를 연구합니다.
 학술 논문 작성과 실험 설계에 도움이 필요합니다.`,
         responsePreference: `1. 학술적 근거와 논문 인용(저자, 연도)을 포함해주세요
@@ -183,7 +183,7 @@ ROI 최적화와 데이터 기반 의사결정을 중요시합니다.`,
         name: '강사/교육자',
         domain: 'Education',
         targetRole: '강사/튜터',
-        description: '효과적인 교육 콘텐츠 제작을 원하는 교육자를 위한 지침',
+        description: '효과적인 교육 콘텐츠 제작을 원하는 교육자를 위한 응답 규칙',
         userProfile: `저는 프로그래밍 교육을 하는 강사입니다. 
 비전공자도 이해할 수 있는 쉬운 설명을 추구합니다.`,
         responsePreference: `1. 초보자도 이해할 수 있게 쉬운 비유를 사용해주세요
@@ -201,7 +201,7 @@ ROI 최적화와 데이터 기반 의사결정을 중요시합니다.`,
         name: '재무 분석가',
         domain: 'Finance',
         targetRole: '금융 분석가',
-        description: '재무 분석과 투자 인사이트를 원하는 금융 전문가를 위한 지침',
+        description: '재무 분석과 투자 인사이트를 원하는 금융 전문가를 위한 응답 규칙',
         userProfile: `저는 증권사 리서치팀에서 산업/기업 분석을 담당합니다.
 재무제표 분석과 밸류에이션에 능숙합니다.`,
         responsePreference: `1. 재무 지표(PER, PBR, ROE 등)를 활용해 분석해주세요
@@ -219,7 +219,7 @@ ROI 최적화와 데이터 기반 의사결정을 중요시합니다.`,
         name: '심리 상담사',
         domain: 'Healthcare',
         targetRole: '상담심리사',
-        description: '상담 기법과 심리학적 접근에 도움이 필요한 상담사를 위한 지침',
+        description: '상담 기법과 심리학적 접근에 도움이 필요한 상담사를 위한 응답 규칙',
         userProfile: `저는 임상심리전문가로 인지행동치료(CBT)를 주로 사용합니다.
 내담자 상담과 사례 개념화에 AI의 도움을 받고 싶습니다.`,
         responsePreference: `1. 심리학적 이론과 근거를 함께 설명해주세요
@@ -237,7 +237,7 @@ ROI 최적화와 데이터 기반 의사결정을 중요시합니다.`,
         name: '기업 법무',
         domain: 'Legal',
         targetRole: '기업 법무팀',
-        description: '계약서 검토와 법적 리스크 분석이 필요한 법무 담당자를 위한 지침',
+        description: '계약서 검토와 법적 리스크 분석이 필요한 법무 담당자를 위한 응답 규칙',
         userProfile: `저는 IT 스타트업 법무팀에서 계약 검토와 컴플라이언스를 담당합니다.
 개인정보보호법, 전자상거래법 관련 업무가 많습니다.`,
         responsePreference: `1. 관련 법조항을 인용해주세요

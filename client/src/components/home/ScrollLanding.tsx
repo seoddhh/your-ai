@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useEffect, useState } from 'react';
-import { motion, useScroll, useTransform, useMotionValueEvent, AnimatePresence } from 'framer-motion';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import {
     Container,
     Title,
@@ -71,18 +71,18 @@ const DOMAIN_EXAMPLES = [
 const FEATURES = [
     {
         icon: IconBookmark,
-        title: '지침 라이브러리',
+        title: '응답 규칙 라이브러리',
         description: '검증된 도메인별 Custom Instructions 템플릿을 탐색하고 바로 적용하세요.',
     },
     {
         icon: IconScale,
         title: '실시간 비교',
-        description: '같은 질문에 다른 지침을 적용했을 때 AI 응답이 어떻게 달라지는지 확인하세요.',
+        description: '같은 질문에 다른 응답 규칙을 적용했을 때 AI 응답이 어떻게 달라지는지 확인하세요.',
     },
     {
         icon: IconSparkles,
-        title: '개인화 테스트',
-        description: '나만의 지침을 만들고 테스트하여 최적의 AI 활용법을 찾아보세요.',
+        title: '나의 AI 만들기',
+        description: '나만의 응답 규칙을 만들고 테스트하여 최적의 AI 활용법을 찾아보세요.',
     },
 ];
 
@@ -97,19 +97,25 @@ export default function ScrollLanding({ onEnter }: ScrollLandingProps) {
     });
 
     // 스크롤 진행률에 따른 섹션 변경
-    useMotionValueEvent(scrollYProgress, "change", (latest) => {
-        if (latest < 0.2) setCurrentSection(0);
-        else if (latest < 0.45) setCurrentSection(1);
-        else if (latest < 0.7) setCurrentSection(2);
-        else setCurrentSection(3);
+    // Section 1 (도메인 예시)에 더 큰 스크롤 범위를 할당하여 각 예시가 천천히 전환되도록 함
+    useEffect(() => {
+        const unsubscribe = scrollYProgress.on("change", (latest) => {
+            // 섹션 구간: 0~15%(Hero), 15~60%(도메인예시), 60~80%(Features), 80~100%(CTA)
+            if (latest < 0.15) setCurrentSection(0);
+            else if (latest < 0.60) setCurrentSection(1);
+            else if (latest < 0.80) setCurrentSection(2);
+            else setCurrentSection(3);
 
-        // 섹션 2에서 도메인 예시 자동 전환
-        if (latest >= 0.2 && latest < 0.45) {
-            const progress = (latest - 0.2) / 0.25;
-            const index = Math.min(Math.floor(progress * 4), 3);
-            setActiveExample(index);
-        }
-    });
+            // 섹션 1에서 도메인 예시 전환 (각 예시당 약 11%의 스크롤 범위)
+            if (latest >= 0.15 && latest < 0.60) {
+                const sectionProgress = (latest - 0.15) / 0.45; // 0~1 범위로 정규화
+                const index = Math.min(Math.floor(sectionProgress * 4), 3);
+                setActiveExample(index);
+            }
+        });
+
+        return () => unsubscribe();
+    }, [scrollYProgress]);
 
     // 스크롤 진행 바 값
     const progressWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
@@ -120,7 +126,7 @@ export default function ScrollLanding({ onEnter }: ScrollLandingProps) {
             style={{
                 position: 'relative',
                 backgroundColor: 'var(--bg-color)',
-                height: '500vh', // 스크롤 공간 확보
+                height: '600vh', // 스크롤 공간 확보 (더 여유있게)
             }}
         >
             {/* 스크롤 진행 바 */}
@@ -180,6 +186,7 @@ export default function ScrollLanding({ onEnter }: ScrollLandingProps) {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
+                    backgroundColor: 'var(--bg-color)',
                     zIndex: currentSection === 0 ? 10 : 1,
                     opacity: currentSection === 0 ? 1 : 0,
                     pointerEvents: currentSection === 0 ? 'auto' : 'none',
@@ -224,7 +231,7 @@ export default function ScrollLanding({ onEnter }: ScrollLandingProps) {
                                 textDecorationThickness: '4px',
                                 textUnderlineOffset: '8px',
                             }}>
-                                다른 지침
+                                다른 응답 규칙
                             </span>
                             ,<br />
                             완전히 다른 결과.
@@ -243,7 +250,7 @@ export default function ScrollLanding({ onEnter }: ScrollLandingProps) {
                             }}
                         >
                             당신의 Custom Instructions가 AI를 완전히 바꿉니다.<br />
-                            도메인별 추천 지침을 발견하고, 직접 비교해보세요.
+                            도메인별 추천 응답 규칙을 발견하고, 직접 비교해보세요.
                         </Text>
 
                         <motion.div
@@ -260,7 +267,7 @@ export default function ScrollLanding({ onEnter }: ScrollLandingProps) {
                 </Container>
             </Box>
 
-            {/* ========== Section 1: Scrollytelling - 도메인별 예시 (Pinned) ========== */}
+            {/* ========== Section 1: 도메인별 예시 (Pinned) ========== */}
             <Box
                 style={{
                     position: 'sticky',
@@ -285,7 +292,7 @@ export default function ScrollLanding({ onEnter }: ScrollLandingProps) {
 
                             <Title order={2} size="2.5rem" mb="xl" style={{ color: 'var(--text-primary)' }}>
                                 같은 질문이라도<br />
-                                지침에 따라 답이 달라집니다.
+                                응답 규칙에 따라 답이 달라집니다.
                             </Title>
 
                             <Box mb="xl">
@@ -335,7 +342,7 @@ export default function ScrollLanding({ onEnter }: ScrollLandingProps) {
                                     exit={{ opacity: 0, x: -20 }}
                                     transition={{ duration: 0.3 }}
                                 >
-                                    {/* 지침 카드 */}
+                                    {/* 응답 규칙 카드 */}
                                     <Card
                                         p="lg"
                                         radius="lg"
@@ -509,13 +516,13 @@ export default function ScrollLanding({ onEnter }: ScrollLandingProps) {
                                 color: 'var(--text-primary)',
                             }}
                         >
-                            나에게 맞는 AI 지침을<br />
+                            나에게 맞는 AI 응답 규칙을<br />
                             지금 바로 찾아보세요.
                         </Title>
 
                         <Text size="lg" c="dimmed" mb={50} maw={450} mx="auto" style={{ lineHeight: 1.8 }}>
-                            도메인별 추천 지침부터 시작하거나,<br />
-                            직접 나만의 지침을 테스트해보세요.
+                            도메인별 추천 응답 규칙부터 시작하거나,<br />
+                            직접 나만의 응답 규칙을 테스트해보세요.
                         </Text>
 
                         <Group justify="center" gap="lg">
@@ -557,7 +564,7 @@ export default function ScrollLanding({ onEnter }: ScrollLandingProps) {
                                     }
                                 }}
                             >
-                                지침 둘러보기
+                                응답 규칙 둘러보기
                             </Button>
                         </Group>
                     </motion.div>

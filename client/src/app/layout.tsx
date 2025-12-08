@@ -11,7 +11,7 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: "Your AI - Custom Instructions Hub",
-  description: "도메인별 AI 맞춤 지침을 발견하고, 다른 지침이 어떻게 AI 응답을 바꾸는지 비교해보세요.",
+  description: "도메인별 AI 맞춤 응답 규칙을 발견하고, 다른 응답 규칙이 어떻게 AI 응답을 바꾸는지 비교해보세요.",
 };
 
 export default function RootLayout({

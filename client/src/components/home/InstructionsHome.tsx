@@ -64,7 +64,7 @@ export default function InstructionsHome() {
         setMounted(true);
     }, []);
 
-    // 필터링된 지침 목록
+    // 필터링된 응답 규칙 목록
     const filteredInstructions = useMemo(() => {
         if (!customInstructions || !Array.isArray(customInstructions)) {
             return [];
@@ -85,7 +85,7 @@ export default function InstructionsHome() {
         return result || [];
     }, [selectedCategory, searchQuery]);
 
-    // 인기 지침 (주간/월간)
+    // 인기 응답 규칙 (주간/월간)
     const weeklyPopular = useMemo(() => {
         if (!customInstructions || !Array.isArray(customInstructions)) return [];
         return getPopularInstructions(3);
@@ -132,7 +132,7 @@ export default function InstructionsHome() {
                                 color="yellow"
                                 styles={{ root: { backgroundColor: '#E0B861' } }}
                             >
-                                + 지침 등록
+                                + 응답 규칙 등록
                             </Button>
                         </Link>
                     </Group>
@@ -208,13 +208,13 @@ export default function InstructionsHome() {
 
                 {/* 메인 콘텐츠 영역 */}
                 <Box px="xl" py="lg">
-                    {/* 인기 지침 섹션 */}
+                    {/* 인기 응답 규칙 섹션 */}
                     <SimpleGrid cols={{ base: 1, md: 2 }} spacing="xl" mb="xl">
                         {/* 이번 주 인기 */}
                         <Paper p="lg" radius="lg" withBorder>
                             <Group mb="md" gap="xs">
                                 <IconTrendingUp size={20} color="#E0B861" />
-                                <Title order={5}>가장 핫한 지침 TOP 3</Title>
+                                <Title order={5}>가장 핫한 응답 규칙 TOP 3</Title>
                             </Group>
                             <Stack gap="sm">
                                 {weeklyPopular.map((instruction, idx) => (
@@ -232,7 +232,7 @@ export default function InstructionsHome() {
                         <Paper p="lg" radius="lg" withBorder>
                             <Group mb="md" gap="xs">
                                 <IconHeart size={20} color="#ec4899" />
-                                <Title order={5}>이번 달 인기 지침 TOP 3</Title>
+                                <Title order={5}>이번 달 인기 응답 규칙 TOP 3</Title>
                             </Group>
                             <Stack gap="sm">
                                 {monthlyPopular.map((instruction, idx) => (
@@ -251,11 +251,11 @@ export default function InstructionsHome() {
                     <Group justify="space-between" mb="lg">
                         <Text c="dimmed">
                             {selectedCategory === 'all' ? '전체' : (DOMAIN_META[selectedCategory]?.label || selectedCategory)}에서{' '}
-                            <strong>{filteredInstructions.length}개</strong>의 지침
+                            <strong>{filteredInstructions.length}개</strong>의 응답 규칙
                         </Text>
                     </Group>
 
-                    {/* 지침 그리드 */}
+                    {/* 응답 규칙 그리드 */}
                     <SimpleGrid cols={{ base: 1, md: 2 }} spacing="lg">
                         <AnimatePresence mode="popLayout">
                             {filteredInstructions.map((instruction, index) => (
@@ -285,7 +285,7 @@ export default function InstructionsHome() {
     );
 }
 
-// 인기 지침 카드 (컴팩트)
+// 인기 응답 규칙 카드 (컴팩트)
 function PopularCard({
     instruction,
     rank,
@@ -330,7 +330,7 @@ function PopularCard({
     );
 }
 
-// 지침 카드 컴포넌트
+// 응답 규칙 카드 컴포넌트
 function InstructionCard({
     instruction,
     index,

@@ -295,3 +295,8 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+/* 부드러운 스크롤 전환을 위한 HTML 설정 */
+html {
+    scroll-behavior: smooth;
+}
