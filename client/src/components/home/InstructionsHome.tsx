@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import { useAppStore } from '@/store/useAppStore';
 import {
     Container,
     Title,
@@ -60,41 +61,52 @@ export default function InstructionsHome() {
     const [searchQuery, setSearchQuery] = useState('');
     const [expandedId, setExpandedId] = useState<string | null>(null);
 
+    // 사용자 등록 응답 규칙
+    const userInstructions = useAppStore((state) => state.userInstructions);
+
+    // 전체 응답 규칙 (사용자 등록 + 기본)
+    const allInstructions = useMemo(() => {
+        return [...userInstructions, ...customInstructions];
+    }, [userInstructions]);
+
     useEffect(() => {
         setMounted(true);
     }, []);
 
     // 필터링된 응답 규칙 목록
     const filteredInstructions = useMemo(() => {
-        if (!customInstructions || !Array.isArray(customInstructions)) {
+        if (!allInstructions || !Array.isArray(allInstructions)) {
             return [];
         }
 
-        let result = customInstructions;
+        let result = allInstructions;
 
         if (selectedCategory !== 'all') {
-            result = getInstructionsByDomain(selectedCategory);
+            result = allInstructions.filter(i => i.domain === selectedCategory);
         }
 
         if (searchQuery) {
-            result = searchInstructions(searchQuery).filter(
-                i => selectedCategory === 'all' || i.domain === selectedCategory
+            const q = searchQuery.toLowerCase();
+            result = result.filter(i =>
+                i.name.toLowerCase().includes(q) ||
+                i.description.toLowerCase().includes(q) ||
+                i.tags.some(t => t.toLowerCase().includes(q))
             );
         }
 
         return result || [];
-    }, [selectedCategory, searchQuery]);
+    }, [selectedCategory, searchQuery, allInstructions]);
 
     // 인기 응답 규칙 (주간/월간)
     const weeklyPopular = useMemo(() => {
-        if (!customInstructions || !Array.isArray(customInstructions)) return [];
-        return getPopularInstructions(3);
-    }, []);
+        if (!allInstructions || !Array.isArray(allInstructions)) return [];
+        return [...allInstructions].sort((a, b) => b.popularity - a.popularity).slice(0, 3);
+    }, [allInstructions]);
 
     const monthlyPopular = useMemo(() => {
-        if (!customInstructions || !Array.isArray(customInstructions)) return [];
-        return getPopularInstructions(6).slice(3, 6);
-    }, []);
+        if (!allInstructions || !Array.isArray(allInstructions)) return [];
+        return [...allInstructions].sort((a, b) => b.popularity - a.popularity).slice(3, 6);
+    }, [allInstructions]);
 
     if (!mounted) {
         return (
@@ -126,7 +138,7 @@ export default function InstructionsHome() {
                                 나만의 AI 응답 스타일을 찾아보세요
                             </Text>
                         </div>
-                        <Link href="/compare">
+                        <Link href="/register">
                             <Button
                                 variant="filled"
                                 color="yellow"

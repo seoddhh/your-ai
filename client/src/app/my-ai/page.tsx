@@ -38,6 +38,7 @@ import {
     IconBrain,
     IconShieldCheck
 } from '@tabler/icons-react';
+import Sidebar from '@/components/layout/Sidebar';
 
 // ============================================================
 // 응답 규칙 생성 파이프라인 옵션
@@ -282,386 +283,389 @@ ${selectedFormat === 'structured' ? '| 항목 | 설명 |\n|------|------|\n| 핵
     }
 
     return (
-        <Box style={{ backgroundColor: '#fdfdf2', minHeight: '100vh' }}>
-            {/* 헤더 */}
-            <Box
-                py="md"
-                style={{
-                    backgroundColor: 'rgba(255,255,255,0.95)',
-                    backdropFilter: 'blur(10px)',
-                    borderBottom: '1px solid #e5e5e5',
-                    position: 'sticky',
-                    top: 0,
-                    zIndex: 100
-                }}
-            >
-                <Container size="lg">
-                    <Group justify="space-between">
-                        <Group>
-                            <ActionIcon
-                                component={Link}
-                                href="/"
-                                variant="subtle"
-                                size="lg"
-                                color="gray"
-                            >
-                                <IconArrowLeft size={20} />
-                            </ActionIcon>
-                            <div>
-                                <Title order={3}>나의 AI 만들기</Title>
-                                <Text size="sm" c="dimmed">
-                                    나만의 맞춤 응답 규칙을 만들어보세요
-                                </Text>
-                            </div>
-                        </Group>
-                        <Badge color="yellow" variant="light" size="lg">Beta</Badge>
-                    </Group>
-                </Container>
-            </Box>
-
-            <Container size="lg" py="xl">
-                {/* Stepper */}
-                <Paper p="xl" radius="lg" withBorder mb="xl" style={{ backgroundColor: '#fff' }}>
-                    <Stepper
-                        active={activeStep}
-                        onStepClick={setActiveStep}
-                        color="yellow"
-                        styles={{
-                            stepIcon: {
-                                backgroundColor: 'var(--bg-color)',
-                                borderColor: '#E0B861',
-                            },
-                            stepCompletedIcon: {
-                                backgroundColor: '#E0B861',
-                            },
-                        }}
-                    >
-                        <Stepper.Step label="목적" icon={<IconTarget size={18} />} />
-                        <Stepper.Step label="출력 형식" icon={<IconLayoutList size={18} />} />
-                        <Stepper.Step label="논리 구조" icon={<IconBrain size={18} />} />
-                        <Stepper.Step label="제약 조건" icon={<IconShieldCheck size={18} />} />
-                        <Stepper.Step label="확인" icon={<IconCheck size={18} />} />
-                        <Stepper.Step label="테스트" icon={<IconPlayerPlay size={18} />} />
-                    </Stepper>
-                </Paper>
-
-                {/* 단계별 콘텐츠 */}
-                <AnimatePresence mode="wait">
-                    <motion.div
-                        key={activeStep}
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -20 }}
-                        transition={{ duration: 0.3 }}
-                    >
-                        <Paper p="xl" radius="lg" withBorder style={{ backgroundColor: '#fff' }}>
-                            {/* Step 0: 목적 선택 */}
-                            {activeStep === 0 && (
-                                <Stack gap="lg">
-                                    <div>
-                                        <Title order={4} mb="xs">어떤 목적으로 AI를 사용하시나요?</Title>
-                                        <Text size="sm" c="dimmed">주로 사용하는 용도를 선택해주세요</Text>
-                                    </div>
-                                    <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }} spacing="md">
-                                        {PURPOSE_OPTIONS.map(option => (
-                                            <Card
-                                                key={option.id}
-                                                p="lg"
-                                                radius="md"
-                                                withBorder
-                                                style={{
-                                                    cursor: 'pointer',
-                                                    borderColor: selectedPurpose === option.id ? '#E0B861' : '#e5e5e5',
-                                                    borderWidth: selectedPurpose === option.id ? 2 : 1,
-                                                    backgroundColor: selectedPurpose === option.id ? 'var(--gold-light)' : '#fff',
-                                                    transition: 'all 0.2s',
-                                                }}
-                                                onClick={() => setSelectedPurpose(option.id)}
-                                            >
-                                                <Text fw={600} mb={4}>{option.label}</Text>
-                                                <Text size="xs" c="dimmed">{option.description}</Text>
-                                            </Card>
-                                        ))}
-                                    </SimpleGrid>
-                                </Stack>
-                            )}
-
-                            {/* Step 1: 출력 형식 선택 */}
-                            {activeStep === 1 && (
-                                <Stack gap="lg">
-                                    <div>
-                                        <Title order={4} mb="xs">어떤 형식으로 응답받고 싶으신가요?</Title>
-                                        <Text size="sm" c="dimmed">선호하는 응답 스타일을 선택해주세요</Text>
-                                    </div>
-                                    <Stack gap="sm">
-                                        {OUTPUT_FORMAT_OPTIONS.map(option => (
-                                            <Card
-                                                key={option.id}
-                                                p="md"
-                                                radius="md"
-                                                withBorder
-                                                style={{
-                                                    cursor: 'pointer',
-                                                    borderColor: selectedFormat === option.id ? '#E0B861' : '#e5e5e5',
-                                                    borderWidth: selectedFormat === option.id ? 2 : 1,
-                                                    backgroundColor: selectedFormat === option.id ? 'var(--gold-light)' : '#fff',
-                                                    transition: 'all 0.2s',
-                                                }}
-                                                onClick={() => setSelectedFormat(option.id)}
-                                            >
-                                                <Group>
-                                                    <Radio
-                                                        checked={selectedFormat === option.id}
-                                                        onChange={() => setSelectedFormat(option.id)}
-                                                        color="yellow"
-                                                    />
-                                                    <div>
-                                                        <Text fw={500}>{option.label}</Text>
-                                                        <Text size="xs" c="dimmed">{option.description}</Text>
-                                                    </div>
-                                                </Group>
-                                            </Card>
-                                        ))}
-                                    </Stack>
-                                </Stack>
-                            )}
-
-                            {/* Step 2: 논리 구조 선택 */}
-                            {activeStep === 2 && (
-                                <Stack gap="lg">
-                                    <div>
-                                        <Title order={4} mb="xs">어떤 방식으로 정보를 전달받고 싶으신가요?</Title>
-                                        <Text size="sm" c="dimmed">선호하는 설명 방식을 선택해주세요</Text>
-                                    </div>
-                                    <Stack gap="sm">
-                                        {LOGIC_STRUCTURE_OPTIONS.map(option => (
-                                            <Card
-                                                key={option.id}
-                                                p="md"
-                                                radius="md"
-                                                withBorder
-                                                style={{
-                                                    cursor: 'pointer',
-                                                    borderColor: selectedLogic === option.id ? '#E0B861' : '#e5e5e5',
-                                                    borderWidth: selectedLogic === option.id ? 2 : 1,
-                                                    backgroundColor: selectedLogic === option.id ? 'var(--gold-light)' : '#fff',
-                                                    transition: 'all 0.2s',
-                                                }}
-                                                onClick={() => setSelectedLogic(option.id)}
-                                            >
-                                                <Group>
-                                                    <Radio
-                                                        checked={selectedLogic === option.id}
-                                                        onChange={() => setSelectedLogic(option.id)}
-                                                        color="yellow"
-                                                    />
-                                                    <div>
-                                                        <Text fw={500}>{option.label}</Text>
-                                                        <Text size="xs" c="dimmed">{option.description}</Text>
-                                                    </div>
-                                                </Group>
-                                            </Card>
-                                        ))}
-                                    </Stack>
-                                </Stack>
-                            )}
-
-                            {/* Step 3: 제약 조건 설정 */}
-                            {activeStep === 3 && (
-                                <Stack gap="lg">
-                                    <div>
-                                        <Title order={4} mb="xs">추가 제약 조건을 설정하세요</Title>
-                                        <Text size="sm" c="dimmed">원하는 옵션을 모두 선택해주세요 (선택사항)</Text>
-                                    </div>
-                                    <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm">
-                                        {CONSTRAINT_OPTIONS.map(option => (
-                                            <Card
-                                                key={option.id}
-                                                p="md"
-                                                radius="md"
-                                                withBorder
-                                                style={{
-                                                    cursor: 'pointer',
-                                                    borderColor: selectedConstraints.includes(option.id) ? '#E0B861' : '#e5e5e5',
-                                                    backgroundColor: selectedConstraints.includes(option.id) ? 'var(--gold-light)' : '#fff',
-                                                    transition: 'all 0.2s',
-                                                }}
-                                                onClick={() => {
-                                                    setSelectedConstraints(prev =>
-                                                        prev.includes(option.id)
-                                                            ? prev.filter(c => c !== option.id)
-                                                            : [...prev, option.id]
-                                                    );
-                                                }}
-                                            >
-                                                <Group>
-                                                    <Checkbox
-                                                        checked={selectedConstraints.includes(option.id)}
-                                                        onChange={() => { }}
-                                                        color="yellow"
-                                                    />
-                                                    <Text size="sm">{option.label}</Text>
-                                                </Group>
-                                            </Card>
-                                        ))}
-                                    </SimpleGrid>
-                                </Stack>
-                            )}
-
-                            {/* Step 4: 생성된 응답 규칙 확인 */}
-                            {activeStep === 4 && generatedInstruction && (
-                                <Stack gap="lg">
-                                    <div>
-                                        <Title order={4} mb="xs">나만의 응답 규칙이 생성되었습니다</Title>
-                                        <Text size="sm" c="dimmed">아래 내용을 확인하고 복사하여 사용하세요</Text>
-                                    </div>
-
-                                    <Box>
-                                        <Text size="xs" fw={700} c="dimmed" tt="uppercase" mb="xs">
-                                            사용자 프로필
-                                        </Text>
-                                        <Paper
-                                            p="md"
-                                            radius="md"
-                                            style={{
-                                                backgroundColor: 'var(--gold-light)',
-                                                whiteSpace: 'pre-wrap',
-                                                lineHeight: 1.7,
-                                            }}
-                                        >
-                                            {generatedInstruction.userProfile}
-                                        </Paper>
-                                    </Box>
-
-                                    <Box>
-                                        <Text size="xs" fw={700} c="dimmed" tt="uppercase" mb="xs">
-                                            응답 스타일
-                                        </Text>
-                                        <Paper
-                                            p="md"
-                                            radius="md"
-                                            style={{
-                                                backgroundColor: '#f8f9fa',
-                                                whiteSpace: 'pre-wrap',
-                                                lineHeight: 1.7,
-                                            }}
-                                        >
-                                            {generatedInstruction.responsePreference}
-                                        </Paper>
-                                    </Box>
-
-                                    <Group>
-                                        <Button
-                                            variant="light"
-                                            color="gray"
-                                            leftSection={<IconCopy size={16} />}
-                                            onClick={handleCopy}
-                                        >
-                                            클립보드에 복사
-                                        </Button>
-                                    </Group>
-                                </Stack>
-                            )}
-
-                            {/* Step 5: 샘플 테스트 */}
-                            {activeStep === 5 && generatedInstruction && (
-                                <Stack gap="lg">
-                                    <div>
-                                        <Title order={4} mb="xs">응답 규칙을 테스트해보세요</Title>
-                                        <Text size="sm" c="dimmed">질문을 입력하고 맞춤 응답을 확인하세요</Text>
-                                    </div>
-
-                                    <Textarea
-                                        placeholder="테스트할 질문을 입력하세요..."
-                                        value={testQuestion}
-                                        onChange={(e) => setTestQuestion(e.currentTarget.value)}
-                                        minRows={3}
-                                        autosize
-                                    />
-
-                                    <Button
-                                        onClick={handleTest}
-                                        loading={isTesting}
-                                        disabled={!testQuestion.trim()}
-                                        leftSection={<IconSparkles size={18} />}
-                                        styles={{
-                                            root: {
-                                                backgroundColor: '#E0B861',
-                                            }
-                                        }}
-                                    >
-                                        테스트 실행
-                                    </Button>
-
-                                    {testResponse && (
-                                        <Paper
-                                            p="lg"
-                                            radius="md"
-                                            style={{
-                                                backgroundColor: '#1a1b1e',
-                                                color: '#fff',
-                                            }}
-                                        >
-                                            <Group mb="md">
-                                                <Badge color="green" variant="light">AI Response</Badge>
-                                            </Group>
-                                            <Text
-                                                size="sm"
-                                                style={{
-                                                    whiteSpace: 'pre-wrap',
-                                                    lineHeight: 1.8,
-                                                }}
-                                            >
-                                                {testResponse}
-                                            </Text>
-                                        </Paper>
-                                    )}
-                                </Stack>
-                            )}
-
-                            {/* 네비게이션 버튼 */}
-                            <Divider my="xl" />
-                            <Group justify="space-between">
-                                <Button
+        <div className="app-container">
+            <Sidebar />
+            <main className="main-content" style={{ backgroundColor: '#fdfdf2', minHeight: '100vh' }}>
+                {/* 헤더 */}
+                <Box
+                    py="md"
+                    style={{
+                        backgroundColor: 'rgba(255,255,255,0.95)',
+                        backdropFilter: 'blur(10px)',
+                        borderBottom: '1px solid #e5e5e5',
+                        position: 'sticky',
+                        top: 0,
+                        zIndex: 100
+                    }}
+                >
+                    <Container size="lg">
+                        <Group justify="space-between">
+                            <Group>
+                                <ActionIcon
+                                    component={Link}
+                                    href="/"
                                     variant="subtle"
+                                    size="lg"
                                     color="gray"
-                                    leftSection={<IconArrowLeft size={16} />}
-                                    onClick={activeStep === 0 ? handleReset : handlePrev}
                                 >
-                                    {activeStep === 0 ? '처음으로' : '이전'}
-                                </Button>
+                                    <IconArrowLeft size={20} />
+                                </ActionIcon>
+                                <div>
+                                    <Title order={3}>나의 AI 만들기</Title>
+                                    <Text size="sm" c="dimmed">
+                                        나만의 맞춤 응답 규칙을 만들어보세요
+                                    </Text>
+                                </div>
+                            </Group>
+                            <Badge color="yellow" variant="light" size="lg">Beta</Badge>
+                        </Group>
+                    </Container>
+                </Box>
 
-                                <Group>
-                                    {activeStep === 5 && (
+                <Container size="lg" py="xl">
+                    {/* Stepper */}
+                    <Paper p="xl" radius="lg" withBorder mb="xl" style={{ backgroundColor: '#fff' }}>
+                        <Stepper
+                            active={activeStep}
+                            onStepClick={setActiveStep}
+                            color="yellow"
+                            styles={{
+                                stepIcon: {
+                                    backgroundColor: 'var(--bg-color)',
+                                    borderColor: '#E0B861',
+                                },
+                                stepCompletedIcon: {
+                                    backgroundColor: '#E0B861',
+                                },
+                            }}
+                        >
+                            <Stepper.Step label="목적" icon={<IconTarget size={18} />} />
+                            <Stepper.Step label="출력 형식" icon={<IconLayoutList size={18} />} />
+                            <Stepper.Step label="논리 구조" icon={<IconBrain size={18} />} />
+                            <Stepper.Step label="제약 조건" icon={<IconShieldCheck size={18} />} />
+                            <Stepper.Step label="확인" icon={<IconCheck size={18} />} />
+                            <Stepper.Step label="테스트" icon={<IconPlayerPlay size={18} />} />
+                        </Stepper>
+                    </Paper>
+
+                    {/* 단계별 콘텐츠 */}
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={activeStep}
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            transition={{ duration: 0.3 }}
+                        >
+                            <Paper p="xl" radius="lg" withBorder style={{ backgroundColor: '#fff' }}>
+                                {/* Step 0: 목적 선택 */}
+                                {activeStep === 0 && (
+                                    <Stack gap="lg">
+                                        <div>
+                                            <Title order={4} mb="xs">어떤 목적으로 AI를 사용하시나요?</Title>
+                                            <Text size="sm" c="dimmed">주로 사용하는 용도를 선택해주세요</Text>
+                                        </div>
+                                        <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }} spacing="md">
+                                            {PURPOSE_OPTIONS.map(option => (
+                                                <Card
+                                                    key={option.id}
+                                                    p="lg"
+                                                    radius="md"
+                                                    withBorder
+                                                    style={{
+                                                        cursor: 'pointer',
+                                                        borderColor: selectedPurpose === option.id ? '#E0B861' : '#e5e5e5',
+                                                        borderWidth: selectedPurpose === option.id ? 2 : 1,
+                                                        backgroundColor: selectedPurpose === option.id ? 'var(--gold-light)' : '#fff',
+                                                        transition: 'all 0.2s',
+                                                    }}
+                                                    onClick={() => setSelectedPurpose(option.id)}
+                                                >
+                                                    <Text fw={600} mb={4}>{option.label}</Text>
+                                                    <Text size="xs" c="dimmed">{option.description}</Text>
+                                                </Card>
+                                            ))}
+                                        </SimpleGrid>
+                                    </Stack>
+                                )}
+
+                                {/* Step 1: 출력 형식 선택 */}
+                                {activeStep === 1 && (
+                                    <Stack gap="lg">
+                                        <div>
+                                            <Title order={4} mb="xs">어떤 형식으로 응답받고 싶으신가요?</Title>
+                                            <Text size="sm" c="dimmed">선호하는 응답 스타일을 선택해주세요</Text>
+                                        </div>
+                                        <Stack gap="sm">
+                                            {OUTPUT_FORMAT_OPTIONS.map(option => (
+                                                <Card
+                                                    key={option.id}
+                                                    p="md"
+                                                    radius="md"
+                                                    withBorder
+                                                    style={{
+                                                        cursor: 'pointer',
+                                                        borderColor: selectedFormat === option.id ? '#E0B861' : '#e5e5e5',
+                                                        borderWidth: selectedFormat === option.id ? 2 : 1,
+                                                        backgroundColor: selectedFormat === option.id ? 'var(--gold-light)' : '#fff',
+                                                        transition: 'all 0.2s',
+                                                    }}
+                                                    onClick={() => setSelectedFormat(option.id)}
+                                                >
+                                                    <Group>
+                                                        <Radio
+                                                            checked={selectedFormat === option.id}
+                                                            onChange={() => setSelectedFormat(option.id)}
+                                                            color="yellow"
+                                                        />
+                                                        <div>
+                                                            <Text fw={500}>{option.label}</Text>
+                                                            <Text size="xs" c="dimmed">{option.description}</Text>
+                                                        </div>
+                                                    </Group>
+                                                </Card>
+                                            ))}
+                                        </Stack>
+                                    </Stack>
+                                )}
+
+                                {/* Step 2: 논리 구조 선택 */}
+                                {activeStep === 2 && (
+                                    <Stack gap="lg">
+                                        <div>
+                                            <Title order={4} mb="xs">어떤 방식으로 정보를 전달받고 싶으신가요?</Title>
+                                            <Text size="sm" c="dimmed">선호하는 설명 방식을 선택해주세요</Text>
+                                        </div>
+                                        <Stack gap="sm">
+                                            {LOGIC_STRUCTURE_OPTIONS.map(option => (
+                                                <Card
+                                                    key={option.id}
+                                                    p="md"
+                                                    radius="md"
+                                                    withBorder
+                                                    style={{
+                                                        cursor: 'pointer',
+                                                        borderColor: selectedLogic === option.id ? '#E0B861' : '#e5e5e5',
+                                                        borderWidth: selectedLogic === option.id ? 2 : 1,
+                                                        backgroundColor: selectedLogic === option.id ? 'var(--gold-light)' : '#fff',
+                                                        transition: 'all 0.2s',
+                                                    }}
+                                                    onClick={() => setSelectedLogic(option.id)}
+                                                >
+                                                    <Group>
+                                                        <Radio
+                                                            checked={selectedLogic === option.id}
+                                                            onChange={() => setSelectedLogic(option.id)}
+                                                            color="yellow"
+                                                        />
+                                                        <div>
+                                                            <Text fw={500}>{option.label}</Text>
+                                                            <Text size="xs" c="dimmed">{option.description}</Text>
+                                                        </div>
+                                                    </Group>
+                                                </Card>
+                                            ))}
+                                        </Stack>
+                                    </Stack>
+                                )}
+
+                                {/* Step 3: 제약 조건 설정 */}
+                                {activeStep === 3 && (
+                                    <Stack gap="lg">
+                                        <div>
+                                            <Title order={4} mb="xs">추가 제약 조건을 설정하세요</Title>
+                                            <Text size="sm" c="dimmed">원하는 옵션을 모두 선택해주세요 (선택사항)</Text>
+                                        </div>
+                                        <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm">
+                                            {CONSTRAINT_OPTIONS.map(option => (
+                                                <Card
+                                                    key={option.id}
+                                                    p="md"
+                                                    radius="md"
+                                                    withBorder
+                                                    style={{
+                                                        cursor: 'pointer',
+                                                        borderColor: selectedConstraints.includes(option.id) ? '#E0B861' : '#e5e5e5',
+                                                        backgroundColor: selectedConstraints.includes(option.id) ? 'var(--gold-light)' : '#fff',
+                                                        transition: 'all 0.2s',
+                                                    }}
+                                                    onClick={() => {
+                                                        setSelectedConstraints(prev =>
+                                                            prev.includes(option.id)
+                                                                ? prev.filter(c => c !== option.id)
+                                                                : [...prev, option.id]
+                                                        );
+                                                    }}
+                                                >
+                                                    <Group>
+                                                        <Checkbox
+                                                            checked={selectedConstraints.includes(option.id)}
+                                                            onChange={() => { }}
+                                                            color="yellow"
+                                                        />
+                                                        <Text size="sm">{option.label}</Text>
+                                                    </Group>
+                                                </Card>
+                                            ))}
+                                        </SimpleGrid>
+                                    </Stack>
+                                )}
+
+                                {/* Step 4: 생성된 응답 규칙 확인 */}
+                                {activeStep === 4 && generatedInstruction && (
+                                    <Stack gap="lg">
+                                        <div>
+                                            <Title order={4} mb="xs">나만의 응답 규칙이 생성되었습니다</Title>
+                                            <Text size="sm" c="dimmed">아래 내용을 확인하고 복사하여 사용하세요</Text>
+                                        </div>
+
+                                        <Box>
+                                            <Text size="xs" fw={700} c="dimmed" tt="uppercase" mb="xs">
+                                                사용자 프로필
+                                            </Text>
+                                            <Paper
+                                                p="md"
+                                                radius="md"
+                                                style={{
+                                                    backgroundColor: 'var(--gold-light)',
+                                                    whiteSpace: 'pre-wrap',
+                                                    lineHeight: 1.7,
+                                                }}
+                                            >
+                                                {generatedInstruction.userProfile}
+                                            </Paper>
+                                        </Box>
+
+                                        <Box>
+                                            <Text size="xs" fw={700} c="dimmed" tt="uppercase" mb="xs">
+                                                응답 스타일
+                                            </Text>
+                                            <Paper
+                                                p="md"
+                                                radius="md"
+                                                style={{
+                                                    backgroundColor: '#f8f9fa',
+                                                    whiteSpace: 'pre-wrap',
+                                                    lineHeight: 1.7,
+                                                }}
+                                            >
+                                                {generatedInstruction.responsePreference}
+                                            </Paper>
+                                        </Box>
+
+                                        <Group>
+                                            <Button
+                                                variant="light"
+                                                color="gray"
+                                                leftSection={<IconCopy size={16} />}
+                                                onClick={handleCopy}
+                                            >
+                                                클립보드에 복사
+                                            </Button>
+                                        </Group>
+                                    </Stack>
+                                )}
+
+                                {/* Step 5: 샘플 테스트 */}
+                                {activeStep === 5 && generatedInstruction && (
+                                    <Stack gap="lg">
+                                        <div>
+                                            <Title order={4} mb="xs">응답 규칙을 테스트해보세요</Title>
+                                            <Text size="sm" c="dimmed">질문을 입력하고 맞춤 응답을 확인하세요</Text>
+                                        </div>
+
+                                        <Textarea
+                                            placeholder="테스트할 질문을 입력하세요..."
+                                            value={testQuestion}
+                                            onChange={(e) => setTestQuestion(e.currentTarget.value)}
+                                            minRows={3}
+                                            autosize
+                                        />
+
                                         <Button
-                                            variant="light"
-                                            color="gray"
-                                            leftSection={<IconRefresh size={16} />}
-                                            onClick={handleReset}
-                                        >
-                                            다시 만들기
-                                        </Button>
-                                    )}
-                                    {activeStep < 5 && (
-                                        <Button
-                                            rightSection={<IconArrowRight size={16} />}
-                                            onClick={handleNext}
-                                            disabled={!canProceed()}
+                                            onClick={handleTest}
+                                            loading={isTesting}
+                                            disabled={!testQuestion.trim()}
+                                            leftSection={<IconSparkles size={18} />}
                                             styles={{
                                                 root: {
                                                     backgroundColor: '#E0B861',
                                                 }
                                             }}
                                         >
-                                            {activeStep === 3 ? '생성하기' : '다음'}
+                                            테스트 실행
                                         </Button>
-                                    )}
+
+                                        {testResponse && (
+                                            <Paper
+                                                p="lg"
+                                                radius="md"
+                                                style={{
+                                                    backgroundColor: '#1a1b1e',
+                                                    color: '#fff',
+                                                }}
+                                            >
+                                                <Group mb="md">
+                                                    <Badge color="green" variant="light">AI Response</Badge>
+                                                </Group>
+                                                <Text
+                                                    size="sm"
+                                                    style={{
+                                                        whiteSpace: 'pre-wrap',
+                                                        lineHeight: 1.8,
+                                                    }}
+                                                >
+                                                    {testResponse}
+                                                </Text>
+                                            </Paper>
+                                        )}
+                                    </Stack>
+                                )}
+
+                                {/* 네비게이션 버튼 */}
+                                <Divider my="xl" />
+                                <Group justify="space-between">
+                                    <Button
+                                        variant="subtle"
+                                        color="gray"
+                                        leftSection={<IconArrowLeft size={16} />}
+                                        onClick={activeStep === 0 ? handleReset : handlePrev}
+                                    >
+                                        {activeStep === 0 ? '처음으로' : '이전'}
+                                    </Button>
+
+                                    <Group>
+                                        {activeStep === 5 && (
+                                            <Button
+                                                variant="light"
+                                                color="gray"
+                                                leftSection={<IconRefresh size={16} />}
+                                                onClick={handleReset}
+                                            >
+                                                다시 만들기
+                                            </Button>
+                                        )}
+                                        {activeStep < 5 && (
+                                            <Button
+                                                rightSection={<IconArrowRight size={16} />}
+                                                onClick={handleNext}
+                                                disabled={!canProceed()}
+                                                styles={{
+                                                    root: {
+                                                        backgroundColor: '#E0B861',
+                                                    }
+                                                }}
+                                            >
+                                                {activeStep === 3 ? '생성하기' : '다음'}
+                                            </Button>
+                                        )}
+                                    </Group>
                                 </Group>
-                            </Group>
-                        </Paper>
-                    </motion.div>
-                </AnimatePresence>
-            </Container>
-        </Box>
+                            </Paper>
+                        </motion.div>
+                    </AnimatePresence>
+                </Container>
+            </main>
+        </div>
     );
 }
