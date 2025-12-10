@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAppStore } from '@/store/useAppStore';
 import {
-    Accordion,
     Box,
     Button,
     Group,
@@ -29,17 +28,6 @@ import {
     IconBooks
 } from '@tabler/icons-react';
 
-// 도메인별 응답 규칙 카테고리
-const DOMAIN_CATEGORIES = [
-    { id: 'Tech', label: '개발/기술' },
-    { id: 'Creative', label: '디자인/예술' },
-    { id: 'Business', label: '비즈니스' },
-    { id: 'Academia', label: '학술/연구' },
-    { id: 'Healthcare', label: '의료/상담' },
-    { id: 'Education', label: '교육/학습' },
-    { id: 'Legal', label: '법률' },
-    { id: 'Finance', label: '금융' },
-];
 
 // NavItem 컴포넌트 - 사이드바 상태에 따라 축소/확장
 function NavItem({
@@ -116,7 +104,7 @@ export default function Sidebar() {
         return (
             <Box
                 component="aside"
-                w={280}
+                w={276}
                 h="100vh"
                 style={{
                     borderRight: '1px solid var(--border-color)',
@@ -135,7 +123,7 @@ export default function Sidebar() {
     return (
         <Box
             component="aside"
-            w={isCollapsed ? 64 : 280}
+            w={isCollapsed ? 60 : 276}
             h="100vh"
             style={{
                 borderRight: '1px solid var(--border-color)',
@@ -147,7 +135,7 @@ export default function Sidebar() {
                 transition: 'width 0.3s ease',
                 overflow: 'hidden',
                 flexShrink: 0,
-                minWidth: isCollapsed ? 64 : 280,
+                minWidth: isCollapsed ? 60 : 276,
             }}
         >
             {/* 로고 영역 */}
@@ -260,95 +248,8 @@ export default function Sidebar() {
                     />
                 </Box>
 
-                {/* 도메인 필터 - 축소 시 숨김 */}
-                {!isCollapsed && (
-                    <Box mb="xl">
-                        <Text size="xs" fw={600} c="dimmed" tt="uppercase" mb="xs" px="sm">
-                            도메인별 탐색
-                        </Text>
 
-                        <Accordion
-                            multiple
-                            defaultValue={['domains']}
-                            variant="default"
-                            chevronPosition="right"
-                            styles={{
-                                item: {
-                                    border: 'none',
-                                    backgroundColor: 'transparent'
-                                },
-                                control: {
-                                    padding: '8px 12px',
-                                    '&:hover': { backgroundColor: 'rgba(255,255,255,0.05)' },
-                                    borderRadius: 8
-                                },
-                                content: { padding: '4px 0 16px 8px' }
-                            }}
-                        >
-                            <Accordion.Item value="domains">
-                                <Accordion.Control>
-                                    <Text size="sm" fw={500} c="white">분야 선택</Text>
-                                </Accordion.Control>
-                                <Accordion.Panel>
-                                    <Group gap={6}>
-                                        {DOMAIN_CATEGORIES.map((domain) => (
-                                            <Button
-                                                key={domain.id}
-                                                variant="default"
-                                                size="xs"
-                                                radius="xl"
-                                                onClick={() => router.push(`/instructions?domain=${domain.id}`)}
-                                                styles={{
-                                                    root: {
-                                                        height: 'auto',
-                                                        padding: '6px 12px',
-                                                        backgroundColor: 'rgba(255,255,255,0.08)',
-                                                        borderColor: 'transparent',
-                                                        color: 'var(--sidebar-text)',
-                                                        '&:hover': {
-                                                            backgroundColor: 'rgba(224, 184, 97, 0.2)',
-                                                            borderColor: '#E0B861'
-                                                        }
-                                                    }
-                                                }}
-                                            >
-                                                {domain.label}
-                                            </Button>
-                                        ))}
-                                    </Group>
-                                </Accordion.Panel>
-                            </Accordion.Item>
-                        </Accordion>
-                    </Box>
-                )}
 
-                {/* 빠른 액션 - 축소 시 숨김 */}
-                {!isCollapsed && (
-                    <Box mb="xl">
-                        <Text size="xs" fw={600} c="dimmed" tt="uppercase" mb="sm" px="sm">
-                            빠른 시작
-                        </Text>
-
-                        <Button
-                            fullWidth
-                            variant="light"
-                            color="yellow"
-                            leftSection={<IconSparkles size={16} />}
-                            onClick={() => router.push('/compare')}
-                            styles={{
-                                root: {
-                                    justifyContent: 'flex-start',
-                                    backgroundColor: 'rgba(224, 184, 97, 0.15)',
-                                    '&:hover': {
-                                        backgroundColor: 'rgba(224, 184, 97, 0.25)'
-                                    }
-                                }
-                            }}
-                        >
-                            응답 규칙 비교 시작
-                        </Button>
-                    </Box>
-                )}
             </ScrollArea>
 
             {/* 하단 영역 */}

@@ -5,7 +5,6 @@ import { useSearchParams } from 'next/navigation';
 import { AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import {
-    Container,
     Title,
     Text,
     Group,
@@ -15,7 +14,6 @@ import {
     Box,
     SimpleGrid,
     Divider,
-    ActionIcon,
     Paper,
     Loader,
     Select,
@@ -25,7 +23,6 @@ import {
     IconScale,
     IconHeart,
     IconSortDescending,
-    IconArrowLeft,
 } from '@tabler/icons-react';
 import {
     DOMAIN_META,
@@ -33,6 +30,7 @@ import {
 } from '@/data/customInstructions';
 import { useAnswerRules, SortOption } from '@/hooks/useAnswerRules';
 import AnswerRuleCard from '@/components/shared/AnswerRuleCard';
+import Sidebar from '@/components/layout/Sidebar';
 
 const SORT_OPTIONS = [
     { value: 'popular', label: '인기순' },
@@ -89,46 +87,40 @@ function InstructionsLibraryContent() {
     }
 
     return (
-        <Box style={{ backgroundColor: 'var(--bg-color)', minHeight: '100vh' }}>
-            {/* 헤더 */}
-            <Box
-                py="lg"
-                px="xl"
-                style={{
-                    borderBottom: '1px solid var(--border-color)',
-                    backgroundColor: '#fff',
-                }}
-            >
-                <Group justify="space-between" align="center">
-                    <Group gap="md">
-                        <Link href="/">
-                            <ActionIcon variant="subtle" color="gray" size="lg">
-                                <IconArrowLeft size={20} />
-                            </ActionIcon>
-                        </Link>
+        <div className="app-container">
+            <Sidebar />
+            <main className="main-content" style={{ backgroundColor: '#fff' }}>
+                {/* 헤더 */}
+                <Box
+                    py="lg"
+                    px={48}
+                    style={{
+                        borderBottom: '1px solid var(--border-color)',
+                        backgroundColor: '#fff',
+                    }}
+                >
+                    <Group justify="space-between" align="center">
                         <div>
                             <Title order={2}>응답 규칙 라이브러리</Title>
                             <Text size="sm" c="dimmed">
                                 도메인별 검증된 Custom Instructions 탐색
                             </Text>
                         </div>
+                        <Link href="/compare">
+                            <Button
+                                variant="light"
+                                color="yellow"
+                                leftSection={<IconScale size={16} />}
+                            >
+                                응답 규칙 비교하기
+                            </Button>
+                        </Link>
                     </Group>
-                    <Link href="/compare">
-                        <Button
-                            variant="light"
-                            color="yellow"
-                            leftSection={<IconScale size={16} />}
-                        >
-                            응답 규칙 비교하기
-                        </Button>
-                    </Link>
-                </Group>
-            </Box>
+                </Box>
 
-            <Container size="xl" py="xl">
-                <Group align="flex-start" gap={40}>
+                <Box px={48} py="xl" style={{ display: 'flex', gap: 40, alignItems: 'flex-start' }}>
                     {/* 왼쪽: 필터 사이드바 */}
-                    <Box w={260} style={{ flexShrink: 0 }}>
+                    <Box w={220} style={{ flexShrink: 0 }}>
                         <Paper p="lg" radius="lg" withBorder>
                             <Text size="sm" fw={700} mb="md">도메인 필터</Text>
 
@@ -281,9 +273,9 @@ function InstructionsLibraryContent() {
                             </Box>
                         )}
                     </Box>
-                </Group>
-            </Container>
-        </Box>
+                </Box>
+            </main>
+        </div>
     );
 }
 
