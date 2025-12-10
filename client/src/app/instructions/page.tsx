@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useMemo, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import {
     Container,
     Title,
     Text,
-    Card,
     Group,
     Badge,
     Button,
@@ -16,67 +16,68 @@ import {
     SimpleGrid,
     Divider,
     ActionIcon,
-    Tooltip,
     Paper,
-    Loader
+    Loader,
+    Select,
 } from '@mantine/core';
 import {
     IconSearch,
-    IconArrowLeft,
     IconScale,
-    IconCopy,
     IconHeart,
-    IconChevronRight
+    IconSortDescending,
+    IconArrowLeft,
 } from '@tabler/icons-react';
 import {
-    customInstructions,
     DOMAIN_META,
     Domain,
-    getInstructionsByDomain,
-    getPopularInstructions,
-    searchInstructions,
-    CustomInstruction
 } from '@/data/customInstructions';
-import { useAppStore } from '@/store/useAppStore';
+import { useAnswerRules, SortOption } from '@/hooks/useAnswerRules';
+import AnswerRuleCard from '@/components/shared/AnswerRuleCard';
 
-export default function InstructionsLibraryPage() {
+const SORT_OPTIONS = [
+    { value: 'popular', label: '인기순' },
+    { value: 'recent', label: '최신순' },
+    { value: 'usage', label: '사용량순' },
+];
+
+// 메인 페이지 컴포넌트 (Suspense로 감싸야 함)
+function InstructionsLibraryContent() {
+    const searchParams = useSearchParams();
+    const initialDomain = searchParams.get('domain') as Domain | null;
+
     const [mounted, setMounted] = useState(false);
-    const [selectedDomain, setSelectedDomain] = useState<Domain | 'all'>('all');
+    const [selectedDomain, setSelectedDomain] = useState<Domain | 'all'>(
+        initialDomain && Object.keys(DOMAIN_META).includes(initialDomain) ? initialDomain : 'all'
+    );
     const [searchQuery, setSearchQuery] = useState('');
+    const [sortBy, setSortBy] = useState<SortOption>('popular');
     const [expandedId, setExpandedId] = useState<string | null>(null);
-    const setHasSeenLanding = useAppStore((state) => state.setHasSeenLanding);
+
+    // URL 파라미터 변경 감지
+    useEffect(() => {
+        const domain = searchParams.get('domain') as Domain | null;
+        if (domain && Object.keys(DOMAIN_META).includes(domain)) {
+            setSelectedDomain(domain);
+        }
+    }, [searchParams]);
 
     useEffect(() => {
         setMounted(true);
     }, []);
 
-    // 필터링된 응답 규칙 목록
-    const filteredInstructions = useMemo(() => {
-        if (!customInstructions || !Array.isArray(customInstructions)) {
-            return [];
-        }
+    // 훅을 사용하여 필터링된 데이터 가져오기
+    const { instructions: filteredInstructions, domainMeta, domains } = useAnswerRules({
+        domain: selectedDomain,
+        searchQuery,
+        sortBy,
+        includeUserRules: true,
+    });
 
-        let result = customInstructions;
-
-        if (selectedDomain !== 'all') {
-            result = getInstructionsByDomain(selectedDomain);
-        }
-
-        if (searchQuery) {
-            result = searchInstructions(searchQuery).filter(
-                i => selectedDomain === 'all' || i.domain === selectedDomain
-            );
-        }
-
-        return result || [];
-    }, [selectedDomain, searchQuery]);
-
-    const popularInstructions = useMemo(() => {
-        if (!customInstructions || !Array.isArray(customInstructions)) {
-            return [];
-        }
-        return getPopularInstructions(5);
-    }, []);
+    // 인기 규칙 (사이드바용)
+    const { instructions: popularInstructions } = useAnswerRules({
+        sortBy: 'popular',
+        limit: 5,
+    });
 
     // 마운트 전 로딩
     if (!mounted) {
@@ -86,8 +87,6 @@ export default function InstructionsLibraryPage() {
             </Box>
         );
     }
-
-    const domainKeys = Object.keys(DOMAIN_META) as Domain[];
 
     return (
         <Box style={{ backgroundColor: 'var(--bg-color)', minHeight: '100vh' }}>
@@ -101,12 +100,19 @@ export default function InstructionsLibraryPage() {
                 }}
             >
                 <Group justify="space-between" align="center">
-                    <div>
-                        <Title order={2}>응답 규칙 라이브러리</Title>
-                        <Text size="sm" c="dimmed">
-                            도메인별 검증된 Custom Instructions 탐색
-                        </Text>
-                    </div>
+                    <Group gap="md">
+                        <Link href="/">
+                            <ActionIcon variant="subtle" color="gray" size="lg">
+                                <IconArrowLeft size={20} />
+                            </ActionIcon>
+                        </Link>
+                        <div>
+                            <Title order={2}>응답 규칙 라이브러리</Title>
+                            <Text size="sm" c="dimmed">
+                                도메인별 검증된 Custom Instructions 탐색
+                            </Text>
+                        </div>
+                    </Group>
                     <Link href="/compare">
                         <Button
                             variant="light"
@@ -142,7 +148,7 @@ export default function InstructionsLibraryPage() {
 
                             <Divider my="sm" />
 
-                            {domainKeys.map((domain) => (
+                            {domains.map((domain) => (
                                 <Button
                                     key={domain}
                                     fullWidth
@@ -151,8 +157,14 @@ export default function InstructionsLibraryPage() {
                                     justify="flex-start"
                                     mb="xs"
                                     onClick={() => setSelectedDomain(domain)}
+                                    styles={{
+                                        root: selectedDomain === domain ? {
+                                            backgroundColor: 'rgba(224, 184, 97, 0.15)',
+                                            borderColor: '#E0B861',
+                                        } : {}
+                                    }}
                                 >
-                                    {DOMAIN_META[domain]?.label || domain}
+                                    {domainMeta[domain]?.label || domain}
                                 </Button>
                             ))}
                         </Paper>
@@ -164,7 +176,7 @@ export default function InstructionsLibraryPage() {
                                 <Text size="sm" fw={700}>인기 응답 규칙</Text>
                             </Group>
 
-                            {popularInstructions.slice(0, 3).map((instruction) => (
+                            {popularInstructions.slice(0, 5).map((instruction) => (
                                 <Box
                                     key={instruction.id}
                                     p="sm"
@@ -193,39 +205,59 @@ export default function InstructionsLibraryPage() {
 
                     {/* 오른쪽: 메인 콘텐츠 */}
                     <Box style={{ flex: 1 }}>
-                        {/* 검색 */}
-                        <TextInput
-                            placeholder="응답 규칙 검색... (예: 코드, 마케팅, 논문)"
-                            size="lg"
-                            radius="xl"
-                            mb="xl"
-                            leftSection={<IconSearch size={20} />}
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            styles={{
-                                input: {
-                                    backgroundColor: '#fff',
-                                    border: '2px solid var(--border-color)',
-                                    '&:focus': {
-                                        borderColor: '#E0B861',
+                        {/* 검색 및 정렬 */}
+                        <Group gap="md" mb="xl">
+                            <TextInput
+                                placeholder="응답 규칙 검색... (예: 코드, 마케팅, 논문)"
+                                size="md"
+                                radius="xl"
+                                style={{ flex: 1 }}
+                                leftSection={<IconSearch size={18} />}
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                styles={{
+                                    input: {
+                                        backgroundColor: '#fff',
+                                        border: '2px solid var(--border-color)',
+                                        '&:focus': {
+                                            borderColor: '#E0B861',
+                                        }
                                     }
-                                }
-                            }}
-                        />
+                                }}
+                            />
+                            <Select
+                                placeholder="정렬"
+                                data={SORT_OPTIONS}
+                                value={sortBy}
+                                onChange={(value) => setSortBy(value as SortOption)}
+                                leftSection={<IconSortDescending size={16} />}
+                                w={140}
+                                radius="xl"
+                                styles={{
+                                    input: {
+                                        backgroundColor: '#fff',
+                                        border: '2px solid var(--border-color)',
+                                    }
+                                }}
+                            />
+                        </Group>
 
                         {/* 결과 카운트 */}
                         <Group justify="space-between" mb="lg">
                             <Text c="dimmed">
-                                {selectedDomain === 'all' ? '전체' : (DOMAIN_META[selectedDomain]?.label || selectedDomain)}에서{' '}
+                                {selectedDomain === 'all' ? '전체' : (domainMeta[selectedDomain]?.label || selectedDomain)}에서{' '}
                                 <strong>{filteredInstructions.length}개</strong>의 응답 규칙
                             </Text>
+                            <Badge variant="light" color="gray">
+                                {SORT_OPTIONS.find(s => s.value === sortBy)?.label}
+                            </Badge>
                         </Group>
 
                         {/* 응답 규칙 그리드 */}
                         <SimpleGrid cols={{ base: 1, md: 2 }} spacing="lg">
                             <AnimatePresence mode="popLayout">
                                 {filteredInstructions.map((instruction, index) => (
-                                    <InstructionCard
+                                    <AnswerRuleCard
                                         key={instruction.id}
                                         instruction={instruction}
                                         index={index}
@@ -243,6 +275,9 @@ export default function InstructionsLibraryPage() {
                                 <Text size="lg" c="dimmed">
                                     검색 결과가 없습니다
                                 </Text>
+                                <Text size="sm" c="dimmed" mt="xs">
+                                    다른 검색어나 필터를 시도해보세요
+                                </Text>
                             </Box>
                         )}
                     </Box>
@@ -252,163 +287,20 @@ export default function InstructionsLibraryPage() {
     );
 }
 
-// 응답 규칙 카드 컴포넌트
-function InstructionCard({
-    instruction,
-    index,
-    isExpanded,
-    onToggle
-}: {
-    instruction: CustomInstruction;
-    index: number;
-    isExpanded: boolean;
-    onToggle: () => void;
-}) {
-    const domainMeta = DOMAIN_META[instruction.domain];
-
+// 로딩 폴백 컴포넌트
+function LibraryLoadingFallback() {
     return (
-        <motion.div
-            layout
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.3, delay: index * 0.05 }}
-        >
-            <Card
-                p="lg"
-                radius="lg"
-                withBorder
-                style={{
-                    cursor: 'pointer',
-                    transition: 'all 0.3s ease',
-                    borderColor: isExpanded ? '#E0B861' : 'var(--border-color)',
-                    boxShadow: isExpanded ? '0 8px 24px rgba(224, 184, 97, 0.15)' : undefined,
-                }}
-                onClick={onToggle}
-            >
-                {/* 헤더 */}
-                <Group justify="space-between" mb="sm">
-                    <Group gap="sm">
-                        <div>
-                            <Text fw={700}>{instruction.name}</Text>
-                            <Text size="xs" c="dimmed">{instruction.targetRole}</Text>
-                        </div>
-                    </Group>
-                    <Badge
-                        variant="light"
-                        style={{ backgroundColor: `${domainMeta?.color || '#ccc'}20`, color: domainMeta?.color || '#666' }}
-                    >
-                        {domainMeta?.label || instruction.domain}
-                    </Badge>
-                </Group>
+        <Box style={{ backgroundColor: 'var(--bg-color)', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Loader color="yellow" size="xl" />
+        </Box>
+    );
+}
 
-                {/* 설명 */}
-                <Text size="sm" c="dimmed" mb="md" lineClamp={isExpanded ? undefined : 2}>
-                    {instruction.description}
-                </Text>
-
-                {/* 태그 */}
-                <Group gap="xs" mb="md">
-                    {(instruction.tags || []).map((tag) => (
-                        <Badge key={tag} size="sm" variant="outline" color="gray">
-                            {tag}
-                        </Badge>
-                    ))}
-                </Group>
-
-                {/* 확장된 내용 */}
-                <AnimatePresence>
-                    {isExpanded && (
-                        <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
-                            exit={{ opacity: 0, height: 0 }}
-                            transition={{ duration: 0.3 }}
-                        >
-                            <Divider my="md" />
-
-                            {/* User Profile */}
-                            <Box mb="md">
-                                <Text size="xs" fw={700} c="dimmed" tt="uppercase" mb="xs">
-                                    사용자 프로필
-                                </Text>
-                                <Paper
-                                    p="sm"
-                                    radius="md"
-                                    style={{
-                                        backgroundColor: 'var(--gold-light)',
-                                        fontSize: 13,
-                                        lineHeight: 1.7,
-                                        whiteSpace: 'pre-wrap',
-                                    }}
-                                >
-                                    {instruction.userProfile}
-                                </Paper>
-                            </Box>
-
-                            {/* Response Preference */}
-                            <Box mb="md">
-                                <Text size="xs" fw={700} c="dimmed" tt="uppercase" mb="xs">
-                                    응답 스타일
-                                </Text>
-                                <Paper
-                                    p="sm"
-                                    radius="md"
-                                    style={{
-                                        backgroundColor: '#f8f9fa',
-                                        fontSize: 13,
-                                        lineHeight: 1.7,
-                                        whiteSpace: 'pre-wrap',
-                                    }}
-                                >
-                                    {instruction.responsePreference}
-                                </Paper>
-                            </Box>
-
-                            {/* 액션 버튼 */}
-                            <Group mt="lg">
-                                <Tooltip label="클립보드에 복사">
-                                    <Button
-                                        variant="light"
-                                        color="gray"
-                                        leftSection={<IconCopy size={16} />}
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            navigator.clipboard.writeText(
-                                                `[사용자 프로필]\n${instruction.userProfile}\n\n[응답 스타일]\n${instruction.responsePreference}`
-                                            );
-                                        }}
-                                    >
-                                        복사하기
-                                    </Button>
-                                </Tooltip>
-                                <Link href={`/compare?instruction=${instruction.id}`} onClick={(e) => e.stopPropagation()}>
-                                    <Button
-                                        variant="filled"
-                                        color="yellow"
-                                        rightSection={<IconChevronRight size={16} />}
-                                        styles={{ root: { backgroundColor: '#E0B861' } }}
-                                    >
-                                        비교하기
-                                    </Button>
-                                </Link>
-                            </Group>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-
-                {/* 푸터 */}
-                <Group justify="space-between" mt="md">
-                    <Text size="xs" c="dimmed">
-                        {instruction.popularity}명 사용
-                    </Text>
-                    {instruction.author && (
-                        <Text size="xs" c="dimmed">
-                            by {instruction.author}
-                        </Text>
-                    )}
-                </Group>
-            </Card>
-        </motion.div>
+// 기본 내보내기 (Suspense 경계 포함)
+export default function InstructionsLibraryPage() {
+    return (
+        <Suspense fallback={<LibraryLoadingFallback />}>
+            <InstructionsLibraryContent />
+        </Suspense>
     );
 }
