@@ -145,7 +145,7 @@ export default function InstructionsHome() {
                         mb="xl"
                         style={{
                             background: 'linear-gradient(135deg, #E0B861 30%, #f4a70eff 100%)',
-                            color: '#ffffffff',
+                            color: '#ffffff',
                         }}
                     >
                         <Group justify="space-between" align="center">
