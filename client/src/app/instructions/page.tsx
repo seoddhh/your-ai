@@ -173,7 +173,7 @@ function InstructionsLibraryContent() {
                         <Paper p="lg" radius="lg" withBorder mt="lg">
                             <Group mb="md">
                                 <IconHeart size={16} color="#E0B861" />
-                                <Text size="sm" fw={700}>인기 응답 규칙</Text>
+                                <Text size="sm" fw={700}>내가 찜한 규칙</Text>
                             </Group>
 
                             {popularInstructions.slice(0, 5).map((instruction) => (
