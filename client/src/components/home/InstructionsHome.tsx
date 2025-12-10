@@ -144,14 +144,20 @@ export default function InstructionsHome() {
                         radius="lg"
                         mb="xl"
                         style={{
-                            background: 'linear-gradient(135deg, #E0B861 0%, #c9a254 100%)',
-                            color: '#fff',
+                            background: 'linear-gradient(135deg, #E0B861 30%, #f4a70eff 100%)',
+                            color: '#ffffffff',
                         }}
                     >
                         <Group justify="space-between" align="center">
                             <div>
                                 <Group gap="xs" mb="xs">
-                                    <IconSparkles size={24} />
+                                    <Image
+                                        src="/icons/ai-robot.png"
+                                        alt="AI Robot"
+                                        width={28}
+                                        height={28}
+                                        style={{ objectFit: 'contain' }}
+                                    />
                                     <Title order={3}>AI 응답 스타일 테스트</Title>
                                 </Group>
                                 <Text size="sm" opacity={0.9}>
@@ -180,7 +186,15 @@ export default function InstructionsHome() {
                         linkText="전체 라이브러리 보기"
                     >
                         {/* 도메인 탭 */}
-                        <ScrollArea scrollbarSize={6} type="hover" mb="lg">
+                        <Box
+                            mb="lg"
+                            style={{
+                                overflowX: 'auto',
+                                scrollbarWidth: 'none',
+                                msOverflowStyle: 'none',
+                            }}
+                            className="hide-scrollbar"
+                        >
                             <Group gap="xs" wrap="nowrap" pb="xs">
                                 {DOMAIN_TABS.map((tab) => (
                                     <Button
@@ -209,11 +223,11 @@ export default function InstructionsHome() {
                                         }}
                                         style={{ flexShrink: 0 }}
                                     >
-                                        {tab.label}를 위한
+                                        {tab.id === 'all' ? tab.label : `${tab.label}를 위한`}
                                     </Button>
                                 ))}
                             </Group>
-                        </ScrollArea>
+                        </Box>
 
                         {/* TOP 3 카드 */}
                         <Paper p="lg" radius="lg" withBorder>
@@ -283,8 +297,6 @@ export default function InstructionsHome() {
                         title="오늘의 추천 응답 규칙"
                         subtitle="가장 많이 사용되는 검증된 규칙"
                         icon={<IconSparkles size={20} color="#ec4899" />}
-                        linkHref="/instructions"
-                        linkText="라이브러리에서 더 보기"
                     >
                         <SimpleGrid cols={{ base: 1, md: 2 }} spacing="md">
                             {recommendedRules.slice(0, 4).map((instruction) => (

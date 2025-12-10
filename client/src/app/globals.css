@@ -255,6 +255,11 @@ body {
     color: #fff;
 }
 
+/* Hide scrollbar utility class */
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
 /* Scrollbar for sidebar */
 ::-webkit-scrollbar {
     width: 8px;
