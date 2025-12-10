@@ -25,7 +25,8 @@ import {
     IconLogout,
     IconPlus,
     IconChevronLeft,
-    IconChevronRight
+    IconChevronRight,
+    IconBooks
 } from '@tabler/icons-react';
 
 // 도메인별 응답 규칙 카테고리
@@ -222,6 +223,15 @@ export default function Sidebar() {
                         icon={IconPlus}
                         label="응답 규칙 등록"
                         isActive={isActive('/register')}
+                        isCollapsed={isCollapsed}
+                    />
+
+                    {/* 응답 규칙 라이브러리 */}
+                    <NavItem
+                        href="/instructions"
+                        icon={IconBooks}
+                        label="응답 규칙 라이브러리"
+                        isActive={isActive('/instructions')}
                         isCollapsed={isCollapsed}
                     />
 

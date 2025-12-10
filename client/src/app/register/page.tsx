@@ -125,7 +125,7 @@ export default function RegisterPage() {
                                     <Group grow>
                                         <TextInput
                                             label="응답 규칙 이름"
-                                            placeholder="예: 풀스택 개발자"
+                                            placeholder="예: 풀스택 개발자를 위한 응답 규칙"
                                             required
                                             value={name}
                                             onChange={(e) => setName(e.target.value)}
