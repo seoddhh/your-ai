@@ -2,11 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import QuestionCard from "@/components/questions/QuestionCard";
-import { getAllQuestions } from "@/data/questions";
+import { getQuestionsByCategory, CATEGORY_INFO, QuestionCategory } from "@/data/questions";
 import Sidebar from "@/components/layout/Sidebar";
-import FilterChips from "@/components/ui/FilterChips";
-import { Box, Loader, Title, Text, Group, Button } from '@mantine/core';
-import { IconPlus } from '@tabler/icons-react';
+import { Box, Loader, Title, Text, Stack, Paper } from '@mantine/core';
 
 export default function QuestionsPage() {
     const [mounted, setMounted] = useState(false);
@@ -23,7 +21,8 @@ export default function QuestionsPage() {
         );
     }
 
-    const questions = getAllQuestions() || [];
+    const questionsByCategory = getQuestionsByCategory();
+    const categoryOrder: QuestionCategory[] = ['response_divergent', 'output_different', 'thinking_divergent'];
 
     return (
         <div className="app-container">
@@ -38,40 +37,67 @@ export default function QuestionsPage() {
                         backgroundColor: '#fff',
                     }}
                 >
-                    <Group justify="space-between" align="center">
-                        <div>
-                            <Title order={2}>질문 목록</Title>
-                            <Text size="sm" c="dimmed">
-                                같은 질문에 대해 응답 규칙마다 어떻게 다르게 답변하는지 공유해주세요
-                            </Text>
-                        </div>
-                        <Button
-                            variant="filled"
-                            color="yellow"
-                            leftSection={<IconPlus size={16} />}
-                            styles={{ root: { backgroundColor: '#E0B861' } }}
-                        >
-                            질문 제출하기
-                        </Button>
-                    </Group>
+                    <div>
+                        <Title order={2}>비교 실험용 질문</Title>
+                        <Text size="sm" c="dimmed">
+                            규칙에 따라 결과가 달라지는 질문들을 탐색하세요
+                        </Text>
+                    </div>
                 </Box>
 
-                <FilterChips />
-
                 <div className="content-body">
-                    <div className="grid-container" style={{ gridTemplateColumns: '1fr' }}>
-                        {questions.map(q => (
-                            <QuestionCard
-                                key={q.id}
-                                id={q.id}
-                                content={q.content}
-                                category={q.category}
-                                stats={q.stats}
-                            />
-                        ))}
-                    </div>
+                    <Stack gap="xl">
+                        {categoryOrder.map((category) => {
+                            const questions = questionsByCategory[category];
+                            const info = CATEGORY_INFO[category];
 
-                    {questions.length === 0 && (
+                            return (
+                                <Paper
+                                    key={category}
+                                    p="lg"
+                                    radius="md"
+                                    withBorder
+                                    style={{ backgroundColor: '#fff' }}
+                                >
+                                    {/* 카테고리 헤더 */}
+                                    <Box mb="md">
+                                        <Title
+                                            order={4}
+                                            mb={4}
+                                            style={{ color: info.color }}
+                                        >
+                                            {info.label}
+                                        </Title>
+                                        <Text size="sm" c="dimmed">
+                                            {info.description}
+                                        </Text>
+                                    </Box>
+
+                                    {/* 질문 그리드 */}
+                                    <div
+                                        className="grid-container"
+                                        style={{
+                                            display: 'grid',
+                                            gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+                                            gap: '16px'
+                                        }}
+                                    >
+                                        {questions.map(q => (
+                                            <QuestionCard
+                                                key={q.id}
+                                                id={q.id}
+                                                question={q.question}
+                                                category={q.category}
+                                                hint={q.hint}
+                                            />
+                                        ))}
+                                    </div>
+                                </Paper>
+                            );
+                        })}
+                    </Stack>
+
+                    {categoryOrder.every(cat => questionsByCategory[cat].length === 0) && (
                         <Box ta="center" py={60}>
                             <Text size="lg" c="dimmed">
                                 등록된 질문이 없습니다

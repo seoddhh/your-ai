@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
 import QuestionCard from "@/components/questions/QuestionCard";
 import { getAllQuestions } from "@/data/questions";
 import Sidebar from "@/components/layout/Sidebar";
-import FilterChips from "@/components/ui/FilterChips";
-import { Box, Loader } from '@mantine/core';
+import { Box, Loader, Title, Text, Paper, Stack } from '@mantine/core';
+import { CATEGORY_INFO, getQuestionsByCategory, QuestionCategory } from "@/data/questions";
 
 export default function QuestionFeed() {
     const [mounted, setMounted] = useState(false);
@@ -22,32 +22,75 @@ export default function QuestionFeed() {
         );
     }
 
-    const questions = getAllQuestions() || [];
+    const questionsByCategory = getQuestionsByCategory();
+    const categoryOrder: QuestionCategory[] = ['response_divergent', 'output_different', 'thinking_divergent'];
 
     return (
         <div className="app-container">
             <Sidebar />
             <main className="main-content">
-                <FilterChips />
-                <header className="header">
-                    <div className="breadcrumb">홈 / 질문 목록</div>
-                    <div style={{ marginLeft: 'auto' }}>
-                        <button className="btn-action">질문 제출하기</button>
-                    </div>
-                </header>
+                <Box
+                    py="lg"
+                    px="xl"
+                    style={{
+                        borderBottom: '1px solid var(--border-color)',
+                        backgroundColor: '#fff',
+                    }}
+                >
+                    <Title order={2}>비교 실험용 질문</Title>
+                    <Text size="sm" c="dimmed">
+                        규칙에 따라 결과가 달라지는 질문들을 탐색하세요
+                    </Text>
+                </Box>
 
                 <div className="content-body">
-                    <div className="grid-container" style={{ gridTemplateColumns: '1fr' }}>
-                        {questions.map(q => (
-                            <QuestionCard
-                                key={q.id}
-                                id={q.id}
-                                content={q.content}
-                                category={q.category}
-                                stats={q.stats}
-                            />
-                        ))}
-                    </div>
+                    <Stack gap="xl">
+                        {categoryOrder.map((category) => {
+                            const questions = questionsByCategory[category];
+                            const info = CATEGORY_INFO[category];
+
+                            return (
+                                <Paper
+                                    key={category}
+                                    p="lg"
+                                    radius="md"
+                                    withBorder
+                                    style={{ backgroundColor: '#fff' }}
+                                >
+                                    <Box mb="md">
+                                        <Title
+                                            order={4}
+                                            mb={4}
+                                            style={{ color: info.color }}
+                                        >
+                                            {info.label}
+                                        </Title>
+                                        <Text size="sm" c="dimmed">
+                                            {info.description}
+                                        </Text>
+                                    </Box>
+
+                                    <div
+                                        style={{
+                                            display: 'grid',
+                                            gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+                                            gap: '16px'
+                                        }}
+                                    >
+                                        {questions.map(q => (
+                                            <QuestionCard
+                                                key={q.id}
+                                                id={q.id}
+                                                question={q.question}
+                                                category={q.category}
+                                                hint={q.hint}
+                                            />
+                                        ))}
+                                    </div>
+                                </Paper>
+                            );
+                        })}
+                    </Stack>
                 </div>
             </main>
         </div>
