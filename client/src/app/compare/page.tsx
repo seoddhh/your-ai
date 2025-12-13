@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import {
     Container,
     Title,
@@ -122,7 +123,8 @@ function generateMockResponse(instruction: Instruction, question: string): strin
 // 메인 컴포넌트
 // ============================================================
 
-export default function ComparePage() {
+function ComparePageContent() {
+    const searchParams = useSearchParams();
     const [mounted, setMounted] = useState(false);
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [question, setQuestion] = useState('');
@@ -131,7 +133,12 @@ export default function ComparePage() {
 
     useEffect(() => {
         setMounted(true);
-    }, []);
+        // URL 파라미터에서 질문 읽기
+        const qParam = searchParams.get('q');
+        if (qParam) {
+            setQuestion(decodeURIComponent(qParam));
+        }
+    }, [searchParams]);
 
     // 선택 가능한 페르소나 목록
     const availableInstructions = INSTRUCTIONS.filter(inst => !selectedIds.includes(inst.id));
@@ -455,5 +462,24 @@ export default function ComparePage() {
                 </Box>
             </main>
         </div>
+    );
+}
+
+// Suspense wrapper for useSearchParams
+export default function ComparePage() {
+    return (
+        <Suspense fallback={
+            <Box style={{
+                minHeight: '100vh',
+                backgroundColor: '#fdfdf2',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+            }}>
+                <Loader color="yellow" size="xl" />
+            </Box>
+        }>
+            <ComparePageContent />
+        </Suspense>
     );
 }

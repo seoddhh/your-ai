@@ -25,7 +25,8 @@ import {
     IconPlus,
     IconChevronLeft,
     IconChevronRight,
-    IconBooks
+    IconBooks,
+    IconMessageQuestion
 } from '@tabler/icons-react';
 
 
@@ -225,7 +226,7 @@ export default function Sidebar() {
 
                     <NavItem
                         href="/questions"
-                        icon={IconMessageCircle}
+                        icon={IconMessageQuestion}
                         label="질문 목록"
                         isActive={isActive('/questions')}
                         isCollapsed={isCollapsed}
