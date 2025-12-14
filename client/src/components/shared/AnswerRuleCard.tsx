@@ -15,9 +15,9 @@ import {
     ActionIcon,
 } from '@mantine/core';
 import {
-    IconCopy,
     IconChevronRight,
     IconTrash,
+    IconEye,
 } from '@tabler/icons-react';
 import { CustomInstruction, DOMAIN_META } from '@/data/customInstructions';
 import { useAppStore } from '@/store/useAppStore';
@@ -53,13 +53,6 @@ export default function AnswerRuleCard({
         if (confirm('이 응답 규칙을 삭제하시겠습니까?')) {
             deleteUserInstruction(instruction.id);
         }
-    };
-
-    const handleCopy = (e: React.MouseEvent) => {
-        e.stopPropagation();
-        navigator.clipboard.writeText(
-            `[사용자 프로필]\n${instruction.userProfile}\n\n[응답 스타일]\n${instruction.responsePreference}`
-        );
     };
 
     const cardContent = (
@@ -161,43 +154,23 @@ export default function AnswerRuleCard({
                             </Paper>
                         </Box>
 
-                        {/* Response Preference */}
-                        <Box mb="md">
-                            <Text size="xs" fw={700} c="dimmed" tt="uppercase" mb="xs">
-                                응답 스타일
-                            </Text>
-                            <Paper
-                                p="sm"
-                                radius="md"
-                                style={{
-                                    backgroundColor: '#f8f9fa',
-                                    fontSize: 13,
-                                    lineHeight: 1.7,
-                                    whiteSpace: 'pre-wrap',
-                                }}
-                            >
-                                {instruction.responsePreference}
-                            </Paper>
-                        </Box>
-
                         {/* 액션 버튼 */}
                         <Group mt="lg">
-                            <Tooltip label="클립보드에 복사">
-                                <Button
-                                    variant="light"
-                                    color="gray"
-                                    leftSection={<IconCopy size={16} />}
-                                    onClick={handleCopy}
-                                >
-                                    복사하기
-                                </Button>
-                            </Tooltip>
-                            <Link href={`/compare?instruction=${instruction.id}`} onClick={(e) => e.stopPropagation()}>
+                            <Link href={`/rule/${instruction.id}`} onClick={(e) => e.stopPropagation()}>
                                 <Button
                                     variant="filled"
                                     color="yellow"
+                                    leftSection={<IconEye size={16} />}
                                     rightSection={<IconChevronRight size={16} />}
                                     styles={{ root: { backgroundColor: '#E0B861' } }}
+                                >
+                                    상세보기
+                                </Button>
+                            </Link>
+                            <Link href={`/compare?instruction=${instruction.id}`} onClick={(e) => e.stopPropagation()}>
+                                <Button
+                                    variant="light"
+                                    color="gray"
                                 >
                                     비교하기
                                 </Button>
