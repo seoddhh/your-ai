@@ -169,28 +169,32 @@ function InstructionsLibraryContent() {
                             </Group>
 
                             {popularInstructions.slice(0, 5).map((instruction) => (
-                                <Box
+                                <Link
                                     key={instruction.id}
-                                    p="sm"
-                                    mb="xs"
-                                    style={{
-                                        borderRadius: 8,
-                                        cursor: 'pointer',
-                                        transition: 'background 0.2s',
-                                    }}
-                                    onClick={() => setExpandedId(instruction.id)}
+                                    href={`/rule/${instruction.id}`}
+                                    style={{ textDecoration: 'none' }}
                                 >
-                                    <Group gap="xs">
-                                        <div style={{ flex: 1 }}>
-                                            <Text size="sm" fw={500} lineClamp={1}>
-                                                {instruction.name}
-                                            </Text>
-                                            <Text size="xs" c="dimmed">
-                                                {instruction.popularity} 사용
-                                            </Text>
-                                        </div>
-                                    </Group>
-                                </Box>
+                                    <Box
+                                        p="sm"
+                                        mb="xs"
+                                        style={{
+                                            borderRadius: 8,
+                                            cursor: 'pointer',
+                                            transition: 'background 0.2s',
+                                        }}
+                                    >
+                                        <Group gap="xs">
+                                            <div style={{ flex: 1 }}>
+                                                <Text size="sm" fw={500} lineClamp={1}>
+                                                    {instruction.name}
+                                                </Text>
+                                                <Text size="xs" c="dimmed">
+                                                    {instruction.popularity} 사용
+                                                </Text>
+                                            </div>
+                                        </Group>
+                                    </Box>
+                                </Link>
                             ))}
                         </Paper>
                     </Box>

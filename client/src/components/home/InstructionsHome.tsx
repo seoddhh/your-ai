@@ -406,29 +406,26 @@ function TopRankCard({
                                         </Paper>
 
                                         <Group mt="md" gap="xs">
-                                            <Link href={`/compare?instruction=${instruction.id}`}>
+                                            <Link href={`/rule/${instruction.id}`}>
                                                 <Button
                                                     size="xs"
                                                     variant="filled"
                                                     color="yellow"
                                                     styles={{ root: { backgroundColor: '#E0B861' } }}
+                                                    rightSection={<IconArrowRight size={14} />}
+                                                >
+                                                    상세보기
+                                                </Button>
+                                            </Link>
+                                            <Link href={`/compare?instruction=${instruction.id}`}>
+                                                <Button
+                                                    size="xs"
+                                                    variant="light"
+                                                    color="gray"
                                                 >
                                                     비교하기
                                                 </Button>
                                             </Link>
-                                            <Button
-                                                size="xs"
-                                                variant="light"
-                                                color="gray"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    navigator.clipboard.writeText(
-                                                        `[사용자 프로필]\n${instruction.userProfile}\n\n[응답 스타일]\n${instruction.responsePreference}`
-                                                    );
-                                                }}
-                                            >
-                                                복사하기
-                                            </Button>
                                         </Group>
                                     </Box>
                                 </motion.div>
@@ -482,7 +479,7 @@ function CompactRuleCard({
             </Text>
             <Group justify="space-between">
                 <Text size="xs" c="dimmed">{instruction.popularity}명 사용</Text>
-                <Link href={`/compare?instruction=${instruction.id}`}>
+                <Link href={`/rule/${instruction.id}`}>
                     <Button size="xs" variant="subtle" color="yellow">
                         자세히 보기
                     </Button>
