@@ -18,6 +18,7 @@ interface AppState {
     // User-registered custom instructions
     userInstructions: CustomInstruction[];
     addUserInstruction: (instruction: CustomInstruction) => void;
+    updateUserInstruction: (id: string, updates: Partial<CustomInstruction>) => void;
     deleteUserInstruction: (id: string) => void;
 }
 
@@ -40,6 +41,11 @@ export const useAppStore = create<AppState>()(
             userInstructions: [],
             addUserInstruction: (instruction) => set((state) => ({
                 userInstructions: [instruction, ...state.userInstructions]
+            })),
+            updateUserInstruction: (id, updates) => set((state) => ({
+                userInstructions: state.userInstructions.map((i) =>
+                    i.id === id ? { ...i, ...updates } : i
+                )
             })),
             deleteUserInstruction: (id) => set((state) => ({
                 userInstructions: state.userInstructions.filter((i) => i.id !== id)

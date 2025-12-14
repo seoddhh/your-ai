@@ -261,6 +261,7 @@ function InstructionsLibraryContent() {
                                         onToggle={() => setExpandedId(
                                             expandedId === instruction.id ? null : instruction.id
                                         )}
+                                        isUserOwned={instruction.id.startsWith('user-')}
                                     />
                                 ))}
                             </AnimatePresence>

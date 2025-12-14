@@ -19,6 +19,10 @@ import {
     CopyButton,
     ActionIcon,
     Tooltip,
+    Modal,
+    TextInput,
+    Textarea,
+    Select,
 } from '@mantine/core';
 import {
     IconArrowLeft,
@@ -27,6 +31,7 @@ import {
     IconEye,
     IconUser,
     IconMessage,
+    IconEdit,
 } from '@tabler/icons-react';
 import { motion } from 'framer-motion';
 import Sidebar from '@/components/layout/Sidebar';
@@ -34,7 +39,9 @@ import {
     getInstructionById,
     DOMAIN_META,
     CustomInstruction,
+    Domain,
 } from '@/data/customInstructions';
+import { useAppStore } from '@/store/useAppStore';
 
 export default function RuleDetailPage({
     params,
@@ -45,14 +52,53 @@ export default function RuleDetailPage({
     const router = useRouter();
     const [mounted, setMounted] = useState(false);
     const [instruction, setInstruction] = useState<CustomInstruction | null>(null);
+    const [isUserOwned, setIsUserOwned] = useState(false);
+    const [editModalOpen, setEditModalOpen] = useState(false);
+
+    // 사용자 규칙 관련 상태
+    const userInstructions = useAppStore((state) => state.userInstructions);
+    const updateUserInstruction = useAppStore((state) => state.updateUserInstruction);
+
+    // 수정 폼 상태
+    const [editForm, setEditForm] = useState({
+        userProfile: '',
+        responsePreference: '',
+    });
 
     useEffect(() => {
         setMounted(true);
-        const found = getInstructionById(resolvedParams.id);
+        // 기본 규칙에서 먼저 검색
+        let found = getInstructionById(resolvedParams.id);
+        let userOwned = false;
+
+        // 없으면 사용자 규칙에서 검색
+        if (!found) {
+            found = userInstructions.find(i => i.id === resolvedParams.id);
+            if (found) {
+                userOwned = true;
+            }
+        }
+
         if (found) {
             setInstruction(found);
+            setIsUserOwned(userOwned);
+            setEditForm({
+                userProfile: found.userProfile,
+                responsePreference: found.responsePreference,
+            });
         }
-    }, [resolvedParams.id]);
+    }, [resolvedParams.id, userInstructions]);
+
+    const handleSaveEdit = () => {
+        if (!instruction || !isUserOwned) return;
+
+        updateUserInstruction(instruction.id, {
+            userProfile: editForm.userProfile,
+            responsePreference: editForm.responsePreference,
+        });
+
+        setEditModalOpen(false);
+    };
 
     if (!mounted) {
         return (
@@ -225,10 +271,19 @@ export default function RuleDetailPage({
                         </Paper>
 
                         {/* 액션 버튼 */}
-                        <Group gap="md">
+                        <Group gap="md" justify="flex-end">
+                            {isUserOwned && (
+                                <Button
+                                    variant="light"
+                                    color="yellow"
+                                    leftSection={<IconEdit size={16} />}
+                                    onClick={() => setEditModalOpen(true)}
+                                >
+                                    수정하기
+                                </Button>
+                            )}
                             <Link href={`/compare?instruction=${instruction.id}`}>
                                 <Button
-                                    size="lg"
                                     variant="filled"
                                     color="yellow"
                                     styles={{ root: { backgroundColor: '#E0B861' } }}
@@ -241,10 +296,9 @@ export default function RuleDetailPage({
                             >
                                 {({ copied, copy }) => (
                                     <Button
-                                        size="lg"
                                         variant="light"
                                         color={copied ? 'green' : 'gray'}
-                                        leftSection={copied ? <IconCheck size={18} /> : <IconCopy size={18} />}
+                                        leftSection={copied ? <IconCheck size={16} /> : <IconCopy size={16} />}
                                         onClick={copy}
                                     >
                                         {copied ? '복사됨!' : '전체 복사하기'}
@@ -254,6 +308,60 @@ export default function RuleDetailPage({
                         </Group>
                     </motion.div>
                 </Box>
+
+                {/* 수정 모달 */}
+                <Modal
+                    opened={editModalOpen}
+                    onClose={() => setEditModalOpen(false)}
+                    title={<span style={{ fontWeight: 700 }}>응답 규칙 수정</span>}
+                    size="lg"
+                >
+                    <Stack gap="lg">
+                        <div>
+                            <Text size="sm" fw={600} mb="xs">사용자 프로필</Text>
+                            <Textarea
+                                placeholder="사용자 프로필을 입력하세요"
+                                minRows={5}
+                                autosize
+                                value={editForm.userProfile}
+                                onChange={(e) => setEditForm({ ...editForm, userProfile: e.target.value })}
+                                styles={{
+                                    input: {
+                                        backgroundColor: '#fefcf8',
+                                    }
+                                }}
+                            />
+                        </div>
+                        <div>
+                            <Text size="sm" fw={600} mb="xs">응답 스타일</Text>
+                            <Textarea
+                                placeholder="응답 스타일을 입력하세요"
+                                minRows={5}
+                                autosize
+                                value={editForm.responsePreference}
+                                onChange={(e) => setEditForm({ ...editForm, responsePreference: e.target.value })}
+                                styles={{
+                                    input: {
+                                        backgroundColor: '#f8f9fa',
+                                    }
+                                }}
+                            />
+                        </div>
+                        <Group justify="flex-end" mt="md">
+                            <Button variant="light" color="gray" onClick={() => setEditModalOpen(false)}>
+                                취소
+                            </Button>
+                            <Button
+                                variant="filled"
+                                color="yellow"
+                                styles={{ root: { backgroundColor: '#E0B861' } }}
+                                onClick={handleSaveEdit}
+                            >
+                                저장하기
+                            </Button>
+                        </Group>
+                    </Stack>
+                </Modal>
             </main>
         </div>
     );
