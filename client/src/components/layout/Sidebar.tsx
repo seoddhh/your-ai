@@ -48,69 +48,45 @@ function NavItem({
 }) {
     const router = useRouter();
 
-    const content = (
-        <Box
-            component="button"
+    const button = (
+        <Button
+            fullWidth={!isCollapsed}
+            variant={isActive ? 'filled' : 'subtle'}
+            color={isActive ? 'yellow' : 'gray'}
+            justify={isCollapsed ? 'center' : 'flex-start'}
+            leftSection={!isCollapsed ? <Icon size={18} /> : undefined}
+            mb="xs"
             onClick={() => {
                 if (onClick) onClick();
                 router.push(href);
             }}
-            mb="xs"
-            style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 12,
-                width: '100%',
-                height: 48,
-                padding: '0 12px',
-                border: 'none',
-                borderRadius: 8,
-                cursor: 'pointer',
-                backgroundColor: isActive ? 'var(--accent-color)' : 'transparent',
-                color: isActive ? '#fff' : 'var(--sidebar-text)',
-                transition: 'background-color var(--motion-fast)',
-                overflow: 'hidden',
-                whiteSpace: 'nowrap',
-            }}
-            onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => {
-                if (!isActive) {
-                    e.currentTarget.style.backgroundColor = 'var(--accent-lighter)';
-                    e.currentTarget.style.color = '#fff';
-                }
-            }}
-            onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) => {
-                if (!isActive) {
-                    e.currentTarget.style.backgroundColor = 'transparent';
-                    e.currentTarget.style.color = 'var(--sidebar-text)';
+            styles={{
+                root: {
+                    borderRadius: 8,
+                    backgroundColor: isActive ? '#E0B861' : 'transparent',
+                    color: isActive ? '#fff' : 'var(--sidebar-text)',
+                    width: isCollapsed ? 40 : '100%',
+                    minWidth: isCollapsed ? 40 : undefined,
+                    padding: isCollapsed ? 0 : undefined,
+                    '&:hover': {
+                        backgroundColor: isActive ? '#c9a254' : 'rgba(255,255,255,0.08)'
+                    }
                 }
             }}
         >
-            <Box style={{ flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 18 }}>
-                <Icon size={18} />
-            </Box>
-            <Text
-                size="sm"
-                fw={500}
-                style={{
-                    opacity: isCollapsed ? 0 : 1,
-                    transition: 'opacity var(--motion-fast)',
-                    overflow: 'hidden',
-                }}
-            >
-                {label}
-            </Text>
-        </Box>
+            {isCollapsed ? <Icon size={18} /> : label}
+        </Button>
     );
 
     if (isCollapsed) {
         return (
             <Tooltip label={label} position="right" withArrow>
-                {content}
+                {button}
             </Tooltip>
         );
     }
 
-    return content;
+    return button;
 }
 
 export default function Sidebar() {
@@ -148,19 +124,19 @@ export default function Sidebar() {
     return (
         <Box
             component="aside"
+            w={isCollapsed ? 60 : 276}
             h="100vh"
             style={{
-                width: isCollapsed ? 60 : 276,
-                minWidth: isCollapsed ? 60 : 276,
                 borderRight: '1px solid var(--border-color)',
                 backgroundColor: 'var(--sidebar-bg)',
                 position: 'sticky',
                 top: 0,
                 display: 'flex',
                 flexDirection: 'column',
+                transition: 'width 0.3s ease',
                 overflow: 'hidden',
                 flexShrink: 0,
-                transition: 'width var(--motion-base), min-width var(--motion-base)',
+                minWidth: isCollapsed ? 60 : 276,
             }}
         >
             {/* 로고 영역 */}
@@ -177,7 +153,7 @@ export default function Sidebar() {
                             <ThemeIcon
                                 size={32}
                                 radius="md"
-                                style={{ backgroundColor: 'var(--accent-color)' }}
+                                style={{ backgroundColor: '#E0B861' }}
                             >
                                 <IconSparkles size={18} color="white" />
                             </ThemeIcon>

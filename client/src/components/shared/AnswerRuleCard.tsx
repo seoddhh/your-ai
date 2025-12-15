@@ -62,8 +62,8 @@ export default function AnswerRuleCard({
             withBorder
             style={{
                 cursor: onToggle ? 'pointer' : 'default',
-                transition: 'all var(--motion-base)',
-                borderColor: isExpanded ? 'var(--accent-color)' : '#e5e5e5',
+                transition: 'all 0.3s ease',
+                borderColor: isExpanded ? '#E0B861' : '#e5e5e5',
                 boxShadow: isExpanded ? '0 8px 24px rgba(224, 184, 97, 0.15)' : undefined,
                 height: isCompact ? 'auto' : undefined,
             }}
@@ -162,6 +162,7 @@ export default function AnswerRuleCard({
                                     color="yellow"
                                     leftSection={<IconEye size={16} />}
                                     rightSection={<IconChevronRight size={16} />}
+                                    styles={{ root: { backgroundColor: '#E0B861' } }}
                                 >
                                     상세보기
                                 </Button>

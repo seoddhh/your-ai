@@ -54,6 +54,12 @@ export default function FilterChips() {
                                     aria-label="필터 제거"
                                 />
                             }
+                            styles={{
+                                root: {
+                                    backgroundColor: '#E0B861',
+                                    color: '#fff'
+                                }
+                            }}
                         >
                             {value}
                         </Badge>
@@ -65,7 +71,7 @@ export default function FilterChips() {
                     size="xs"
                     color="gray"
                     onClick={clearFilters}
-                    style={{ marginLeft: 'auto' }}
+                    styles={{ root: { marginLeft: 'auto' } }}
                 >
                     모두 지우기
                 </Button>

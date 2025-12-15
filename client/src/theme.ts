@@ -32,9 +32,9 @@ export const theme = createTheme({
         'aurora-gold': auroraGold,
         'deep-charcoal': deepCharcoal,
     },
-    fontFamily: "'Wanted Sans Variable', 'Wanted Sans', -apple-system, BlinkMacSystemFont, sans-serif",
+    fontFamily: 'var(--font-jetbrains-mono), monospace',
     headings: {
-        fontFamily: "'Wanted Sans Variable', 'Wanted Sans', -apple-system, BlinkMacSystemFont, sans-serif",
+        fontFamily: 'var(--font-jetbrains-mono), monospace',
         fontWeight: '700',
     },
     components: {
@@ -45,7 +45,7 @@ export const theme = createTheme({
             },
             styles: (theme: MantineTheme) => ({
                 root: {
-                    transition: 'all var(--motion-fast)',
+                    transition: 'all 0.2s',
                     '&:hover': {
                         transform: 'translateY(-1px)',
                         boxShadow: theme.shadows.sm,
@@ -62,7 +62,7 @@ export const theme = createTheme({
             styles: (theme: MantineTheme) => ({
                 root: {
                     backgroundColor: 'var(--mantine-color-body)',
-                    transition: 'all var(--motion-base)',
+                    transition: 'all 0.3s ease',
                     '&:hover': {
                         transform: 'translateY(-4px)',
                         boxShadow: theme.shadows.md,
@@ -76,58 +76,7 @@ export const theme = createTheme({
                 radius: 'sm',
                 variant: 'light',
             }
-        },
-        ThemeIcon: {
-            styles: () => ({
-                root: {
-                    backgroundColor: 'var(--accent-color)',
-                }
-            })
-        },
-        Select: {
-            styles: () => ({
-                input: {
-                    borderColor: 'var(--border-color)',
-                    transition: 'border-color var(--motion-fast)',
-                    '&:focus': {
-                        borderColor: 'var(--accent-color)',
-                    }
-                }
-            })
-        },
-        Textarea: {
-            styles: () => ({
-                input: {
-                    borderColor: 'var(--border-color)',
-                    transition: 'border-color var(--motion-fast)',
-                    '&:focus': {
-                        borderColor: 'var(--accent-color)',
-                    }
-                }
-            })
-        },
-        TextInput: {
-            styles: () => ({
-                input: {
-                    borderColor: 'var(--border-color)',
-                    transition: 'border-color var(--motion-fast)',
-                    '&:focus': {
-                        borderColor: 'var(--accent-color)',
-                    }
-                }
-            })
-        },
-        Stepper: {
-            styles: () => ({
-                stepIcon: {
-                    backgroundColor: 'var(--bg-color)',
-                    borderColor: 'var(--accent-color)',
-                },
-                stepCompletedIcon: {
-                    backgroundColor: 'var(--accent-color)',
-                },
-            })
-        },
+        }
     },
     other: {
         // Custom variables

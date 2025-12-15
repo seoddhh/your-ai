@@ -132,7 +132,7 @@ function InstructionsLibraryContent() {
                                 mb="xs"
                                 onClick={() => setSelectedDomain('all')}
                                 styles={{
-                                    root: selectedDomain === 'all' ? { backgroundColor: 'var(--accent-color)' } : {}
+                                    root: selectedDomain === 'all' ? { backgroundColor: '#E0B861' } : {}
                                 }}
                             >
                                 전체 보기
@@ -152,7 +152,7 @@ function InstructionsLibraryContent() {
                                     styles={{
                                         root: selectedDomain === domain ? {
                                             backgroundColor: 'rgba(224, 184, 97, 0.15)',
-                                            borderColor: 'var(--accent-color)',
+                                            borderColor: '#E0B861',
                                         } : {}
                                     }}
                                 >
@@ -164,7 +164,7 @@ function InstructionsLibraryContent() {
                         {/* 인기 응답 규칙 */}
                         <Paper p="lg" radius="lg" withBorder mt="lg">
                             <Group mb="md">
-                                <IconHeart size={16} color="var(--accent-color)" />
+                                <IconHeart size={16} color="#E0B861" />
                                 <Text size="sm" fw={700}>내가 찜한 규칙</Text>
                             </Group>
 
@@ -216,7 +216,7 @@ function InstructionsLibraryContent() {
                                         backgroundColor: '#fff',
                                         border: '2px solid var(--border-color)',
                                         '&:focus': {
-                                            borderColor: 'var(--accent-color)',
+                                            borderColor: '#E0B861',
                                         }
                                     }
                                 }}
