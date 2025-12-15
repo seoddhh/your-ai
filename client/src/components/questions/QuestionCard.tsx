@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { Card, Text, Badge, Group, Button } from '@mantine/core';
 import { IconArrowRight } from '@tabler/icons-react';
 import { CATEGORY_INFO, QuestionCategory } from '@/data/questions';
+import styles from './QuestionCard.module.css';
 
 interface QuestionCardProps {
     id: string;
@@ -22,20 +23,7 @@ export default function QuestionCard({ id, question, category, hint }: QuestionC
     };
 
     return (
-        <Card
-            padding="lg"
-            radius="md"
-            withBorder
-            styles={(theme) => ({
-                root: {
-                    transition: 'transform 0.2s, box-shadow 0.2s',
-                    '&:hover': {
-                        transform: 'translateY(-4px)',
-                        boxShadow: theme.shadows.md,
-                    }
-                }
-            })}
-        >
+        <Card padding="lg" radius="md" withBorder>
             <Group justify="space-between" mb="xs">
                 <Badge
                     variant="light"
@@ -62,15 +50,7 @@ export default function QuestionCard({ id, question, category, hint }: QuestionC
                 fullWidth
                 rightSection={<IconArrowRight size={16} />}
                 onClick={handleClick}
-                styles={{
-                    root: {
-                        backgroundColor: '#E0B86115',
-                        color: '#B8963A',
-                        '&:hover': {
-                            backgroundColor: '#E0B86130',
-                        }
-                    }
-                }}
+                className={styles.questionButton}
             >
                 이 질문으로 응답 규칙 비교하기
             </Button>
