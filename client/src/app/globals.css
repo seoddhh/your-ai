@@ -1,9 +1,15 @@
-@import "tailwindcss";
+/* Wanted Sans 폰트 - 반드시 최상단에 위치 */
+@import url('https://cdn.jsdelivr.net/gh/wanteddev/wanted-sans@v1.0.1/packages/wanted-sans/fonts/webfonts/variable/split/WantedSansVariable.min.css');
+
+/* Tailwind: utilities만 사용 (preflight 제외, Mantine baseline 우선) */
+@import "tailwindcss/theme" layer(theme);
+@import "tailwindcss/utilities" layer(utilities);
 
 :root {
     /* Typography */
+    --font-main: 'Wanted Sans Variable', 'Wanted Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     --font-en: var(--font-jetbrains-mono), Consolas, monospace;
-    --font-kr: 'D2Coding', 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-kr: var(--font-main);
 
     /* Colors - Aurora Gold Theme */
     --bg-color: #fdfdf2;
@@ -14,6 +20,8 @@
     --text-secondary: #5a5a52;
     --accent-color: #E0B861;
     --accent-hover: #c9a254;
+    --accent-light: rgba(224, 184, 97, 0.15);
+    --accent-lighter: rgba(224, 184, 97, 0.2);
     --border-color: #e8e4d9;
     --gold-light: #faf7e8;
     --gold-medium: #E4C778;
@@ -21,6 +29,11 @@
     /* Layout */
     --sidebar-width: 280px;
     --header-height: 64px;
+
+    /* Motion */
+    --motion-fast: 0.15s ease;
+    --motion-base: 0.25s ease;
+    --motion-slow: 0.4s ease;
 }
 
 @theme inline {
@@ -36,18 +49,25 @@
     --color-border-color: var(--border-color);
 }
 
-* {
+/* Mantine baseline과 함께 사용할 기본 리셋 */
+*,
+*::before,
+*::after {
     box-sizing: border-box;
-    margin: 0;
-    padding: 0;
 }
 
 body {
     background-color: var(--bg-color);
     color: var(--text-primary);
-    font-family: var(--font-en), var(--font-kr);
+    font-family: var(--font-main);
     line-height: 1.4;
     overflow-x: hidden;
+}
+
+/* 링크 기본 스타일 (Tailwind preflight 대체) */
+a {
+    color: inherit;
+    text-decoration: none;
 }
 
 /* --- Layout Structure (Dashboard System) --- */

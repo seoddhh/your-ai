@@ -144,7 +144,7 @@ export default function ScrollLanding({ onEnter }: ScrollLandingProps) {
                 <motion.div
                     style={{
                         height: '100%',
-                        backgroundColor: '#E0B861',
+                        backgroundColor: 'var(--accent-color)',
                         width: progressWidth,
                     }}
                 />
@@ -170,7 +170,7 @@ export default function ScrollLanding({ onEnter }: ScrollLandingProps) {
                             width: 8,
                             height: currentSection === i ? 32 : 8,
                             borderRadius: 4,
-                            backgroundColor: currentSection === i ? '#E0B861' : 'rgba(0,0,0,0.2)',
+                            backgroundColor: currentSection === i ? 'var(--accent-color)' : 'rgba(0,0,0,0.2)',
                             transition: 'all 0.3s ease',
                         }}
                     />
@@ -226,7 +226,7 @@ export default function ScrollLanding({ onEnter }: ScrollLandingProps) {
                         >
                             같은 AI,{' '}
                             <span style={{
-                                color: '#E0B861',
+                                color: 'var(--accent-color)',
                                 textDecoration: 'underline',
                                 textDecorationThickness: '4px',
                                 textUnderlineOffset: '8px',
@@ -260,7 +260,7 @@ export default function ScrollLanding({ onEnter }: ScrollLandingProps) {
                             <Text size="sm" c="dimmed" mb="xs">스크롤하여 탐색하기</Text>
                             <IconArrowDown
                                 size={28}
-                                color="#E0B861"
+                                color="var(--accent-color)"
                             />
                         </motion.div>
                     </motion.div>
@@ -455,7 +455,7 @@ export default function ScrollLanding({ onEnter }: ScrollLandingProps) {
                                         radius="xl"
                                         mb="lg"
                                         style={{
-                                            backgroundColor: '#E0B861',
+                                            backgroundColor: 'var(--accent-color)',
                                             margin: '0 auto',
                                             boxShadow: '0 8px 24px rgba(224, 184, 97, 0.25)',
                                         }}
@@ -500,7 +500,7 @@ export default function ScrollLanding({ onEnter }: ScrollLandingProps) {
                             radius={100}
                             mb="xl"
                             style={{
-                                backgroundColor: '#E0B861',
+                                backgroundColor: 'var(--accent-color)',
                                 margin: '0 auto',
                                 boxShadow: '0 20px 60px rgba(224, 184, 97, 0.4)',
                             }}
@@ -532,7 +532,7 @@ export default function ScrollLanding({ onEnter }: ScrollLandingProps) {
                                 onClick={onEnter}
                                 styles={{
                                     root: {
-                                        backgroundColor: '#E0B861',
+                                        backgroundColor: 'var(--accent-color)',
                                         color: '#fff',
                                         padding: '0 48px',
                                         height: 56,
@@ -559,7 +559,7 @@ export default function ScrollLanding({ onEnter }: ScrollLandingProps) {
                                         fontSize: 18,
                                         '&:hover': {
                                             backgroundColor: 'rgba(0,0,0,0.03)',
-                                            borderColor: '#E0B861',
+                                            borderColor: 'var(--accent-color)',
                                         }
                                     }
                                 }}

@@ -66,11 +66,6 @@ export default function QuestionDetailPage() {
                         variant="filled"
                         rightSection={<IconArrowRight size={16} />}
                         onClick={() => router.push('/compare')}
-                        styles={{
-                            root: {
-                                backgroundColor: '#E0B861',
-                            }
-                        }}
                     >
                         직접 비교하기
                     </Button>
