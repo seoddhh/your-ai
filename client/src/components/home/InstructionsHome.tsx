@@ -6,7 +6,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useAppStore } from '@/store/useAppStore';
 import {
-    Container,
     Title,
     Text,
     Card,
@@ -18,8 +17,6 @@ import {
     Paper,
     Loader,
     Stack,
-    Tabs,
-    ScrollArea,
 } from '@mantine/core';
 import {
     IconTrendingUp,
@@ -39,6 +36,7 @@ import {
 import Sidebar from '@/components/layout/Sidebar';
 import AnswerRuleListSection from '@/components/shared/AnswerRuleListSection';
 import DomainHighlightSection from '@/components/shared/DomainHighlightSection';
+import AnswerRuleCard from '@/components/shared/AnswerRuleCard';
 import { useTopRulesByDomain, useAnswerRules } from '@/hooks/useAnswerRules';
 
 // 도메인 탭 정보
@@ -82,8 +80,8 @@ export default function InstructionsHome() {
 
     if (!mounted) {
         return (
-            <Box style={{ backgroundColor: 'var(--bg-color)', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Loader color="yellow" size="xl" />
+            <Box style={{ backgroundColor: '#fff', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Loader color="yellow" size="lg" />
             </Box>
         );
     }
@@ -94,226 +92,255 @@ export default function InstructionsHome() {
             <main className="main-content" style={{ backgroundColor: '#fff' }}>
                 {/* 헤더 영역 */}
                 <Box
-                    py="lg"
-                    px={48}
+                    py="md"
+                    px="xl"
                     style={{
-                        borderBottom: '1px solid var(--border-color)',
+                        borderBottom: '1px solid #eee',
                         backgroundColor: '#fff',
                     }}
                 >
-                    <Group justify="space-between" align="center" wrap="wrap" gap="md">
-                        <div>
-                            <Title order={2} style={{ fontFamily: 'var(--font-en)' }}>
-                                나만의 AI 찾기
-                            </Title>
-                            <Text size="sm" c="dimmed">
-                                나에게 맞는 AI 응답 스타일을 발견하세요
-                            </Text>
-                        </div>
-                        <Group gap="sm" wrap="nowrap">
-                            <Link href="/instructions">
-                                <Button
-                                    variant="light"
-                                    color="gray"
-                                    leftSection={<IconCategory size={16} />}
-                                    size="sm"
-                                >
-                                    전체 라이브러리
-                                </Button>
-                            </Link>
-                            <Link href="/register">
-                                <Button
-                                    variant="filled"
-                                    color="yellow"
-                                    leftSection={<IconPlus size={16} />}
-                                    size="sm"
-                                    styles={{ root: { backgroundColor: '#E0B861' } }}
-                                >
-                                    응답 규칙 등록
-                                </Button>
-                            </Link>
-                        </Group>
-                    </Group>
-                </Box>
-
-                {/* 메인 콘텐츠 영역 */}
-                <Box px={48} py="xl">
-                    {/* AI 스타일 테스트 CTA */}
-                    <Paper
-                        p="xl"
-                        radius="lg"
-                        mb="xl"
-                        style={{
-                            background: 'linear-gradient(135deg, #E0B861 30%, #f4a70eff 100%)',
-                            color: '#ffffff',
-                        }}
-                    >
+                    <Box style={{ maxWidth: 'var(--content-max-width)', margin: '0 auto' }}>
                         <Group justify="space-between" align="center">
                             <div>
-                                <Group gap="xs" mb="xs">
+                                <Title order={3} fw={700}>
+                                    나만의 AI 찾기
+                                </Title>
+                                <Text size="sm" c="dimmed">
+                                    나에게 맞는 AI 응답 스타일을 발견하세요
+                                </Text>
+                            </div>
+                            <Group gap="sm">
+                                <Link href="/instructions">
+                                    <Button
+                                        variant="subtle"
+                                        color="gray"
+                                        leftSection={<IconCategory size={16} />}
+                                        size="sm"
+                                    >
+                                        전체 라이브러리
+                                    </Button>
+                                </Link>
+                                <Link href="/register">
+                                    <Button
+                                        variant="filled"
+                                        leftSection={<IconPlus size={16} />}
+                                        size="sm"
+                                        styles={{ root: { backgroundColor: '#E0B861' } }}
+                                    >
+                                        응답 규칙 등록
+                                    </Button>
+                                </Link>
+                            </Group>
+                        </Group>
+                    </Box>
+                </Box>
+
+                {/* 메인 콘텐츠 영역 - max-width 적용 */}
+                <Box px="xl" py="xl">
+                    <Box style={{ maxWidth: 'var(--content-max-width)', margin: '0 auto' }}>
+                        {/* AI 스타일 테스트 CTA - 단일 Primary CTA */}
+                        <Paper
+                            p="lg"
+                            radius="md"
+                            mb={48}
+                            style={{
+                                background: 'linear-gradient(135deg, #E0B861 0%, #d4a84a 100%)',
+                                color: '#fff',
+                            }}
+                        >
+                            <Group justify="space-between" align="center">
+                                <Group gap="md">
                                     <Image
                                         src="/icons/ai-robot.png"
                                         alt="AI Robot"
-                                        width={28}
-                                        height={28}
+                                        width={40}
+                                        height={40}
                                         style={{ objectFit: 'contain' }}
                                     />
-                                    <Title order={3}>AI 응답 스타일 테스트</Title>
+                                    <div>
+                                        <Text fw={700} size="lg">AI 응답 스타일 테스트</Text>
+                                        <Text size="sm" style={{ opacity: 0.9 }}>
+                                            간단한 질문에 답하고 나에게 맞는 응답 규칙을 추천받으세요
+                                        </Text>
+                                    </div>
                                 </Group>
-                                <Text size="sm" opacity={0.9}>
-                                    간단한 질문에 답하고 나에게 맞는 응답 규칙을 추천받으세요
-                                </Text>
-                            </div>
-                            <Link href="/my-ai">
-                                <Button
-                                    variant="white"
-                                    color="dark"
-                                    size="md"
-                                    rightSection={<IconArrowRight size={16} />}
-                                >
-                                    테스트 시작하기
-                                </Button>
-                            </Link>
-                        </Group>
-                    </Paper>
-
-                    {/* 도메인별 TOP 3 섹션 */}
-                    <AnswerRuleListSection
-                        title="분야별 인기 응답 규칙 TOP 3"
-                        subtitle="각 분야에서 가장 많이 사용되는 응답 규칙"
-                        icon={<IconTrendingUp size={20} color="#E0B861" />}
-                        linkHref="/instructions"
-                        linkText="전체 라이브러리 보기"
-                    >
-                        {/* 도메인 탭 */}
-                        <Box
-                            mb="lg"
-                            style={{
-                                overflowX: 'auto',
-                                scrollbarWidth: 'none',
-                                msOverflowStyle: 'none',
-                            }}
-                            className="hide-scrollbar"
-                        >
-                            <Group gap="xs" wrap="nowrap" pb="xs">
-                                {DOMAIN_TABS.map((tab) => (
+                                <Link href="/my-ai">
                                     <Button
-                                        key={tab.id}
-                                        variant={activeDomainTab === tab.id ? 'filled' : 'light'}
-                                        color={activeDomainTab === tab.id ? 'yellow' : 'gray'}
-                                        size="sm"
-                                        radius="xl"
-                                        leftSection={
-                                            <Image
-                                                src={tab.icon}
-                                                alt={tab.label}
-                                                width={18}
-                                                height={18}
-                                                style={{ objectFit: 'contain' }}
-                                            />
-                                        }
-                                        onClick={() => setActiveDomainTab(tab.id as Domain | 'all')}
-                                        styles={{
-                                            root: activeDomainTab === tab.id ? {
-                                                backgroundColor: '#E0B861',
-                                                color: '#fff',
-                                            } : {
-                                                backgroundColor: 'rgba(0,0,0,0.04)',
-                                            }
-                                        }}
-                                        style={{ flexShrink: 0 }}
+                                        variant="white"
+                                        color="dark"
+                                        size="md"
+                                        rightSection={<IconArrowRight size={16} />}
                                     >
-                                        {tab.id === 'all' ? tab.label : `${tab.label}를 위한`}
+                                        테스트 시작하기
                                     </Button>
-                                ))}
+                                </Link>
                             </Group>
+                        </Paper>
+
+                        {/* 도메인별 TOP 3 섹션 */}
+                        <Box mb={48}>
+                            <Group justify="space-between" align="center" mb="md">
+                                <Group gap="sm">
+                                    <IconTrendingUp size={20} color="#E0B861" />
+                                    <div>
+                                        <Title order={5}>분야별 인기 응답 규칙 TOP 3</Title>
+                                        <Text size="xs" c="dimmed">각 분야에서 가장 많이 사용되는 응답 규칙</Text>
+                                    </div>
+                                </Group>
+                                <Link href="/instructions">
+                                    <Button variant="subtle" color="gray" size="xs">
+                                        전체 라이브러리 보기
+                                    </Button>
+                                </Link>
+                            </Group>
+
+                            {/* 도메인 탭 */}
+                            <Box
+                                mb="md"
+                                style={{
+                                    overflowX: 'auto',
+                                    scrollbarWidth: 'none',
+                                }}
+                                className="hide-scrollbar"
+                            >
+                                <Group gap={8} wrap="nowrap">
+                                    {DOMAIN_TABS.map((tab) => (
+                                        <Button
+                                            key={tab.id}
+                                            variant={activeDomainTab === tab.id ? 'filled' : 'light'}
+                                            size="xs"
+                                            radius="md"
+                                            leftSection={
+                                                <Image
+                                                    src={tab.icon}
+                                                    alt={tab.label}
+                                                    width={16}
+                                                    height={16}
+                                                    style={{ objectFit: 'contain' }}
+                                                />
+                                            }
+                                            onClick={() => setActiveDomainTab(tab.id as Domain | 'all')}
+                                            styles={{
+                                                root: activeDomainTab === tab.id ? {
+                                                    backgroundColor: '#E0B861',
+                                                } : {
+                                                    backgroundColor: '#f5f5f5',
+                                                    color: '#666',
+                                                }
+                                            }}
+                                            style={{ flexShrink: 0 }}
+                                        >
+                                            {tab.label}
+                                        </Button>
+                                    ))}
+                                </Group>
+                            </Box>
+
+                            {/* TOP 3 카드 리스트 */}
+                            <Paper p="lg" radius="md" withBorder style={{ borderColor: '#eee' }}>
+                                <Title order={6} mb="md" c="dimmed">
+                                    {activeDomainTab === 'all'
+                                        ? '🔥 전체 인기 응답 규칙 TOP 3'
+                                        : `${DOMAIN_TABS.find(t => t.id === activeDomainTab)?.label} 분야 TOP 3`
+                                    }
+                                </Title>
+                                <Stack gap="sm">
+                                    <AnimatePresence mode="wait">
+                                        {currentTop3.map((instruction, idx) => (
+                                            <TopRankCard
+                                                key={`${activeDomainTab}-${instruction.id}`}
+                                                instruction={instruction}
+                                                rank={idx + 1}
+                                                isExpanded={expandedId === instruction.id}
+                                                onToggle={() => setExpandedId(
+                                                    expandedId === instruction.id ? null : instruction.id
+                                                )}
+                                            />
+                                        ))}
+                                    </AnimatePresence>
+                                    {currentTop3.length === 0 && (
+                                        <Text c="dimmed" ta="center" py="lg" size="sm">
+                                            이 분야의 응답 규칙이 없습니다
+                                        </Text>
+                                    )}
+                                </Stack>
+                            </Paper>
                         </Box>
 
-                        {/* TOP 3 카드 */}
-                        <Paper p="lg" radius="lg" withBorder>
-                            <Title order={5} mb="md">
-                                {activeDomainTab === 'all'
-                                    ? '🔥 전체 인기 응답 규칙 TOP 3'
-                                    : `${DOMAIN_TABS.find(t => t.id === activeDomainTab)?.label}를 위한 응답 규칙 TOP 3`
-                                }
-                            </Title>
-                            <Stack gap="sm">
-                                <AnimatePresence mode="wait">
-                                    {currentTop3.map((instruction, idx) => (
-                                        <TopRankCard
-                                            key={`${activeDomainTab}-${instruction.id}`}
+                        {/* 분야별 하이라이트 */}
+                        <Box mb={48}>
+                            <Group gap="sm" mb="md">
+                                <IconCategory size={20} color="#6366f1" />
+                                <div>
+                                    <Title order={5}>분야별 추천</Title>
+                                    <Text size="xs" c="dimmed">각 분야의 대표 응답 규칙을 한눈에</Text>
+                                </div>
+                            </Group>
+                            <DomainHighlightSection />
+                        </Box>
+
+                        {/* 나의 응답 규칙 */}
+                        {userInstructions.length > 0 && (
+                            <Box mb={48}>
+                                <Group justify="space-between" align="center" mb="md">
+                                    <Group gap="sm">
+                                        <IconStar size={20} color="#f59e0b" />
+                                        <div>
+                                            <Title order={5}>나의 응답 규칙</Title>
+                                            <Text size="xs" c="dimmed">내가 등록한 응답 규칙</Text>
+                                        </div>
+                                    </Group>
+                                    <Link href="/my-ai">
+                                        <Button variant="subtle" color="gray" size="xs">
+                                            전체 보기
+                                        </Button>
+                                    </Link>
+                                </Group>
+                                <SimpleGrid cols={{ base: 1, md: 2 }} spacing="md">
+                                    {userInstructions.slice(0, 2).map((instruction) => (
+                                        <CompactRuleCard
+                                            key={instruction.id}
                                             instruction={instruction}
-                                            rank={idx + 1}
-                                            isExpanded={expandedId === instruction.id}
-                                            onToggle={() => setExpandedId(
-                                                expandedId === instruction.id ? null : instruction.id
-                                            )}
+                                            isUserOwned
                                         />
                                     ))}
-                                </AnimatePresence>
-                                {currentTop3.length === 0 && (
-                                    <Text c="dimmed" ta="center" py="lg">
-                                        이 분야의 응답 규칙이 없습니다
-                                    </Text>
-                                )}
-                            </Stack>
-                        </Paper>
-                    </AnswerRuleListSection>
+                                </SimpleGrid>
+                            </Box>
+                        )}
 
-                    {/* 분야별 하이라이트 */}
-                    <AnswerRuleListSection
-                        title="분야별 추천"
-                        subtitle="각 분야의 대표 응답 규칙을 한눈에"
-                        icon={<IconCategory size={20} color="#6366f1" />}
-                        linkHref="/instructions"
-                        linkText="전체 보기"
-                    >
-                        <DomainHighlightSection />
-                    </AnswerRuleListSection>
-
-                    {/* 나의 응답 규칙 */}
-                    {userInstructions.length > 0 && (
-                        <AnswerRuleListSection
-                            title="나의 응답 규칙"
-                            subtitle="내가 등록한 응답 규칙"
-                            icon={<IconStar size={20} color="#f59e0b" />}
-                            linkHref="/my-ai"
-                            linkText="전체 보기"
-                        >
+                        {/* 오늘의 추천 */}
+                        <Box mb={48}>
+                            <Group gap="sm" mb="md">
+                                <IconSparkles size={20} color="#ec4899" />
+                                <div>
+                                    <Title order={5}>오늘의 추천 응답 규칙</Title>
+                                    <Text size="xs" c="dimmed">가장 많이 사용되는 검증된 규칙</Text>
+                                </div>
+                            </Group>
                             <SimpleGrid cols={{ base: 1, md: 2 }} spacing="md">
-                                {userInstructions.slice(0, 2).map((instruction) => (
-                                    <CompactRuleCard
+                                {recommendedRules.slice(0, 4).map((instruction, index) => (
+                                    <AnswerRuleCard
                                         key={instruction.id}
                                         instruction={instruction}
-                                        isUserOwned
+                                        index={index}
+                                        isExpanded={expandedId === instruction.id}
+                                        onToggle={() => setExpandedId(
+                                            expandedId === instruction.id ? null : instruction.id
+                                        )}
+                                        isCompact={true}
+                                        showAnimation={true}
                                     />
                                 ))}
                             </SimpleGrid>
-                        </AnswerRuleListSection>
-                    )}
-
-                    {/* 오늘의 추천 */}
-                    <AnswerRuleListSection
-                        title="오늘의 추천 응답 규칙"
-                        subtitle="가장 많이 사용되는 검증된 규칙"
-                        icon={<IconSparkles size={20} color="#ec4899" />}
-                    >
-                        <SimpleGrid cols={{ base: 1, md: 2 }} spacing="md">
-                            {recommendedRules.slice(0, 4).map((instruction) => (
-                                <CompactRuleCard
-                                    key={instruction.id}
-                                    instruction={instruction}
-                                />
-                            ))}
-                        </SimpleGrid>
-                    </AnswerRuleListSection>
+                        </Box>
+                    </Box>
                 </Box>
             </main>
         </div>
     );
 }
 
-// TOP 순위 카드 컴포넌트
+// TOP 순위 카드 - 간결한 리스트형
 function TopRankCard({
     instruction,
     rank,
@@ -330,19 +357,19 @@ function TopRankCard({
 
     return (
         <motion.div
-            initial={{ opacity: 0, x: -10 }}
+            initial={{ opacity: 0, x: -5 }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 10 }}
-            transition={{ duration: 0.2, delay: rank * 0.05 }}
+            exit={{ opacity: 0, x: 5 }}
+            transition={{ duration: 0.15, delay: rank * 0.03 }}
         >
             <Card
                 p="md"
-                radius="md"
+                radius="sm"
                 withBorder
                 style={{
                     cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                    borderColor: isExpanded ? '#E0B861' : '#e5e5e5',
+                    transition: 'all 0.15s ease',
+                    borderColor: isExpanded ? '#E0B861' : '#eee',
                     backgroundColor: isExpanded ? '#fffdf8' : '#fff',
                 }}
                 onClick={onToggle}
@@ -352,22 +379,19 @@ function TopRankCard({
                     <Image
                         src={rankIcon}
                         alt={`Rank ${rank}`}
-                        width={32}
-                        height={32}
+                        width={28}
+                        height={28}
                     />
 
                     {/* 콘텐츠 */}
                     <div style={{ flex: 1 }}>
-                        <Group justify="space-between" mb="xs">
-                            <div>
-                                <Text fw={600} size="sm">{instruction.name}</Text>
-                                <Text size="xs" c="dimmed">{instruction.targetRole}</Text>
-                            </div>
+                        <Group justify="space-between" mb={4}>
+                            <Text fw={600} size="sm">{instruction.name}</Text>
                             <Badge
                                 variant="light"
-                                size="sm"
+                                size="xs"
                                 style={{
-                                    backgroundColor: `${domainMeta?.color || '#ccc'}15`,
+                                    backgroundColor: `${domainMeta?.color || '#ccc'}10`,
                                     color: domainMeta?.color || '#666',
                                 }}
                             >
@@ -375,7 +399,7 @@ function TopRankCard({
                             </Badge>
                         </Group>
 
-                        <Text size="sm" c="dimmed" lineClamp={isExpanded ? undefined : 2}>
+                        <Text size="xs" c="dimmed" lineClamp={isExpanded ? undefined : 1}>
                             {instruction.description}
                         </Text>
 
@@ -386,43 +410,38 @@ function TopRankCard({
                                     initial={{ opacity: 0, height: 0 }}
                                     animate={{ opacity: 1, height: 'auto' }}
                                     exit={{ opacity: 0, height: 0 }}
-                                    transition={{ duration: 0.2 }}
+                                    transition={{ duration: 0.15 }}
                                 >
-                                    <Box mt="md">
-                                        <Text size="xs" fw={600} c="dimmed" mb="xs">
+                                    <Box mt="sm">
+                                        <Text size="xs" fw={500} c="dimmed" mb={4}>
                                             사용자 프로필
                                         </Text>
                                         <Paper
-                                            p="sm"
+                                            p="xs"
                                             radius="sm"
                                             style={{
                                                 backgroundColor: 'var(--gold-light)',
                                                 fontSize: 12,
-                                                lineHeight: 1.6,
+                                                lineHeight: 1.5,
                                                 whiteSpace: 'pre-wrap',
                                             }}
                                         >
                                             {instruction.userProfile}
                                         </Paper>
 
-                                        <Group mt="md" gap="xs">
+                                        <Group mt="sm" gap="xs">
                                             <Link href={`/rule/${instruction.id}`}>
                                                 <Button
                                                     size="xs"
                                                     variant="filled"
-                                                    color="yellow"
                                                     styles={{ root: { backgroundColor: '#E0B861' } }}
-                                                    rightSection={<IconArrowRight size={14} />}
+                                                    rightSection={<IconArrowRight size={12} />}
                                                 >
                                                     상세보기
                                                 </Button>
                                             </Link>
                                             <Link href={`/compare?instruction=${instruction.id}`}>
-                                                <Button
-                                                    size="xs"
-                                                    variant="light"
-                                                    color="gray"
-                                                >
+                                                <Button size="xs" variant="light" color="gray">
                                                     비교하기
                                                 </Button>
                                             </Link>
@@ -432,9 +451,9 @@ function TopRankCard({
                             )}
                         </AnimatePresence>
 
-                        {/* 푸터 */}
-                        <Group gap="xs" mt="sm">
-                            <IconEye size={14} color="#999" />
+                        {/* 메타 정보 */}
+                        <Group gap="xs" mt="xs">
+                            <IconEye size={12} color="#999" />
                             <Text size="xs" c="dimmed">{instruction.popularity}명 사용</Text>
                         </Group>
                     </div>
@@ -444,7 +463,7 @@ function TopRankCard({
     );
 }
 
-// 컴팩트 규칙 카드
+// 컴팩트 규칙 카드 - 사용자 규칙용
 function CompactRuleCard({
     instruction,
     isUserOwned = false,
@@ -455,8 +474,8 @@ function CompactRuleCard({
     const domainMeta = DOMAIN_META[instruction.domain];
 
     return (
-        <Card p="md" radius="lg" withBorder>
-            <Group justify="space-between" mb="xs">
+        <Card p="md" radius="md" withBorder style={{ borderColor: '#eee' }}>
+            <Group justify="space-between" mb={8}>
                 <Group gap="xs">
                     <Text fw={600} size="sm">{instruction.name}</Text>
                     {isUserOwned && (
@@ -467,7 +486,7 @@ function CompactRuleCard({
                     variant="light"
                     size="xs"
                     style={{
-                        backgroundColor: `${domainMeta?.color || '#ccc'}15`,
+                        backgroundColor: `${domainMeta?.color || '#ccc'}10`,
                         color: domainMeta?.color || '#666',
                     }}
                 >
@@ -477,7 +496,7 @@ function CompactRuleCard({
             <Text size="xs" c="dimmed" lineClamp={2} mb="sm">
                 {instruction.description}
             </Text>
-            <Group justify="space-between">
+            <Group justify="space-between" pt="xs" style={{ borderTop: '1px solid #f0f0f0' }}>
                 <Text size="xs" c="dimmed">{instruction.popularity}명 사용</Text>
                 <Link href={`/rule/${instruction.id}`}>
                     <Button size="xs" variant="subtle" color="yellow">

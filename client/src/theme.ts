@@ -64,8 +64,8 @@ export const theme = createTheme({
                     backgroundColor: 'var(--mantine-color-body)',
                     transition: 'all var(--motion-base)',
                     '&:hover': {
-                        transform: 'translateY(-4px)',
-                        boxShadow: theme.shadows.md,
+                        transform: 'translateY(-2px)',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
                         borderColor: theme.colors['aurora-gold'][4],
                     },
                 },

@@ -28,7 +28,12 @@
 
     /* Layout */
     --sidebar-width: 280px;
+    --sidebar-collapsed-width: 60px;
     --header-height: 64px;
+    --content-max-width: 1200px;
+    --content-padding: 48px;
+    --section-gap: 48px;
+    --card-gap: 16px;
 
     /* Motion */
     --motion-fast: 0.15s ease;
