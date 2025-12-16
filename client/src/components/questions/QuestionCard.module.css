@@ -1,0 +1,9 @@
+.questionButton {
+    background-color: var(--accent-light);
+    color: #B8963A;
+    transition: background-color var(--motion-fast);
+}
+
+.questionButton:hover {
+    background-color: var(--accent-lighter);
+}
