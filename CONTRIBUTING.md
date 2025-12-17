@@ -1,4 +1,4 @@
-# Contributing to AI Spectrum
+# Contributing to Your AI
 
 Thank you for your interest in contributing to AI Spectrum! This document outlines the standards and guidelines for contributing to this project.
 
