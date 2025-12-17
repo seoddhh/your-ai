@@ -16,6 +16,7 @@ import {
 import {
     IconTrash,
     IconEye,
+    IconUsers,
 } from '@tabler/icons-react';
 import { CustomInstruction, DOMAIN_META } from '@/data/customInstructions';
 import { useAppStore } from '@/store/useAppStore';
@@ -31,12 +32,12 @@ export interface AnswerRuleCardProps {
 }
 
 /**
- * 응답 규칙 카드 - 고정 정보 위계
+ * 응답 규칙 카드 - Professional B2B Style
  * 1. 제목 (가장 강조)
  * 2. 한 줄 설명
  * 3. 태그 (pill)
  * 4. 메타 정보 (사용 수, 작성자)
- * 5. 액션 (저장/비교/상세보기)
+ * 5. 확장 시: 프로필 + 액션
  */
 export default function AnswerRuleCard({
     instruction,
@@ -60,17 +61,29 @@ export default function AnswerRuleCard({
     const cardContent = (
         <Card
             p="lg"
-            radius="md"
+            radius="lg"
             withBorder
             style={{
                 cursor: onToggle ? 'pointer' : 'default',
-                transition: 'all 0.2s ease',
-                borderColor: isExpanded ? 'var(--accent-color)' : '#e8e8e8',
-                backgroundColor: isExpanded ? '#fffdf8' : '#fff',
+                transition: 'all var(--motion-base)',
+                borderColor: isExpanded ? 'var(--accent-color)' : 'var(--border-color)',
+                backgroundColor: 'var(--card-bg)',
+                boxShadow: isExpanded
+                    ? '0 4px 12px rgba(0,0,0,0.08)'
+                    : '0 1px 3px rgba(0,0,0,0.04)',
             }}
             onClick={onToggle}
+            styles={{
+                root: {
+                    '&:hover': {
+                        transform: onToggle ? 'translateY(-2px)' : 'none',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                        borderColor: 'var(--accent-color)',
+                    }
+                }
+            }}
         >
-            {/* 1. 제목 + 도메인 배지 */}
+            {/* 헤더: 제목 + 도메인 배지 */}
             <Group justify="space-between" align="flex-start" mb="sm">
                 <Box style={{ flex: 1 }}>
                     <Group gap="xs" mb={4}>
@@ -89,9 +102,11 @@ export default function AnswerRuleCard({
                     <Badge
                         variant="light"
                         size="sm"
+                        radius="md"
                         style={{
-                            backgroundColor: `${domainMeta?.color || '#ccc'}15`,
-                            color: domainMeta?.color || '#666'
+                            backgroundColor: `${domainMeta?.color || '#ccc'}12`,
+                            color: domainMeta?.color || '#666',
+                            fontWeight: 500,
                         }}
                     >
                         {domainMeta?.label || instruction.domain}
@@ -109,7 +124,7 @@ export default function AnswerRuleCard({
                 </Group>
             </Group>
 
-            {/* 2. 한 줄 설명 */}
+            {/* 설명 */}
             <Text
                 size="sm"
                 c="dimmed"
@@ -120,7 +135,7 @@ export default function AnswerRuleCard({
                 {instruction.description}
             </Text>
 
-            {/* 3. 태그 */}
+            {/* 태그 */}
             {!isCompact && (instruction.tags?.length ?? 0) > 0 && (
                 <Group gap={6} mb="sm">
                     {(instruction.tags || []).slice(0, 3).map((tag) => (
@@ -129,10 +144,11 @@ export default function AnswerRuleCard({
                             size="sm"
                             variant="outline"
                             color="gray"
-                            radius="sm"
+                            radius="md"
                             style={{
                                 fontWeight: 400,
                                 textTransform: 'none',
+                                borderColor: 'var(--border-color)',
                             }}
                         >
                             {tag}
@@ -150,7 +166,7 @@ export default function AnswerRuleCard({
                         exit={{ opacity: 0, height: 0 }}
                         transition={{ duration: 0.2 }}
                     >
-                        <Divider my="md" />
+                        <Divider my="md" color="var(--border-color)" />
 
                         {/* User Profile */}
                         <Box mb="md">
@@ -159,26 +175,26 @@ export default function AnswerRuleCard({
                             </Text>
                             <Paper
                                 p="sm"
-                                radius="sm"
+                                radius="md"
                                 style={{
-                                    backgroundColor: 'var(--gold-light)',
+                                    backgroundColor: 'var(--bg-color)',
                                     fontSize: 13,
                                     lineHeight: 1.7,
                                     whiteSpace: 'pre-wrap',
+                                    border: '1px solid var(--border-color)',
                                 }}
                             >
                                 {instruction.userProfile}
                             </Paper>
                         </Box>
 
-                        {/* 5. 액션 버튼 */}
+                        {/* 액션 버튼 */}
                         <Group mt="md" gap="xs">
                             <Link href={`/rule/${instruction.id}`} onClick={(e) => e.stopPropagation()}>
                                 <Button
                                     size="xs"
                                     variant="filled"
-                                    color="yellow"
-                                    styles={{ root: { backgroundColor: '#E0B861' } }}
+                                    styles={{ root: { backgroundColor: 'var(--accent-color)' } }}
                                     rightSection={<IconEye size={14} />}
                                 >
                                     상세보기
@@ -198,11 +214,19 @@ export default function AnswerRuleCard({
                 )}
             </AnimatePresence>
 
-            {/* 4. 메타 정보 (푸터) */}
-            <Group justify="space-between" mt="md" pt="sm" style={{ borderTop: '1px solid #f0f0f0' }}>
-                <Text size="xs" c="dimmed">
-                    {instruction.popularity}명 사용
-                </Text>
+            {/* 푸터: 메타 정보 */}
+            <Group
+                justify="space-between"
+                mt="md"
+                pt="sm"
+                style={{ borderTop: '1px solid var(--border-color)' }}
+            >
+                <Group gap={6}>
+                    <IconUsers size={14} color="var(--text-secondary)" />
+                    <Text size="xs" c="dimmed">
+                        {instruction.popularity.toLocaleString()}명 사용
+                    </Text>
+                </Group>
                 {instruction.author && (
                     <Text size="xs" c="dimmed">
                         by {instruction.author}

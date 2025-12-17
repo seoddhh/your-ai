@@ -1,114 +1,91 @@
 "use client";
 
-import React, { useState } from 'react';
+import React from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAppStore } from '@/store/useAppStore';
 import {
     Box,
-    Button,
-    Group,
-    ScrollArea,
-    Text,
-    Title,
-    Divider,
-    ThemeIcon,
-    Loader,
     Tooltip,
+    ActionIcon,
+    Stack,
 } from '@mantine/core';
 import {
     IconHome,
     IconGitCompare,
     IconSparkles,
-    IconLogout,
-    IconPlus,
     IconBooks,
-    IconMessageQuestion
+    IconMessageQuestion,
+    IconPencil,
 } from '@tabler/icons-react';
 
-
-// NavItem - hover 시 라벨 표시
-function NavItem({
-    href,
-    icon: Icon,
-    label,
-    isActive,
-    isHovered,
-    onClick
-}: {
+interface NavItemProps {
     href: string;
-    icon: React.ComponentType<{ size: number }>;
+    icon: React.ComponentType<{ size: number; stroke?: number }>;
     label: string;
     isActive: boolean;
-    isHovered: boolean;
-    onClick?: () => void;
-}) {
+}
+
+// NavItem - 투명 배경, 글래스 효과 아이콘
+function NavItem({ href, icon: Icon, label, isActive }: NavItemProps) {
     const router = useRouter();
 
-    const content = (
-        <Box
-            component="button"
-            onClick={() => {
-                if (onClick) onClick();
-                router.push(href);
-            }}
-            mb="xs"
-            style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 12,
-                width: '100%',
-                height: 44,
-                padding: '0 12px',
-                border: 'none',
-                borderRadius: 8,
-                cursor: 'pointer',
-                backgroundColor: isActive ? 'var(--accent-color)' : 'transparent',
-                color: isActive ? '#fff' : 'rgba(255,255,255,0.7)',
-                transition: 'all 0.2s ease',
-                overflow: 'hidden',
-                whiteSpace: 'nowrap',
-            }}
-            onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => {
-                if (!isActive) {
-                    e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)';
-                    e.currentTarget.style.color = '#fff';
-                }
-            }}
-            onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) => {
-                if (!isActive) {
-                    e.currentTarget.style.backgroundColor = 'transparent';
-                    e.currentTarget.style.color = 'rgba(255,255,255,0.7)';
+    return (
+        <Tooltip
+            label={label}
+            position="right"
+            withArrow
+            offset={16}
+            transitionProps={{ transition: 'fade-right', duration: 200 }}
+            styles={{
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.85)',
+                    color: '#fff',
+                    fontSize: 13,
+                    fontWeight: 500,
+                    padding: '10px 14px',
+                    borderRadius: 10,
+                    backdropFilter: 'blur(8px)',
                 }
             }}
         >
-            <Box style={{ flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 20 }}>
-                <Icon size={20} />
-            </Box>
-            <Text
-                size="sm"
-                fw={500}
+            <ActionIcon
+                variant="subtle"
+                size={48}
+                radius="xl"
+                onClick={() => router.push(href)}
                 style={{
-                    opacity: isHovered ? 1 : 0,
-                    transform: isHovered ? 'translateX(0)' : 'translateX(-8px)',
-                    transition: 'opacity 0.2s ease, transform 0.2s ease',
-                    overflow: 'hidden',
+                    color: isActive ? 'var(--accent-color)' : 'rgba(0, 0, 0, 0.5)',
+                    backgroundColor: isActive
+                        ? 'rgba(224, 184, 97, 0.15)'
+                        : 'rgba(255, 255, 255, 0.6)',
+                    backdropFilter: 'blur(12px)',
+                    border: isActive
+                        ? '1px solid rgba(224, 184, 97, 0.3)'
+                        : '1px solid rgba(0, 0, 0, 0.08)',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
+                    transition: 'all 0.2s ease',
+                }}
+                onMouseEnter={(e) => {
+                    if (!isActive) {
+                        e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
+                        e.currentTarget.style.color = 'rgba(0, 0, 0, 0.8)';
+                        e.currentTarget.style.transform = 'scale(1.08)';
+                        e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
+                    }
+                }}
+                onMouseLeave={(e) => {
+                    if (!isActive) {
+                        e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.6)';
+                        e.currentTarget.style.color = 'rgba(0, 0, 0, 0.5)';
+                        e.currentTarget.style.transform = 'scale(1)';
+                        e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.06)';
+                    }
                 }}
             >
-                {label}
-            </Text>
-        </Box>
+                <Icon size={22} stroke={1.5} />
+            </ActionIcon>
+        </Tooltip>
     );
-
-    // 축소 상태에서만 툴팁 표시
-    if (!isHovered) {
-        return (
-            <Tooltip label={label} position="right" withArrow>
-                {content}
-            </Tooltip>
-        );
-    }
-
-    return content;
 }
 
 export default function Sidebar() {
@@ -117,211 +94,124 @@ export default function Sidebar() {
     const setHasSeenLanding = useAppStore((state) => state.setHasSeenLanding);
     const hasHydrated = useAppStore((state) => state._hasHydrated);
 
-    // Hover 상태 관리
-    const [isHovered, setIsHovered] = useState(false);
-
     const isActive = (path: string) => pathname === path;
 
-    // 사이드바 너비 계산
-    const sidebarWidth = isHovered ? 220 : 60;
-
-    // Hydration 전 로딩 상태
+    // Hydration 전 로딩 상태 - 아무것도 렌더링하지 않음
     if (!hasHydrated) {
-        return (
-            <Box
-                component="aside"
-                w={60}
-                h="100vh"
-                style={{
-                    backgroundColor: 'rgba(42, 42, 40, 0.95)',
-                    backdropFilter: 'blur(16px)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                }}
-            >
-                <Loader color="yellow" size="sm" />
-            </Box>
-        );
+        return null;
     }
-
 
     return (
         <Box
             component="aside"
-            h="100vh"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
             style={{
-                width: sidebarWidth,
-                minWidth: sidebarWidth,
-                // Glassmorphism 효과
-                backgroundColor: 'rgba(42, 42, 40, 0.92)',
-                backdropFilter: 'blur(16px)',
-                borderRight: '1px solid rgba(255,255,255,0.08)',
-                position: 'sticky',
-                top: 0,
+                position: 'fixed',
+                left: 20,
+                top: '50%',
+                transform: 'translateY(-50%)',
                 display: 'flex',
                 flexDirection: 'column',
-                overflow: 'hidden',
-                flexShrink: 0,
-                transition: 'width 0.25s ease, min-width 0.25s ease',
-                zIndex: 100,
+                alignItems: 'center',
+                gap: 8,
+                zIndex: 1000,
+                // 배경 완전 투명
+                backgroundColor: 'transparent',
             }}
         >
-            {/* 로고 영역 */}
-            <Box p="md" pb="sm">
-                <Box
-                    style={{
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 10,
-                        overflow: 'hidden',
-                    }}
+            {/* 로고/홈 */}
+            <Tooltip
+                label="Your AI"
+                position="right"
+                withArrow
+                offset={16}
+                transitionProps={{ transition: 'fade-right', duration: 200 }}
+            >
+                <ActionIcon
+                    variant="filled"
+                    size={48}
+                    radius="xl"
                     onClick={() => {
                         setHasSeenLanding(true);
                         router.push('/');
                     }}
+                    style={{
+                        backgroundColor: 'var(--accent-color)',
+                        boxShadow: '0 4px 16px rgba(224, 184, 97, 0.4)',
+                        border: 'none',
+                        marginBottom: 8,
+                    }}
                 >
-                    <ThemeIcon
-                        size={32}
-                        radius="md"
-                        style={{ backgroundColor: 'var(--accent-color)', flexShrink: 0 }}
-                    >
-                        <IconSparkles size={18} color="white" />
-                    </ThemeIcon>
-                    <Title
-                        order={5}
-                        c="white"
-                        style={{
-                            fontFamily: 'var(--font-en)',
-                            opacity: isHovered ? 1 : 0,
-                            transform: isHovered ? 'translateX(0)' : 'translateX(-8px)',
-                            transition: 'opacity 0.2s ease, transform 0.2s ease',
-                            whiteSpace: 'nowrap',
-                        }}
-                    >
-                        Your AI
-                    </Title>
-                </Box>
-            </Box>
+                    <IconSparkles size={22} color="white" />
+                </ActionIcon>
+            </Tooltip>
 
-            <Divider color="rgba(255,255,255,0.08)" />
+            {/* 메인 네비게이션 */}
+            <Stack gap={8} align="center">
+                <NavItem
+                    href="/"
+                    icon={IconHome}
+                    label="홈"
+                    isActive={isActive('/')}
+                />
+                <NavItem
+                    href="/instructions"
+                    icon={IconBooks}
+                    label="응답 규칙 라이브러리"
+                    isActive={isActive('/instructions')}
+                />
+                <NavItem
+                    href="/questions"
+                    icon={IconMessageQuestion}
+                    label="질문 목록"
+                    isActive={isActive('/questions')}
+                />
+                <NavItem
+                    href="/compare"
+                    icon={IconGitCompare}
+                    label="응답 규칙 비교"
+                    isActive={isActive('/compare')}
+                />
+                <NavItem
+                    href="/my-ai"
+                    icon={IconSparkles}
+                    label="나의 AI 만들기"
+                    isActive={isActive('/my-ai')}
+                />
+            </Stack>
 
-            <ScrollArea style={{ flex: 1 }} type="scroll" p="sm">
-                {/* 메인 네비게이션 */}
-                <Box mb="xl">
-                    {isHovered && (
-                        <Text
-                            size="xs"
-                            fw={600}
-                            c="dimmed"
-                            tt="uppercase"
-                            mb="xs"
-                            px="xs"
-                            style={{
-                                opacity: 0.6,
-                                letterSpacing: '0.5px',
-                            }}
-                        >
-                            메뉴
-                        </Text>
-                    )}
-
-                    <NavItem
-                        href="/"
-                        icon={IconHome}
-                        label="홈"
-                        isActive={isActive('/')}
-                        isHovered={isHovered}
-                        onClick={() => setHasSeenLanding(true)}
-                    />
-
-                    <NavItem
-                        href="/register"
-                        icon={IconPlus}
-                        label="응답 규칙 등록"
-                        isActive={isActive('/register')}
-                        isHovered={isHovered}
-                    />
-
-                    <NavItem
-                        href="/instructions"
-                        icon={IconBooks}
-                        label="응답 규칙 라이브러리"
-                        isActive={isActive('/instructions')}
-                        isHovered={isHovered}
-                    />
-
-                    <NavItem
-                        href="/questions"
-                        icon={IconMessageQuestion}
-                        label="질문 목록"
-                        isActive={isActive('/questions')}
-                        isHovered={isHovered}
-                    />
-
-                    <NavItem
-                        href="/compare"
-                        icon={IconGitCompare}
-                        label="응답 규칙 비교"
-                        isActive={isActive('/compare')}
-                        isHovered={isHovered}
-                    />
-
-                    <NavItem
-                        href="/my-ai"
-                        icon={IconSparkles}
-                        label="나의 AI 만들기"
-                        isActive={isActive('/my-ai')}
-                        isHovered={isHovered}
-                    />
-                </Box>
-            </ScrollArea>
-
-            {/* 하단 영역 */}
-            <Box p="sm" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-                {isHovered ? (
-                    <Group justify="space-between" align="center">
-                        <Text size="xs" c="dimmed" style={{ opacity: 0.6 }}>v1.0.0</Text>
-                        <Button
-                            variant="subtle"
-                            size="xs"
-                            color="gray"
-                            leftSection={<IconLogout size={14} />}
-                            onClick={() => setHasSeenLanding(false)}
-                            styles={{
-                                root: { color: 'rgba(255,255,255,0.6)' }
-                            }}
-                        >
-                            처음으로
-                        </Button>
-                    </Group>
-                ) : (
-                    <Tooltip label="처음으로" position="right">
-                        <Box
-                            component="button"
-                            onClick={() => setHasSeenLanding(false)}
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                width: '100%',
-                                height: 36,
-                                border: 'none',
-                                borderRadius: 8,
-                                cursor: 'pointer',
-                                backgroundColor: 'transparent',
-                                color: 'rgba(255,255,255,0.5)',
-                                transition: 'all 0.2s ease',
-                            }}
-                        >
-                            <IconLogout size={18} />
-                        </Box>
-                    </Tooltip>
-                )}
-            </Box>
+            {/* 하단 FAB - 응답 규칙 등록 */}
+            <Tooltip
+                label="응답 규칙 등록"
+                position="right"
+                withArrow
+                offset={16}
+                transitionProps={{ transition: 'fade-right', duration: 200 }}
+            >
+                <ActionIcon
+                    variant="filled"
+                    size={48}
+                    radius="xl"
+                    onClick={() => router.push('/register')}
+                    style={{
+                        backgroundColor: 'rgba(26, 26, 26, 0.9)',
+                        backdropFilter: 'blur(12px)',
+                        boxShadow: '0 4px 16px rgba(0, 0, 0, 0.2)',
+                        border: '1px solid rgba(255, 255, 255, 0.1)',
+                        marginTop: 8,
+                        transition: 'all 0.2s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'scale(1.08)';
+                        e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.3)';
+                    }}
+                    onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'scale(1)';
+                        e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.2)';
+                    }}
+                >
+                    <IconPencil size={20} color="white" />
+                </ActionIcon>
+            </Tooltip>
         </Box>
     );
 }
