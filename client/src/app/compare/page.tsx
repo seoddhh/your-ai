@@ -30,7 +30,7 @@ import {
     IconPlus,
     IconChevronDown
 } from '@tabler/icons-react';
-import Sidebar from '@/components/layout/Sidebar';
+
 
 // ============================================================
 // 안전한 더미 데이터 (외부 의존성 없이 내재화)
@@ -185,7 +185,6 @@ function ComparePageContent() {
         return (
             <Box style={{
                 minHeight: '100vh',
-                backgroundColor: '#fdfdf2',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center'
@@ -196,272 +195,269 @@ function ComparePageContent() {
     }
 
     return (
-        <div className="app-container">
-            <Sidebar />
-            <main className="main-content" style={{ backgroundColor: '#fdfdf2', minHeight: '100vh' }}>
-                {/* Sticky Header */}
-                <Box
-                    py="lg"
-                    px="xl"
-                    style={{
-                        backgroundColor: '#fff',
-                        borderBottom: '1px solid var(--border-color)',
-                    }}
+        <Box py="xl" style={{ paddingLeft: 180, paddingRight: 180 }}>
+            {/* Sticky Header */}
+            <Box
+                py="lg"
+                px="xl"
+                style={{
+                    backgroundColor: '#fff',
+                    borderBottom: '1px solid var(--border-color)',
+                }}
+            >
+                <Group justify="space-between" align="center">
+                    <div>
+                        <Title order={2}>응답 규칙 비교</Title>
+                        <Text size="sm" c="dimmed">
+                            같은 질문, 다른 응답 규칙으로 AI 응답 비교하기
+                        </Text>
+                    </div>
+                    <Badge color="yellow" variant="light" size="lg">Beta</Badge>
+                </Group>
+            </Box>
+
+            <Box px="xl" py="xl">
+                {/* Control Panel */}
+                <Paper
+                    p="xl"
+                    radius="lg"
+                    withBorder
+                    mb="xl"
+                    style={{ backgroundColor: '#fff' }}
                 >
-                    <Group justify="space-between" align="center">
-                        <div>
-                            <Title order={2}>응답 규칙 비교</Title>
-                            <Text size="sm" c="dimmed">
-                                같은 질문, 다른 응답 규칙으로 AI 응답 비교하기
-                            </Text>
-                        </div>
-                        <Badge color="yellow" variant="light" size="lg">Beta</Badge>
-                    </Group>
-                </Box>
-
-                <Box px="xl" py="xl">
-                    {/* Control Panel */}
-                    <Paper
-                        p="xl"
-                        radius="lg"
-                        withBorder
-                        mb="xl"
-                        style={{ backgroundColor: '#fff' }}
-                    >
-                        <Stack gap="lg">
-                            {/* Step 1: Select Instructions */}
-                            <Box>
-                                <Text fw={700} mb="sm" size="lg">
-                                    1. 비교할 페르소나 선택 <Text span c="dimmed" size="sm">(최대 3개)</Text>
-                                </Text>
-                                <Group align="flex-start" gap="md">
-                                    {selectedIds.map(id => {
-                                        const inst = INSTRUCTIONS.find(i => i.id === id);
-                                        if (!inst) return null;
-                                        const color = DOMAIN_COLORS[inst.domain];
-                                        const label = DOMAIN_LABELS[inst.domain];
-
-                                        return (
-                                            <Card
-                                                key={id}
-                                                withBorder
-                                                shadow="sm"
-                                                radius="md"
-                                                padding="sm"
-                                                w={200}
-                                                style={{ borderColor: color, borderWidth: 2 }}
-                                            >
-                                                <Group justify="space-between" align="start" mb="xs">
-                                                    <ActionIcon
-                                                        variant="subtle"
-                                                        color="gray"
-                                                        size="sm"
-                                                        onClick={() => handleRemoveInstruction(id)}
-                                                    >
-                                                        <IconX size={16} />
-                                                    </ActionIcon>
-                                                </Group>
-                                                <Text fw={600} size="sm" lineClamp={1}>{inst.name}</Text>
-                                                <Text size="xs" c="dimmed" lineClamp={1}>{inst.description}</Text>
-                                                <Badge
-                                                    size="xs"
-                                                    variant="light"
-                                                    mt={6}
-                                                    style={{ backgroundColor: `${color}20`, color: color }}
-                                                >
-                                                    {label}
-                                                </Badge>
-                                            </Card>
-                                        );
-                                    })}
-
-                                    {selectedIds.length < 3 && (
-                                        <Menu shadow="md" width={220}>
-                                            <Menu.Target>
-                                                <Button
-                                                    variant="outline"
-                                                    color="yellow"
-                                                    w={200}
-                                                    h={100}
-                                                    leftSection={<IconPlus size={18} />}
-                                                    rightSection={<IconChevronDown size={16} />}
-                                                    styles={{
-                                                        root: {
-                                                            borderStyle: 'dashed',
-                                                            borderColor: '#E0B861',
-                                                        }
-                                                    }}
-                                                >
-                                                    페르소나 추가
-                                                </Button>
-                                            </Menu.Target>
-                                            <Menu.Dropdown>
-                                                {availableInstructions.map(inst => (
-                                                    <Menu.Item
-                                                        key={inst.id}
-                                                        onClick={() => handleAddInstruction(inst.id)}
-                                                    >
-                                                        <Text size="sm" fw={500}>{inst.name}</Text>
-                                                        <Text size="xs" c="dimmed">{DOMAIN_LABELS[inst.domain]}</Text>
-                                                    </Menu.Item>
-                                                ))}
-                                            </Menu.Dropdown>
-                                        </Menu>
-                                    )}
-                                </Group>
-                            </Box>
-
-                            <Divider />
-
-                            {/* Step 2: Enter Question */}
-                            <Box>
-                                <Text fw={700} mb="sm" size="lg">2. 질문 입력</Text>
-                                <Group gap="xs" mb="sm">
-                                    {SAMPLE_QUESTIONS.map((q, i) => (
-                                        <Button
-                                            key={i}
-                                            variant="subtle"
-                                            size="xs"
-                                            color="gray"
-                                            radius="xl"
-                                            onClick={() => setQuestion(q)}
-                                        >
-                                            {q}
-                                        </Button>
-                                    ))}
-                                </Group>
-                                <Group align="flex-start" gap="md">
-                                    <Textarea
-                                        placeholder="어떤 내용이 궁금하신가요?"
-                                        value={question}
-                                        onChange={(e) => setQuestion(e.currentTarget.value)}
-                                        minRows={3}
-                                        autosize
-                                        style={{ flex: 1 }}
-                                        styles={{
-                                            input: { fontSize: 16 }
-                                        }}
-                                    />
-                                    <Button
-                                        size="lg"
-                                        h={86}
-                                        px="xl"
-                                        onClick={handleGenerate}
-                                        loading={isGenerating}
-                                        disabled={selectedIds.length === 0 || !question.trim()}
-                                        leftSection={<IconSparkles size={20} />}
-                                        styles={{
-                                            root: {
-                                                backgroundColor: '#E0B861',
-                                            }
-                                        }}
-                                    >
-                                        비교하기
-                                    </Button>
-                                </Group>
-                            </Box>
-                        </Stack>
-                    </Paper>
-
-                    {/* Comparison Results */}
-                    {selectedIds.length > 0 && (
+                    <Stack gap="lg">
+                        {/* Step 1: Select Instructions */}
                         <Box>
-                            <Title order={4} mb="lg">
-                                {Object.keys(responses).length > 0 ? '비교 결과' : '응답 대기 중...'}
-                            </Title>
-                            <SimpleGrid
-                                cols={{ base: 1, sm: 2, lg: Math.min(selectedIds.length, 3) }}
-                                spacing="lg"
-                            >
+                            <Text fw={700} mb="sm" size="lg">
+                                1. 비교할 페르소나 선택 <Text span c="dimmed" size="sm">(최대 3개)</Text>
+                            </Text>
+                            <Group align="flex-start" gap="md">
                                 {selectedIds.map(id => {
                                     const inst = INSTRUCTIONS.find(i => i.id === id);
                                     if (!inst) return null;
                                     const color = DOMAIN_COLORS[inst.domain];
                                     const label = DOMAIN_LABELS[inst.domain];
-                                    const response = responses[id];
 
                                     return (
-                                        <motion.div
+                                        <Card
                                             key={id}
-                                            initial={{ opacity: 0, y: 20 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            transition={{ duration: 0.3 }}
+                                            withBorder
+                                            shadow="sm"
+                                            radius="md"
+                                            padding="sm"
+                                            w={200}
+                                            style={{ borderColor: color, borderWidth: 2 }}
                                         >
-                                            <Card
-                                                radius="lg"
-                                                withBorder
-                                                padding={0}
-                                                style={{
-                                                    borderColor: color,
-                                                    borderWidth: 2,
-                                                    height: '100%',
-                                                    display: 'flex',
-                                                    flexDirection: 'column',
-                                                    overflow: 'hidden'
-                                                }}
-                                            >
-                                                {/* Card Header */}
-                                                <Box
-                                                    p="md"
-                                                    style={{
-                                                        backgroundColor: `${color}10`,
-                                                        borderBottom: `1px solid ${color}30`
-                                                    }}
+                                            <Group justify="space-between" align="start" mb="xs">
+                                                <ActionIcon
+                                                    variant="subtle"
+                                                    color="gray"
+                                                    size="sm"
+                                                    onClick={() => handleRemoveInstruction(id)}
                                                 >
-                                                    <Group gap="sm">
-                                                        <div>
-                                                            <Text fw={700} size="sm">{inst.name}</Text>
-                                                            <Badge
-                                                                size="xs"
-                                                                variant="light"
-                                                                style={{
-                                                                    backgroundColor: `${color}20`,
-                                                                    color: color
-                                                                }}
-                                                            >
-                                                                {label}
-                                                            </Badge>
-                                                        </div>
-                                                    </Group>
-                                                </Box>
-
-                                                {/* Card Body */}
-                                                <Box p="md" style={{ flex: 1, minHeight: 300 }}>
-                                                    {response ? (
-                                                        <motion.div
-                                                            initial={{ opacity: 0 }}
-                                                            animate={{ opacity: 1 }}
-                                                        >
-                                                            <Text
-                                                                size="sm"
-                                                                style={{
-                                                                    whiteSpace: 'pre-wrap',
-                                                                    lineHeight: 1.7
-                                                                }}
-                                                            >
-                                                                {response}
-                                                            </Text>
-                                                        </motion.div>
-                                                    ) : (
-                                                        <Stack align="center" justify="center" h="100%">
-                                                            <IconRobot size={40} color="#adb5bd" style={{ opacity: 0.5 }} />
-                                                            <Text size="sm" c="dimmed">
-                                                                {isGenerating ? '답변 생성 중...' : '질문을 입력하고 비교하기를 누르세요'}
-                                                            </Text>
-                                                            {isGenerating && <Loader color="yellow" size="sm" type="dots" />}
-                                                        </Stack>
-                                                    )}
-                                                </Box>
-                                            </Card>
-                                        </motion.div>
+                                                    <IconX size={16} />
+                                                </ActionIcon>
+                                            </Group>
+                                            <Text fw={600} size="sm" lineClamp={1}>{inst.name}</Text>
+                                            <Text size="xs" c="dimmed" lineClamp={1}>{inst.description}</Text>
+                                            <Badge
+                                                size="xs"
+                                                variant="light"
+                                                mt={6}
+                                                style={{ backgroundColor: `${color}20`, color: color }}
+                                            >
+                                                {label}
+                                            </Badge>
+                                        </Card>
                                     );
                                 })}
-                            </SimpleGrid>
+
+                                {selectedIds.length < 3 && (
+                                    <Menu shadow="md" width={220}>
+                                        <Menu.Target>
+                                            <Button
+                                                variant="outline"
+                                                color="yellow"
+                                                w={200}
+                                                h={100}
+                                                leftSection={<IconPlus size={18} />}
+                                                rightSection={<IconChevronDown size={16} />}
+                                                styles={{
+                                                    root: {
+                                                        borderStyle: 'dashed',
+                                                        borderColor: '#E0B861',
+                                                    }
+                                                }}
+                                            >
+                                                페르소나 추가
+                                            </Button>
+                                        </Menu.Target>
+                                        <Menu.Dropdown>
+                                            {availableInstructions.map(inst => (
+                                                <Menu.Item
+                                                    key={inst.id}
+                                                    onClick={() => handleAddInstruction(inst.id)}
+                                                >
+                                                    <Text size="sm" fw={500}>{inst.name}</Text>
+                                                    <Text size="xs" c="dimmed">{DOMAIN_LABELS[inst.domain]}</Text>
+                                                </Menu.Item>
+                                            ))}
+                                        </Menu.Dropdown>
+                                    </Menu>
+                                )}
+                            </Group>
                         </Box>
-                    )}
-                </Box>
-            </main>
-        </div>
+
+                        <Divider />
+
+                        {/* Step 2: Enter Question */}
+                        <Box>
+                            <Text fw={700} mb="sm" size="lg">2. 질문 입력</Text>
+                            <Group gap="xs" mb="sm">
+                                {SAMPLE_QUESTIONS.map((q, i) => (
+                                    <Button
+                                        key={i}
+                                        variant="subtle"
+                                        size="xs"
+                                        color="gray"
+                                        radius="xl"
+                                        onClick={() => setQuestion(q)}
+                                    >
+                                        {q}
+                                    </Button>
+                                ))}
+                            </Group>
+                            <Group align="flex-start" gap="md">
+                                <Textarea
+                                    placeholder="어떤 내용이 궁금하신가요?"
+                                    value={question}
+                                    onChange={(e) => setQuestion(e.currentTarget.value)}
+                                    minRows={3}
+                                    autosize
+                                    style={{ flex: 1 }}
+                                    styles={{
+                                        input: { fontSize: 16 }
+                                    }}
+                                />
+                                <Button
+                                    size="lg"
+                                    h={86}
+                                    px="xl"
+                                    onClick={handleGenerate}
+                                    loading={isGenerating}
+                                    disabled={selectedIds.length === 0 || !question.trim()}
+                                    leftSection={<IconSparkles size={20} />}
+                                    styles={{
+                                        root: {
+                                            backgroundColor: '#E0B861',
+                                        }
+                                    }}
+                                >
+                                    비교하기
+                                </Button>
+                            </Group>
+                        </Box>
+                    </Stack>
+                </Paper>
+
+                {/* Comparison Results */}
+                {selectedIds.length > 0 && (
+                    <Box>
+                        <Title order={4} mb="lg">
+                            {Object.keys(responses).length > 0 ? '비교 결과' : '응답 대기 중...'}
+                        </Title>
+                        <SimpleGrid
+                            cols={{ base: 1, sm: 2, lg: Math.min(selectedIds.length, 3) }}
+                            spacing="lg"
+                        >
+                            {selectedIds.map(id => {
+                                const inst = INSTRUCTIONS.find(i => i.id === id);
+                                if (!inst) return null;
+                                const color = DOMAIN_COLORS[inst.domain];
+                                const label = DOMAIN_LABELS[inst.domain];
+                                const response = responses[id];
+
+                                return (
+                                    <motion.div
+                                        key={id}
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ duration: 0.3 }}
+                                    >
+                                        <Card
+                                            radius="lg"
+                                            withBorder
+                                            padding={0}
+                                            style={{
+                                                borderColor: color,
+                                                borderWidth: 2,
+                                                height: '100%',
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                overflow: 'hidden'
+                                            }}
+                                        >
+                                            {/* Card Header */}
+                                            <Box
+                                                p="md"
+                                                style={{
+                                                    backgroundColor: `${color}10`,
+                                                    borderBottom: `1px solid ${color}30`
+                                                }}
+                                            >
+                                                <Group gap="sm">
+                                                    <div>
+                                                        <Text fw={700} size="sm">{inst.name}</Text>
+                                                        <Badge
+                                                            size="xs"
+                                                            variant="light"
+                                                            style={{
+                                                                backgroundColor: `${color}20`,
+                                                                color: color
+                                                            }}
+                                                        >
+                                                            {label}
+                                                        </Badge>
+                                                    </div>
+                                                </Group>
+                                            </Box>
+
+                                            {/* Card Body */}
+                                            <Box p="md" style={{ flex: 1, minHeight: 300 }}>
+                                                {response ? (
+                                                    <motion.div
+                                                        initial={{ opacity: 0 }}
+                                                        animate={{ opacity: 1 }}
+                                                    >
+                                                        <Text
+                                                            size="sm"
+                                                            style={{
+                                                                whiteSpace: 'pre-wrap',
+                                                                lineHeight: 1.7
+                                                            }}
+                                                        >
+                                                            {response}
+                                                        </Text>
+                                                    </motion.div>
+                                                ) : (
+                                                    <Stack align="center" justify="center" h="100%">
+                                                        <IconRobot size={40} color="#adb5bd" style={{ opacity: 0.5 }} />
+                                                        <Text size="sm" c="dimmed">
+                                                            {isGenerating ? '답변 생성 중...' : '질문을 입력하고 비교하기를 누르세요'}
+                                                        </Text>
+                                                        {isGenerating && <Loader color="yellow" size="sm" type="dots" />}
+                                                    </Stack>
+                                                )}
+                                            </Box>
+                                        </Card>
+                                    </motion.div>
+                                );
+                            })}
+                        </SimpleGrid>
+                    </Box>
+                )}
+            </Box>
+        </Box>
     );
 }
 

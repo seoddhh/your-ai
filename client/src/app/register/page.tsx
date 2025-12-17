@@ -20,7 +20,7 @@ import {
 import { IconArrowLeft, IconPlus } from '@tabler/icons-react';
 import { useAppStore } from '@/store/useAppStore';
 import { Domain, DOMAIN_META } from '@/data/customInstructions';
-import Sidebar from '@/components/layout/Sidebar';
+
 
 // 도메인 옵션 생성 (이모지 제거)
 const DOMAIN_OPTIONS = Object.entries(DOMAIN_META).map(([key, value]) => ({
@@ -92,188 +92,174 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="app-container">
-            <Sidebar />
-            <main className="main-content" style={{ backgroundColor: '#fff' }}>
-                {/* 헤더 */}
-                <Box
-                    py="lg"
-                    px="xl"
-                    style={{
-                        borderBottom: '1px solid var(--border-color)',
-                        backgroundColor: '#fff',
-                    }}
-                >
-                    <Group justify="space-between" align="center">
+        <Box py="xl" style={{ paddingLeft: 180, paddingRight: 180 }}>
+            {/* 헤더 */}
+            <Box mb="xl">
+                <Title order={2} fw={700} mb={4}>응답 규칙 등록</Title>
+                <Text size="sm" c="dimmed">
+                    나만의 AI 응답 규칙을 등록하고 공유하세요
+                </Text>
+            </Box>
+
+            {/* 폼 영역 */}
+            <Box>
+                <Paper p="xl" radius="lg" withBorder>
+                    <Stack gap="lg">
+                        {/* 기본 정보 */}
                         <div>
-                            <Title order={2}>응답 규칙 등록</Title>
-                            <Text size="sm" c="dimmed">
-                                나만의 AI 응답 규칙을 등록하고 공유하세요
-                            </Text>
-                        </div>
-                    </Group>
-                </Box>
-
-                {/* 폼 영역 */}
-                <Box px="xl" py="xl">
-                    <Paper p="xl" radius="lg" withBorder>
-                        <Stack gap="lg">
-                            {/* 기본 정보 */}
-                            <div>
-                                <Text fw={600} mb="md">기본 정보</Text>
-                                <Stack gap="md">
-                                    <Group grow>
-                                        <TextInput
-                                            label="응답 규칙 이름"
-                                            placeholder="예: 풀스택 개발자를 위한 응답 규칙"
-                                            required
-                                            value={name}
-                                            onChange={(e) => setName(e.target.value)}
-                                        />
-                                        <Select
-                                            label="직업"
-                                            placeholder="선택"
-                                            required
-                                            data={JOB_OPTIONS}
-                                            value={emoji}
-                                            onChange={setEmoji}
-                                        />
-                                    </Group>
-
-                                    <Group grow>
-                                        <Select
-                                            label="도메인"
-                                            placeholder="분야를 선택하세요"
-                                            required
-                                            data={DOMAIN_OPTIONS}
-                                            value={domain}
-                                            onChange={setDomain}
-                                        />
-                                        <TextInput
-                                            label="대상 역할"
-                                            placeholder="예: 3년차 백엔드 개발자"
-                                            required
-                                            value={targetRole}
-                                            onChange={(e) => setTargetRole(e.target.value)}
-                                        />
-                                    </Group>
-
-                                    <Textarea
-                                        label="설명"
-                                        placeholder="이 응답 규칙이 어떤 상황에 유용한지 간단히 설명해주세요"
+                            <Text fw={600} mb="md">기본 정보</Text>
+                            <Stack gap="md">
+                                <Group grow>
+                                    <TextInput
+                                        label="응답 규칙 이름"
+                                        placeholder="예: 풀스택 개발자를 위한 응답 규칙"
                                         required
-                                        minRows={2}
-                                        value={description}
-                                        onChange={(e) => setDescription(e.target.value)}
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
                                     />
-                                </Stack>
-                            </div>
+                                    <Select
+                                        label="직업"
+                                        placeholder="선택"
+                                        required
+                                        data={JOB_OPTIONS}
+                                        value={emoji}
+                                        onChange={setEmoji}
+                                    />
+                                </Group>
 
-                            <Divider />
+                                <Group grow>
+                                    <Select
+                                        label="도메인"
+                                        placeholder="분야를 선택하세요"
+                                        required
+                                        data={DOMAIN_OPTIONS}
+                                        value={domain}
+                                        onChange={setDomain}
+                                    />
+                                    <TextInput
+                                        label="대상 역할"
+                                        placeholder="예: 3년차 백엔드 개발자"
+                                        required
+                                        value={targetRole}
+                                        onChange={(e) => setTargetRole(e.target.value)}
+                                    />
+                                </Group>
 
-                            {/* 사용자 프로필 */}
-                            <div>
-                                <Text fw={600} mb="xs">사용자 프로필</Text>
-                                <Text size="sm" c="dimmed" mb="md">
-                                    ChatGPT의 &quot;What would you like ChatGPT to know about you?&quot; 영역에 해당합니다.
-                                </Text>
                                 <Textarea
-                                    placeholder={`예시:
+                                    label="설명"
+                                    placeholder="이 응답 규칙이 어떤 상황에 유용한지 간단히 설명해주세요"
+                                    required
+                                    minRows={2}
+                                    value={description}
+                                    onChange={(e) => setDescription(e.target.value)}
+                                />
+                            </Stack>
+                        </div>
+
+                        <Divider />
+
+                        {/* 사용자 프로필 */}
+                        <div>
+                            <Text fw={600} mb="xs">사용자 프로필</Text>
+                            <Text size="sm" c="dimmed" mb="md">
+                                ChatGPT의 &quot;What would you like ChatGPT to know about you?&quot; 영역에 해당합니다.
+                            </Text>
+                            <Textarea
+                                placeholder={`예시:
 저는 3년차 풀스택 개발자입니다. 주로 React, Next.js, Node.js, TypeScript를 사용합니다.
 클린 코드와 최적화된 솔루션을 선호하며, 실전에서 바로 적용 가능한 코드를 원합니다.`}
-                                    required
-                                    minRows={5}
-                                    autosize
-                                    value={userProfile}
-                                    onChange={(e) => setUserProfile(e.target.value)}
-                                    styles={{
-                                        input: {
-                                            backgroundColor: '#fefcf8',
-                                        }
-                                    }}
-                                />
-                            </div>
+                                required
+                                minRows={5}
+                                autosize
+                                value={userProfile}
+                                onChange={(e) => setUserProfile(e.target.value)}
+                                styles={{
+                                    input: {
+                                        backgroundColor: '#fefcf8',
+                                    }
+                                }}
+                            />
+                        </div>
 
-                            <Divider />
+                        <Divider />
 
-                            {/* 응답 방식 선호 */}
-                            <div>
-                                <Text fw={600} mb="xs">응답 방식 선호</Text>
-                                <Text size="sm" c="dimmed" mb="md">
-                                    ChatGPT의 &quot;How would you like ChatGPT to respond?&quot; 영역에 해당합니다.
-                                </Text>
-                                <Textarea
-                                    placeholder={`예시:
+                        {/* 응답 방식 선호 */}
+                        <div>
+                            <Text fw={600} mb="xs">응답 방식 선호</Text>
+                            <Text size="sm" c="dimmed" mb="md">
+                                ChatGPT의 &quot;How would you like ChatGPT to respond?&quot; 영역에 해당합니다.
+                            </Text>
+                            <Textarea
+                                placeholder={`예시:
 1. 코드 예제를 먼저 보여주세요
 2. TypeScript를 사용하고 타입 정의를 포함해주세요
 3. 에러 핸들링과 엣지 케이스를 고려해주세요
 4. 불필요한 설명은 생략하고 핵심만 전달해주세요
 5. 성능 최적화 팁이 있다면 함께 알려주세요`}
-                                    required
-                                    minRows={5}
-                                    autosize
-                                    value={responsePreference}
-                                    onChange={(e) => setResponsePreference(e.target.value)}
-                                    styles={{
-                                        input: {
-                                            backgroundColor: '#f8f9fa',
-                                        }
-                                    }}
-                                />
-                            </div>
+                                required
+                                minRows={5}
+                                autosize
+                                value={responsePreference}
+                                onChange={(e) => setResponsePreference(e.target.value)}
+                                styles={{
+                                    input: {
+                                        backgroundColor: '#f8f9fa',
+                                    }
+                                }}
+                            />
+                        </div>
 
-                            <Divider />
+                        <Divider />
 
-                            {/* 태그 */}
-                            <div>
-                                <Text fw={600} mb="xs">태그</Text>
-                                <Text size="sm" c="dimmed" mb="md">
-                                    쉼표(,)로 구분하여 입력하세요
-                                </Text>
-                                <TextInput
-                                    placeholder="예: 코드 위주, 간결함, TypeScript, 실용적"
-                                    value={tagsInput}
-                                    onChange={(e) => setTagsInput(e.target.value)}
-                                />
-                                {tagsInput && (
-                                    <Group gap="xs" mt="sm">
-                                        {tagsInput.split(',').map((tag, idx) => (
-                                            tag.trim() && (
-                                                <Badge key={idx} variant="outline" color="gray">
-                                                    {tag.trim()}
-                                                </Badge>
-                                            )
-                                        ))}
-                                    </Group>
-                                )}
-                            </div>
+                        {/* 태그 */}
+                        <div>
+                            <Text fw={600} mb="xs">태그</Text>
+                            <Text size="sm" c="dimmed" mb="md">
+                                쉼표(,)로 구분하여 입력하세요
+                            </Text>
+                            <TextInput
+                                placeholder="예: 코드 위주, 간결함, TypeScript, 실용적"
+                                value={tagsInput}
+                                onChange={(e) => setTagsInput(e.target.value)}
+                            />
+                            {tagsInput && (
+                                <Group gap="xs" mt="sm">
+                                    {tagsInput.split(',').map((tag, idx) => (
+                                        tag.trim() && (
+                                            <Badge key={idx} variant="outline" color="gray">
+                                                {tag.trim()}
+                                            </Badge>
+                                        )
+                                    ))}
+                                </Group>
+                            )}
+                        </div>
 
-                            <Divider />
+                        <Divider />
 
-                            {/* 제출 버튼 */}
-                            <Group justify="flex-end">
-                                <Button
-                                    variant="light"
-                                    color="gray"
-                                    onClick={() => router.back()}
-                                >
-                                    취소
-                                </Button>
-                                <Button
-                                    variant="filled"
-                                    color="yellow"
-                                    leftSection={<IconPlus size={18} />}
-                                    onClick={handleSubmit}
-                                    loading={isSubmitting}
-                                    styles={{ root: { backgroundColor: '#E0B861' } }}
-                                >
-                                    등록하기
-                                </Button>
-                            </Group>
-                        </Stack>
-                    </Paper>
-                </Box>
-            </main>
-        </div>
+                        {/* 제출 버튼 */}
+                        <Group justify="flex-end">
+                            <Button
+                                variant="light"
+                                color="gray"
+                                onClick={() => router.back()}
+                            >
+                                취소
+                            </Button>
+                            <Button
+                                variant="filled"
+                                color="yellow"
+                                leftSection={<IconPlus size={18} />}
+                                onClick={handleSubmit}
+                                loading={isSubmitting}
+                                styles={{ root: { backgroundColor: '#E0B861' } }}
+                            >
+                                등록하기
+                            </Button>
+                        </Group>
+                    </Stack>
+                </Paper>
+            </Box>
+        </Box>
     );
 }

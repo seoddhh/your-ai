@@ -3,6 +3,7 @@ import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import "@mantine/core/styles.css";
 import { Providers } from "@/components/Providers";
+import Sidebar from "@/components/layout/Sidebar";
 
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
@@ -31,7 +32,20 @@ export default function RootLayout({
       </head>
       <body className={`${jetbrainsMono.variable} antialiased`}>
         <Providers>
-          {children}
+          <div style={{
+            minHeight: '100vh',
+            backgroundColor: 'var(--bg-color)',
+          }}>
+            {/* 플로팅 사이드바 - 배경 없이 아이콘만 */}
+            <Sidebar />
+
+            {/* 메인 콘텐츠 영역 - 사이드바 margin 없음 */}
+            <main style={{
+              minHeight: '100vh',
+            }}>
+              {children}
+            </main>
+          </div>
         </Providers>
       </body>
     </html>

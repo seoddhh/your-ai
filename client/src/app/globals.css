@@ -1,4 +1,5 @@
-/* Wanted Sans 폰트 - 반드시 최상단에 위치 */
+/* Wanted Sans 폰트 */
+
 @import url('https://cdn.jsdelivr.net/gh/wanteddev/wanted-sans@v1.0.1/packages/wanted-sans/fonts/webfonts/variable/split/WantedSansVariable.min.css');
 
 /* Tailwind: utilities만 사용 (preflight 제외, Mantine baseline 우선) */
@@ -11,29 +12,40 @@
     --font-en: var(--font-jetbrains-mono), Consolas, monospace;
     --font-kr: var(--font-main);
 
-    /* Colors - Aurora Gold Theme */
-    --bg-color: ##f0eee9;
-    --sidebar-bg: #2a2a28;
-    --sidebar-text: #c9c9c0;
+    /* Colors - Professional B2B Theme */
+    --bg-color: #F0F2F5;
+    /* Cloud Dancer - Global Background */
+    --sidebar-bg: #1a1a1a;
+    /* Dark Black Sidebar */
+    --sidebar-text: #a0a0a0;
+    --sidebar-text-hover: #ffffff;
     --card-bg: #ffffff;
-    --text-primary: #2a2a28;
-    --text-secondary: #5a5a52;
+    /* Pure White Cards */
+    --text-primary: #1a1a1a;
+    --text-secondary: #6b7280;
     --accent-color: #E0B861;
+    /* Aurora Gold */
     --accent-hover: #c9a254;
     --accent-light: rgba(224, 184, 97, 0.15);
-    --accent-lighter: rgba(224, 184, 97, 0.2);
-    --border-color: #e8e4d9;
+    --accent-lighter: rgba(224, 184, 97, 0.08);
+    --border-color: #e5e7eb;
     --gold-light: #faf7e8;
     --gold-medium: #E4C778;
 
     /* Layout */
-    --sidebar-width: 280px;
+    --sidebar-width: 72px;
+    /* Icon-only sidebar */
     --header-height: 64px;
+    --content-padding-x: 180px;
+    /* Horizontal padding */
+    --content-padding-y: 48px;
+    --section-gap: 48px;
+    --card-gap: 16px;
 
     /* Motion */
     --motion-fast: 0.15s ease;
-    --motion-base: 0.25s ease;
-    --motion-slow: 0.4s ease;
+    --motion-base: 0.2s ease;
+    --motion-slow: 0.3s ease;
 }
 
 @theme inline {

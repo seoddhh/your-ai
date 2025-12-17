@@ -1,311 +1,217 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAppStore } from '@/store/useAppStore';
 import {
     Box,
-    Button,
-    Group,
-    ScrollArea,
-    Text,
-    Title,
-    Divider,
-    ThemeIcon,
-    Loader,
     Tooltip,
-    ActionIcon
+    ActionIcon,
+    Stack,
 } from '@mantine/core';
 import {
     IconHome,
-    IconMessageCircle,
     IconGitCompare,
     IconSparkles,
-    IconLogout,
-    IconPlus,
-    IconChevronLeft,
-    IconChevronRight,
     IconBooks,
-    IconMessageQuestion
+    IconMessageQuestion,
+    IconPencil,
 } from '@tabler/icons-react';
 
-
-// NavItem 컴포넌트 - 사이드바 상태에 따라 축소/확장
-function NavItem({
-    href,
-    icon: Icon,
-    label,
-    isActive,
-    isCollapsed,
-    onClick
-}: {
+interface NavItemProps {
     href: string;
-    icon: React.ComponentType<{ size: number }>;
+    icon: React.ComponentType<{ size: number; stroke?: number }>;
     label: string;
     isActive: boolean;
-    isCollapsed: boolean;
-    onClick?: () => void;
-}) {
+}
+
+// NavItem - 투명 배경, 글래스 효과 아이콘
+function NavItem({ href, icon: Icon, label, isActive }: NavItemProps) {
     const router = useRouter();
 
-    const content = (
-        <Box
-            component="button"
-            onClick={() => {
-                if (onClick) onClick();
-                router.push(href);
-            }}
-            mb="xs"
-            style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 12,
-                width: '100%',
-                height: 48,
-                padding: '0 12px',
-                border: 'none',
-                borderRadius: 8,
-                cursor: 'pointer',
-                backgroundColor: isActive ? 'var(--accent-color)' : 'transparent',
-                color: isActive ? '#fff' : 'var(--sidebar-text)',
-                transition: 'background-color var(--motion-fast)',
-                overflow: 'hidden',
-                whiteSpace: 'nowrap',
-            }}
-            onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => {
-                if (!isActive) {
-                    e.currentTarget.style.backgroundColor = 'var(--accent-lighter)';
-                    e.currentTarget.style.color = '#fff';
-                }
-            }}
-            onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) => {
-                if (!isActive) {
-                    e.currentTarget.style.backgroundColor = 'transparent';
-                    e.currentTarget.style.color = 'var(--sidebar-text)';
+    return (
+        <Tooltip
+            label={label}
+            position="right"
+            withArrow
+            offset={16}
+            transitionProps={{ transition: 'fade-right', duration: 200 }}
+            styles={{
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.85)',
+                    color: '#fff',
+                    fontSize: 13,
+                    fontWeight: 500,
+                    padding: '10px 14px',
+                    borderRadius: 10,
+                    backdropFilter: 'blur(8px)',
                 }
             }}
         >
-            <Box style={{ flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 18 }}>
-                <Icon size={18} />
-            </Box>
-            <Text
-                size="sm"
-                fw={500}
+            <ActionIcon
+                variant="subtle"
+                size={48}
+                radius="xl"
+                onClick={() => router.push(href)}
                 style={{
-                    opacity: isCollapsed ? 0 : 1,
-                    transition: 'opacity var(--motion-fast)',
-                    overflow: 'hidden',
+                    color: isActive ? 'var(--accent-color)' : 'rgba(0, 0, 0, 0.5)',
+                    backgroundColor: isActive
+                        ? 'rgba(224, 184, 97, 0.15)'
+                        : 'rgba(255, 255, 255, 0.6)',
+                    backdropFilter: 'blur(12px)',
+                    border: isActive
+                        ? '1px solid rgba(224, 184, 97, 0.3)'
+                        : '1px solid rgba(0, 0, 0, 0.08)',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
+                    transition: 'all 0.2s ease',
+                }}
+                onMouseEnter={(e) => {
+                    if (!isActive) {
+                        e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
+                        e.currentTarget.style.color = 'rgba(0, 0, 0, 0.8)';
+                        e.currentTarget.style.transform = 'scale(1.08)';
+                        e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
+                    }
+                }}
+                onMouseLeave={(e) => {
+                    if (!isActive) {
+                        e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.6)';
+                        e.currentTarget.style.color = 'rgba(0, 0, 0, 0.5)';
+                        e.currentTarget.style.transform = 'scale(1)';
+                        e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.06)';
+                    }
                 }}
             >
-                {label}
-            </Text>
-        </Box>
+                <Icon size={22} stroke={1.5} />
+            </ActionIcon>
+        </Tooltip>
     );
-
-    if (isCollapsed) {
-        return (
-            <Tooltip label={label} position="right" withArrow>
-                {content}
-            </Tooltip>
-        );
-    }
-
-    return content;
 }
 
 export default function Sidebar() {
     const pathname = usePathname();
     const router = useRouter();
     const setHasSeenLanding = useAppStore((state) => state.setHasSeenLanding);
-    const isSidebarOpen = useAppStore((state) => state.isSidebarOpen);
-    const toggleSidebar = useAppStore((state) => state.toggleSidebar);
     const hasHydrated = useAppStore((state) => state._hasHydrated);
 
     const isActive = (path: string) => pathname === path;
-    const isCollapsed = !isSidebarOpen;
 
-    // Hydration 전 로딩 상태 - 열려있는 상태로 표시하여 깜빡임 방지
+    // Hydration 전 로딩 상태 - 아무것도 렌더링하지 않음
     if (!hasHydrated) {
-        return (
-            <Box
-                component="aside"
-                w={276}
-                h="100vh"
-                style={{
-                    borderRight: '1px solid var(--border-color)',
-                    backgroundColor: 'var(--sidebar-bg)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                }}
-            >
-                <Loader color="yellow" size="sm" />
-            </Box>
-        );
+        return null;
     }
-
 
     return (
         <Box
             component="aside"
-            h="100vh"
             style={{
-                width: isCollapsed ? 60 : 276,
-                minWidth: isCollapsed ? 60 : 276,
-                borderRight: '1px solid var(--border-color)',
-                backgroundColor: 'var(--sidebar-bg)',
-                position: 'sticky',
-                top: 0,
+                position: 'fixed',
+                left: 20,
+                top: '50%',
+                transform: 'translateY(-50%)',
                 display: 'flex',
                 flexDirection: 'column',
-                overflow: 'hidden',
-                flexShrink: 0,
-                transition: 'width var(--motion-base), min-width var(--motion-base)',
+                alignItems: 'center',
+                gap: 8,
+                zIndex: 1000,
+                // 배경 완전 투명
+                backgroundColor: 'transparent',
             }}
         >
-            {/* 로고 영역 */}
-            <Box p={isCollapsed ? 'sm' : 'lg'} pb="md">
-                <Group justify="space-between" align="center">
-                    <Box
-                        style={{ cursor: 'pointer', display: isCollapsed ? 'none' : 'block' }}
-                        onClick={() => {
-                            setHasSeenLanding(true);
-                            router.push('/');
-                        }}
-                    >
-                        <Group gap="xs" align="center">
-                            <ThemeIcon
-                                size={32}
-                                radius="md"
-                                style={{ backgroundColor: 'var(--accent-color)' }}
-                            >
-                                <IconSparkles size={18} color="white" />
-                            </ThemeIcon>
-                            <Title order={4} c="white" style={{ fontFamily: 'var(--font-en)' }}>
-                                Your AI
-                            </Title>
-                        </Group>
-                    </Box>
+            {/* 로고/홈 */}
+            <Tooltip
+                label="Your AI"
+                position="right"
+                withArrow
+                offset={16}
+                transitionProps={{ transition: 'fade-right', duration: 200 }}
+            >
+                <ActionIcon
+                    variant="filled"
+                    size={48}
+                    radius="xl"
+                    onClick={() => {
+                        setHasSeenLanding(true);
+                        router.push('/');
+                    }}
+                    style={{
+                        backgroundColor: 'var(--accent-color)',
+                        boxShadow: '0 4px 16px rgba(224, 184, 97, 0.4)',
+                        border: 'none',
+                        marginBottom: 8,
+                    }}
+                >
+                    <IconSparkles size={22} color="white" />
+                </ActionIcon>
+            </Tooltip>
 
-                    {/* 토글 버튼 */}
-                    <Tooltip label={isCollapsed ? '사이드바 열기' : '사이드바 닫기'} position="right">
-                        <ActionIcon
-                            variant="subtle"
-                            color="gray"
-                            onClick={toggleSidebar}
-                            size="lg"
-                            style={{
-                                margin: isCollapsed ? '0 auto' : undefined,
-                            }}
-                        >
-                            {isCollapsed ? <IconChevronRight size={18} /> : <IconChevronLeft size={18} />}
-                        </ActionIcon>
-                    </Tooltip>
-                </Group>
+            {/* 메인 네비게이션 */}
+            <Stack gap={8} align="center">
+                <NavItem
+                    href="/"
+                    icon={IconHome}
+                    label="홈"
+                    isActive={isActive('/')}
+                />
+                <NavItem
+                    href="/instructions"
+                    icon={IconBooks}
+                    label="응답 규칙 라이브러리"
+                    isActive={isActive('/instructions')}
+                />
+                <NavItem
+                    href="/questions"
+                    icon={IconMessageQuestion}
+                    label="질문 목록"
+                    isActive={isActive('/questions')}
+                />
+                <NavItem
+                    href="/compare"
+                    icon={IconGitCompare}
+                    label="응답 규칙 비교"
+                    isActive={isActive('/compare')}
+                />
+                <NavItem
+                    href="/my-ai"
+                    icon={IconSparkles}
+                    label="나의 AI 만들기"
+                    isActive={isActive('/my-ai')}
+                />
+            </Stack>
 
-                {!isCollapsed && (
-                    <Text size="xs" c="dimmed" mt="xs">
-                        Custom Instructions Hub
-                    </Text>
-                )}
-            </Box>
-
-            <Divider color="dark.5" />
-
-            <ScrollArea style={{ flex: 1 }} type="scroll" p={isCollapsed ? 'xs' : 'md'}>
-                {/* 메인 네비게이션 */}
-                <Box mb="xl">
-                    {!isCollapsed && (
-                        <Text size="xs" fw={600} c="dimmed" tt="uppercase" mb="xs" px="sm">
-                            메뉴
-                        </Text>
-                    )}
-
-                    <NavItem
-                        href="/"
-                        icon={IconHome}
-                        label="홈"
-                        isActive={isActive('/')}
-                        isCollapsed={isCollapsed}
-                        onClick={() => setHasSeenLanding(true)}
-                    />
-
-                    {/* 응답 규칙 등록 버튼 - 홈 아래에 추가 */}
-                    <NavItem
-                        href="/register"
-                        icon={IconPlus}
-                        label="응답 규칙 등록"
-                        isActive={isActive('/register')}
-                        isCollapsed={isCollapsed}
-                    />
-
-                    {/* 응답 규칙 라이브러리 */}
-                    <NavItem
-                        href="/instructions"
-                        icon={IconBooks}
-                        label="응답 규칙 라이브러리"
-                        isActive={isActive('/instructions')}
-                        isCollapsed={isCollapsed}
-                    />
-
-                    <NavItem
-                        href="/questions"
-                        icon={IconMessageQuestion}
-                        label="질문 목록"
-                        isActive={isActive('/questions')}
-                        isCollapsed={isCollapsed}
-                    />
-
-                    <NavItem
-                        href="/compare"
-                        icon={IconGitCompare}
-                        label="응답 규칙 비교"
-                        isActive={isActive('/compare')}
-                        isCollapsed={isCollapsed}
-                    />
-
-                    <NavItem
-                        href="/my-ai"
-                        icon={IconSparkles}
-                        label="나의 AI 만들기"
-                        isActive={isActive('/my-ai')}
-                        isCollapsed={isCollapsed}
-                    />
-                </Box>
-
-
-
-            </ScrollArea>
-
-            {/* 하단 영역 */}
-            <Box p={isCollapsed ? 'xs' : 'md'} style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-                {isCollapsed ? (
-                    <Tooltip label="처음으로" position="right">
-                        <ActionIcon
-                            variant="subtle"
-                            color="gray"
-                            onClick={() => setHasSeenLanding(false)}
-                            style={{ margin: '0 auto', display: 'block' }}
-                        >
-                            <IconLogout size={18} />
-                        </ActionIcon>
-                    </Tooltip>
-                ) : (
-                    <Group justify="space-between" align="center">
-                        <Text size="xs" c="dimmed">v1.0.0</Text>
-                        <Button
-                            variant="subtle"
-                            size="xs"
-                            color="gray"
-                            leftSection={<IconLogout size={14} />}
-                            onClick={() => setHasSeenLanding(false)}
-                        >
-                            처음으로
-                        </Button>
-                    </Group>
-                )}
-            </Box>
+            {/* 하단 FAB - 응답 규칙 등록 */}
+            <Tooltip
+                label="응답 규칙 등록"
+                position="right"
+                withArrow
+                offset={16}
+                transitionProps={{ transition: 'fade-right', duration: 200 }}
+            >
+                <ActionIcon
+                    variant="filled"
+                    size={48}
+                    radius="xl"
+                    onClick={() => router.push('/register')}
+                    style={{
+                        backgroundColor: 'rgba(26, 26, 26, 0.9)',
+                        backdropFilter: 'blur(12px)',
+                        boxShadow: '0 4px 16px rgba(0, 0, 0, 0.2)',
+                        border: '1px solid rgba(255, 255, 255, 0.1)',
+                        marginTop: 8,
+                        transition: 'all 0.2s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'scale(1.08)';
+                        e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.3)';
+                    }}
+                    onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'scale(1)';
+                        e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.2)';
+                    }}
+                >
+                    <IconPencil size={20} color="white" />
+                </ActionIcon>
+            </Tooltip>
         </Box>
     );
 }
-
