@@ -1,5 +1,4 @@
 /* Wanted Sans 폰트 */
-
 @import url('https://cdn.jsdelivr.net/gh/wanteddev/wanted-sans@v1.0.1/packages/wanted-sans/fonts/webfonts/variable/split/WantedSansVariable.min.css');
 
 /* Tailwind: utilities만 사용 (preflight 제외, Mantine baseline 우선) */

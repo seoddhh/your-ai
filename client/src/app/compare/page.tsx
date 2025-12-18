@@ -200,14 +200,10 @@ function ComparePageContent() {
             <Box
                 py="lg"
                 px="xl"
-                style={{
-                    backgroundColor: '#fff',
-                    borderBottom: '1px solid var(--border-color)',
-                }}
             >
                 <Group justify="space-between" align="center">
                     <div>
-                        <Title order={2}>응답 규칙 비교</Title>
+                        <Title order={2}> 응답 규칙 비교</Title>
                         <Text size="sm" c="dimmed">
                             같은 질문, 다른 응답 규칙으로 AI 응답 비교하기
                         </Text>
