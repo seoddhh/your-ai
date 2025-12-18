@@ -3,10 +3,8 @@
 import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
 import {
     Box,
-    Container,
     Title,
     Text,
     Paper,
@@ -15,19 +13,11 @@ import {
     Button,
     Stack,
     Loader,
-    Divider,
-    CopyButton,
-    ActionIcon,
-    Tooltip,
     Modal,
-    TextInput,
     Textarea,
-    Select,
 } from '@mantine/core';
 import {
     IconArrowLeft,
-    IconCopy,
-    IconCheck,
     IconEye,
     IconUser,
     IconMessage,
@@ -39,9 +29,11 @@ import {
     getInstructionById,
     DOMAIN_META,
     CustomInstruction,
-    Domain,
 } from '@/data/customInstructions';
 import { useAppStore } from '@/store/useAppStore';
+import { Platform } from '@/utils/platformTransformers';
+import { PlatformSelector } from '@/components/rule/PlatformSelector';
+import { PlatformView } from '@/components/rule/PlatformView';
 
 export default function RuleDetailPage({
     params,
@@ -54,6 +46,9 @@ export default function RuleDetailPage({
     const [instruction, setInstruction] = useState<CustomInstruction | null>(null);
     const [isUserOwned, setIsUserOwned] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false);
+
+    // 플랫폼 선택 상태 (기본값: GPT)
+    const [selectedPlatform, setSelectedPlatform] = useState<Platform>('gpt');
 
     // 사용자 규칙 관련 상태
     const userInstructions = useAppStore((state) => state.userInstructions);
@@ -222,38 +217,24 @@ export default function RuleDetailPage({
                         </Paper>
                     </Paper>
 
-                    {/* 응답 스타일 섹션 */}
+                    {/* 응답 스타일 섹션 - 플랫폼별 보기 */}
                     <Paper p="xl" radius="lg" withBorder mb="xl">
-                        <Group justify="space-between" mb="md">
+                        <Group justify="space-between" align="flex-start" mb="lg">
                             <Group gap="xs">
                                 <IconMessage size={20} color="#6366f1" />
                                 <Title order={4}>응답 스타일</Title>
                             </Group>
-                            <CopyButton value={instruction.responsePreference}>
-                                {({ copied, copy }) => (
-                                    <Tooltip label={copied ? '복사됨!' : '응답 스타일 복사'}>
-                                        <ActionIcon
-                                            variant="light"
-                                            color={copied ? 'green' : 'gray'}
-                                            onClick={copy}
-                                        >
-                                            {copied ? <IconCheck size={16} /> : <IconCopy size={16} />}
-                                        </ActionIcon>
-                                    </Tooltip>
-                                )}
-                            </CopyButton>
+                            <PlatformSelector
+                                selectedPlatform={selectedPlatform}
+                                onPlatformChange={setSelectedPlatform}
+                            />
                         </Group>
-                        <Paper
-                            p="lg"
-                            radius="md"
-                            style={{
-                                backgroundColor: '#f8f9ff',
-                                whiteSpace: 'pre-wrap',
-                                lineHeight: 1.8,
-                            }}
-                        >
-                            <Text size="sm">{instruction.responsePreference}</Text>
-                        </Paper>
+
+                        {/* 플랫폼별 변환된 뷰 */}
+                        <PlatformView
+                            responsePreference={instruction.responsePreference}
+                            platform={selectedPlatform}
+                        />
                     </Paper>
 
                     {/* 액션 버튼 */}
@@ -277,20 +258,6 @@ export default function RuleDetailPage({
                                 이 규칙으로 비교하기
                             </Button>
                         </Link>
-                        <CopyButton
-                            value={`[사용자 프로필]\n${instruction.userProfile}\n\n[응답 스타일]\n${instruction.responsePreference}`}
-                        >
-                            {({ copied, copy }) => (
-                                <Button
-                                    variant="light"
-                                    color={copied ? 'green' : 'gray'}
-                                    leftSection={copied ? <IconCheck size={16} /> : <IconCopy size={16} />}
-                                    onClick={copy}
-                                >
-                                    {copied ? '복사됨!' : '전체 복사하기'}
-                                </Button>
-                            )}
-                        </CopyButton>
                     </Group>
                 </motion.div>
 
