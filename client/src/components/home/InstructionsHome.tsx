@@ -150,7 +150,7 @@ export default function InstructionsHome() {
                         <div>
                             <Text fw={700} size="lg">AI 응답 스타일 테스트</Text>
                             <Text size="sm" style={{ opacity: 0.9 }}>
-                                간단한 질문에 답하고 나에게 맞는 응답 규칙을 추천받으세요
+                                간단한 질문에 답하고 나에게 맞는 응답 규칙을 찾아보세요
                             </Text>
                         </div>
                     </Group>
