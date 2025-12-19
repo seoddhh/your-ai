@@ -189,7 +189,7 @@ export default function AnswerRuleCard({
                         </Box>
 
                         {/* 액션 버튼 */}
-                        <Group mt="md" gap="xs">
+                        <Group mt="md" gap="xs" justify="flex-end">
                             <Link href={`/rule/${instruction.id}`} onClick={(e) => e.stopPropagation()}>
                                 <Button
                                     size="xs"

@@ -326,7 +326,7 @@ export default function InstructionsHome() {
                             onToggle={() => setExpandedId(
                                 expandedId === instruction.id ? null : instruction.id
                             )}
-                            isCompact={true}
+                            isCompact={false}
                             showAnimation={true}
                         />
                     ))}
