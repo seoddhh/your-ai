@@ -16,6 +16,7 @@ import {
     IconBooks,
     IconMessageQuestion,
     IconPencil,
+    IconSettingsAutomation,
 } from '@tabler/icons-react';
 
 interface NavItemProps {
@@ -91,7 +92,6 @@ function NavItem({ href, icon: Icon, label, isActive }: NavItemProps) {
 export default function Sidebar() {
     const pathname = usePathname();
     const router = useRouter();
-    const setHasSeenLanding = useAppStore((state) => state.setHasSeenLanding);
     const hasHydrated = useAppStore((state) => state._hasHydrated);
 
     const isActive = (path: string) => pathname === path;
@@ -120,7 +120,7 @@ export default function Sidebar() {
         >
             {/* 로고/홈 */}
             <Tooltip
-                label="Your AI"
+                label="YourAI란?"
                 position="right"
                 withArrow
                 offset={16}
@@ -130,10 +130,7 @@ export default function Sidebar() {
                     variant="filled"
                     size={48}
                     radius="xl"
-                    onClick={() => {
-                        setHasSeenLanding(true);
-                        router.push('/');
-                    }}
+                    onClick={() => router.push('/introduce')}
                     style={{
                         backgroundColor: 'var(--accent-color)',
                         boxShadow: '0 4px 16px rgba(224, 184, 97, 0.4)',
@@ -173,7 +170,7 @@ export default function Sidebar() {
                 />
                 <NavItem
                     href="/my-ai"
-                    icon={IconSparkles}
+                    icon={IconSettingsAutomation}
                     label="나의 AI 만들기"
                     isActive={isActive('/my-ai')}
                 />
