@@ -2,7 +2,6 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import {
     Title,
@@ -17,6 +16,7 @@ import {
     Paper,
     Loader,
     Select,
+    Pagination,
 } from '@mantine/core';
 import {
     IconSearch,
@@ -36,6 +36,8 @@ const SORT_OPTIONS = [
     { value: 'usage', label: '사용량순' },
 ];
 
+const ITEMS_PER_PAGE = 10;
+
 function InstructionsLibraryContent() {
     const searchParams = useSearchParams();
     const initialDomain = searchParams.get('domain') as Domain | null;
@@ -47,6 +49,7 @@ function InstructionsLibraryContent() {
     const [searchQuery, setSearchQuery] = useState('');
     const [sortBy, setSortBy] = useState<SortOption>('popular');
     const [expandedId, setExpandedId] = useState<string | null>(null);
+    const [activePage, setActivePage] = useState(1);
 
     useEffect(() => {
         const domain = searchParams.get('domain') as Domain | null;
@@ -59,12 +62,29 @@ function InstructionsLibraryContent() {
         setMounted(true);
     }, []);
 
+    // 페이지 변경 시 스크롤 최상단으로 이동 (옵션)
+    useEffect(() => {
+        // window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, [activePage]);
+
+    // 필터 변경 시 첫 페이지로 리셋
+    useEffect(() => {
+        setActivePage(1);
+    }, [selectedDomain, searchQuery, sortBy]);
+
     const { instructions: filteredInstructions, domainMeta, domains } = useAnswerRules({
         domain: selectedDomain,
         searchQuery,
         sortBy,
         includeUserRules: true,
     });
+
+    const totalItems = filteredInstructions.length;
+    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+    const paginatedInstructions = filteredInstructions.slice(
+        (activePage - 1) * ITEMS_PER_PAGE,
+        activePage * ITEMS_PER_PAGE
+    );
 
     if (!mounted) {
         return (
@@ -221,7 +241,7 @@ function InstructionsLibraryContent() {
                     <Group justify="space-between" mb="lg">
                         <Text size="sm" c="dimmed">
                             {selectedDomain === 'all' ? '전체' : (domainMeta[selectedDomain]?.label || selectedDomain)}에서{' '}
-                            <Text component="span" fw={600} c="dark">{filteredInstructions.length}개</Text>의 응답 규칙
+                            <Text component="span" fw={600} c="dark">{totalItems}개</Text>의 응답 규칙
                         </Text>
                         <Badge variant="light" color="gray" size="sm">
                             {SORT_OPTIONS.find(s => s.value === sortBy)?.label}
@@ -229,24 +249,22 @@ function InstructionsLibraryContent() {
                     </Group>
 
                     {/* 응답 규칙 그리드 */}
-                    <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="md">
-                        <AnimatePresence mode="popLayout">
-                            {filteredInstructions.map((instruction, index) => (
-                                <AnswerRuleCard
-                                    key={instruction.id}
-                                    instruction={instruction}
-                                    index={index}
-                                    isExpanded={expandedId === instruction.id}
-                                    onToggle={() => setExpandedId(
-                                        expandedId === instruction.id ? null : instruction.id
-                                    )}
-                                    isUserOwned={instruction.id.startsWith('user-')}
-                                />
-                            ))}
-                        </AnimatePresence>
+                    <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="md" mb={totalPages > 1 ? 'xl' : 0}>
+                        {paginatedInstructions.map((instruction, index) => (
+                            <AnswerRuleCard
+                                key={instruction.id}
+                                instruction={instruction}
+                                index={index}
+                                isExpanded={expandedId === instruction.id}
+                                onToggle={() => setExpandedId(
+                                    expandedId === instruction.id ? null : instruction.id
+                                )}
+                                isUserOwned={instruction.id.startsWith('user-')}
+                            />
+                        ))}
                     </SimpleGrid>
 
-                    {filteredInstructions.length === 0 && (
+                    {filteredInstructions.length === 0 ? (
                         <Box ta="center" py={60}>
                             <Text size="md" c="dimmed">
                                 검색 결과가 없습니다
@@ -255,6 +273,19 @@ function InstructionsLibraryContent() {
                                 다른 검색어나 필터를 시도해보세요
                             </Text>
                         </Box>
+                    ) : (
+                        totalPages > 1 && (
+                            <Group justify="center" mt="xl">
+                                <Pagination
+                                    total={totalPages}
+                                    value={activePage}
+                                    onChange={setActivePage}
+                                    color="yellow"
+                                    size="md"
+                                    radius="md"
+                                />
+                            </Group>
+                        )
                     )}
                 </Box>
             </Box>
