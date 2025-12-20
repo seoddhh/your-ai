@@ -68,7 +68,7 @@ export default function QuestionsPage() {
             <Box mb="xl">
                 <Title order={2} fw={700} mb={4}>작업 예시</Title>
                 <Text size="sm" c="dimmed">
-                    도메인별로 “어떤 응답 규칙을 쓰면 좋은지” 바로 연결되는 프롬프트 템플릿 모음
+                    도메인별로 “어떤 응답 규칙을 쓰면 좋은지” 바로 연결되는 상황별 예시 모음
                 </Text>
             </Box>
 

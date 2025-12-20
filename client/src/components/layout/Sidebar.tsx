@@ -17,6 +17,7 @@ import {
     IconMessageQuestion,
     IconPencil,
     IconSettingsAutomation,
+    IconBriefcase,
 } from '@tabler/icons-react';
 
 interface NavItemProps {
@@ -161,7 +162,7 @@ export default function Sidebar() {
                 />
                 <NavItem
                     href="/questions"
-                    icon={IconMessageQuestion}
+                    icon={IconBriefcase}
                     label="작업 예시"
                     isActive={isActive('/questions')}
                 />
