@@ -1,13 +1,27 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import QuestionCard from "@/components/questions/QuestionCard";
-import { getQuestionsByCategory, CATEGORY_INFO, QuestionCategory } from "@/data/questions";
-
-import { Box, Loader, Title, Text, Stack, Paper } from '@mantine/core';
+import {
+    Box,
+    Loader,
+    Title,
+    Text,
+    Stack,
+    Paper,
+    Group,
+    TextInput,
+    SimpleGrid,
+    Select,
+} from '@mantine/core';
+import { IconSearch } from '@tabler/icons-react';
+import { DOMAIN_META, Domain } from '@/data/customInstructions';
+import { getAllUseCases, UseCase } from '@/data/useCases';
+import UseCaseCard from '@/components/use-cases/UseCaseCard';
 
 export default function QuestionsPage() {
     const [mounted, setMounted] = useState(false);
+    const [domain, setDomain] = useState<Domain | 'all'>('all');
+    const [query, setQuery] = useState('');
 
     useEffect(() => {
         setMounted(true);
@@ -21,75 +35,114 @@ export default function QuestionsPage() {
         );
     }
 
-    const questionsByCategory = getQuestionsByCategory();
-    const categoryOrder: QuestionCategory[] = ['response_divergent', 'output_different', 'thinking_divergent'];
+    const allUseCases = getAllUseCases();
+    const normalizedQuery = query.trim().toLowerCase();
+
+    const filtered = allUseCases.filter((u) => {
+        if (domain !== 'all' && u.domain !== domain) return false;
+        if (!normalizedQuery) return true;
+        return (
+            u.title.toLowerCase().includes(normalizedQuery) ||
+            u.goal.toLowerCase().includes(normalizedQuery) ||
+            u.desiredTags.some((t) => t.toLowerCase().includes(normalizedQuery))
+        );
+    });
+
+    const groupByDomain = (items: UseCase[]) => {
+        const result: Record<string, UseCase[]> = {};
+        items.forEach((u) => {
+            if (!result[u.domain]) result[u.domain] = [];
+            result[u.domain].push(u);
+        });
+        return result as Record<Domain, UseCase[]>;
+    };
+
+    const grouped = groupByDomain(filtered);
+    const domainOrder = (Object.keys(DOMAIN_META) as Domain[]).filter((d) =>
+        domain === 'all' ? true : d === domain
+    );
 
     return (
         <Box py="xl" style={{ paddingLeft: 180, paddingRight: 180 }}>
             {/* 헤더 */}
             <Box mb="xl">
-                <Title order={2} fw={700} mb={4}>비교 실험용 질문</Title>
+                <Title order={2} fw={700} mb={4}>작업 예시</Title>
                 <Text size="sm" c="dimmed">
-                    규칙에 따라 결과가 달라지는 질문들을 탐색하세요
+                    도메인별로 “어떤 응답 규칙을 쓰면 좋은지” 바로 연결되는 프롬프트 템플릿 모음
                 </Text>
             </Box>
 
             <Box>
-                <Stack gap="xl">
-                    {categoryOrder.map((category) => {
-                        const questions = questionsByCategory[category];
-                        const info = CATEGORY_INFO[category];
+                <Paper
+                    p="md"
+                    radius="lg"
+                    withBorder
+                    mb="xl"
+                    style={{
+                        backgroundColor: 'var(--card-bg)',
+                        borderColor: 'var(--border-color)',
+                    }}
+                >
+                    <Group gap="sm" grow>
+                        <Select
+                            label="도메인"
+                            value={domain}
+                            onChange={(value) => setDomain((value as Domain | 'all') ?? 'all')}
+                            data={[
+                                { value: 'all', label: '전체' },
+                                ...(Object.keys(DOMAIN_META) as Domain[]).map((d) => ({
+                                    value: d,
+                                    label: DOMAIN_META[d].label,
+                                })),
+                            ]}
+                        />
+                        <TextInput
+                            label="검색"
+                            placeholder="예: PRD, 퍼널, 리스크, 간결함…"
+                            leftSection={<IconSearch size={16} />}
+                            value={query}
+                            onChange={(e) => setQuery(e.currentTarget.value)}
+                        />
+                    </Group>
+                </Paper>
 
+                <Stack gap="xl">
+                    {domainOrder.map((d) => {
+                        const list = grouped[d] || [];
+                        if (list.length === 0) return null;
+
+                        const meta = DOMAIN_META[d];
                         return (
                             <Paper
-                                key={category}
+                                key={d}
                                 p="lg"
-                                radius="md"
+                                radius="lg"
                                 withBorder
                                 style={{ backgroundColor: '#fff' }}
                             >
-                                {/* 카테고리 헤더 */}
                                 <Box mb="md">
-                                    <Title
-                                        order={4}
-                                        mb={4}
-                                        style={{ color: info.color }}
-                                    >
-                                        {info.label}
+                                    <Title order={4} mb={4} style={{ color: meta.color }}>
+                                        {meta.label}
                                     </Title>
                                     <Text size="sm" c="dimmed">
-                                        {info.description}
+                                        이 도메인에서 자주 쓰는 작업 템플릿
                                     </Text>
                                 </Box>
 
-                                {/* 질문 그리드 */}
-                                <div
-                                    className="grid-container"
-                                    style={{
-                                        display: 'grid',
-                                        gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-                                        gap: '16px'
-                                    }}
-                                >
-                                    {questions.map(q => (
-                                        <QuestionCard
-                                            key={q.id}
-                                            id={q.id}
-                                            question={q.question}
-                                            category={q.category}
-                                            hint={q.hint}
-                                        />
+                                <SimpleGrid cols={{ base: 1, sm: 2, lg: 3 }} spacing="md">
+                                    {list.map((useCase) => (
+                                        <UseCaseCard key={useCase.id} useCase={useCase} />
                                     ))}
-                                </div>
+                                </SimpleGrid>
                             </Paper>
                         );
                     })}
                 </Stack>
 
-                {categoryOrder.every(cat => questionsByCategory[cat].length === 0) && (
+                {filtered.length === 0 && (
                     <Box ta="center" py={60}>
                         <Text size="lg" c="dimmed">
-                            등록된 질문이 없습니다
+                            조건에 맞는 작업 예시가 없습니다
                         </Text>
                     </Box>
                 )}
