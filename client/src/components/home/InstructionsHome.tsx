@@ -40,7 +40,7 @@ import { useTopRulesByDomain, useAnswerRules } from '@/hooks/useAnswerRules';
 
 // 도메인 탭 정보
 const DOMAIN_TABS = [
-    { id: 'all', label: '전체', icon: '/icons/001-icon-5110754.png' },
+    { id: 'all', label: '전체', icon: '/icons/all.png' },
     { id: 'Tech', label: '개발자', icon: '/icons/developericons.png' },
     { id: 'Creative', label: '디자이너', icon: '/icons/designer.png' },
     { id: 'Business', label: '비즈니스', icon: '/icons/business.png' },
@@ -173,7 +173,6 @@ export default function InstructionsHome() {
             <Box mb={48}>
                 <Group justify="space-between" align="center" mb="md">
                     <Group gap="sm">
-                        <IconTrendingUp size={20} color="var(--accent-color)" />
                         <div>
                             <Title order={5}>분야별 인기 응답 규칙 TOP 3</Title>
                             <Text size="xs" c="dimmed">각 분야에서 가장 많이 사용되는 응답 규칙</Text>
@@ -241,7 +240,7 @@ export default function InstructionsHome() {
                 >
                     <Title order={6} mb="md" c="dimmed">
                         {activeDomainTab === 'all'
-                            ? '🔥 전체 인기 응답 규칙 TOP 3'
+                            ? '전체 인기 응답 규칙 TOP 3'
                             : `${DOMAIN_TABS.find(t => t.id === activeDomainTab)?.label} 분야 TOP 3`
                         }
                     </Title>
@@ -271,7 +270,7 @@ export default function InstructionsHome() {
             {/* 분야별 하이라이트 */}
             <Box mb={48}>
                 <Group gap="sm" mb="md">
-                    <IconCategory size={20} color="#6366f1" />
+
                     <div>
                         <Title order={5}>분야별 추천</Title>
                         <Text size="xs" c="dimmed">각 분야의 대표 응답 규칙을 한눈에</Text>
@@ -285,7 +284,6 @@ export default function InstructionsHome() {
                 <Box mb={48}>
                     <Group justify="space-between" align="center" mb="md">
                         <Group gap="sm">
-                            <IconStar size={20} color="#f59e0b" />
                             <div>
                                 <Title order={5}>나의 응답 규칙</Title>
                                 <Text size="xs" c="dimmed">내가 등록한 응답 규칙</Text>
@@ -312,7 +310,6 @@ export default function InstructionsHome() {
             {/* 오늘의 추천 */}
             <Box mb={48}>
                 <Group gap="sm" mb="md">
-                    <IconSparkles size={20} color="#ec4899" />
                     <div>
                         <Title order={5}>오늘의 추천 응답 규칙</Title>
                         <Text size="xs" c="dimmed">가장 많이 사용되는 검증된 규칙</Text>

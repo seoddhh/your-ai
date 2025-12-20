@@ -94,7 +94,10 @@ export default function Sidebar() {
     const router = useRouter();
     const hasHydrated = useAppStore((state) => state._hasHydrated);
 
-    const isActive = (path: string) => pathname === path;
+    const isActive = (path: string) => {
+        if (path === '/') return pathname === '/';
+        return pathname === path || pathname.startsWith(`${path}/`);
+    };
 
     // Hydration 전 로딩 상태 - 아무것도 렌더링하지 않음
     if (!hasHydrated) {
@@ -159,7 +162,7 @@ export default function Sidebar() {
                 <NavItem
                     href="/questions"
                     icon={IconMessageQuestion}
-                    label="질문 목록"
+                    label="작업 예시"
                     isActive={isActive('/questions')}
                 />
                 <NavItem
