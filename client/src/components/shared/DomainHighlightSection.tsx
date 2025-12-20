@@ -11,6 +11,8 @@ const DOMAIN_ICONS: Record<Domain, string> = {
     Tech: '/icons/developericons.png',
     Creative: '/icons/designer.png',
     Business: '/icons/business.png',
+    Marketing: '/icons/marketing.png',
+    Social: '/icons/social-network.png',
     Academia: '/icons/reserchericons.png',
     Education: '/icons/teacher.png',
     Healthcare: '/icons/doctor.png',
