@@ -44,6 +44,8 @@ const DOMAIN_TABS = [
     { id: 'Tech', label: '개발자', icon: '/icons/developericons.png' },
     { id: 'Creative', label: '디자이너', icon: '/icons/designer.png' },
     { id: 'Business', label: '비즈니스', icon: '/icons/business.png' },
+    { id: 'Marketing', label: '마케터', icon: '/icons/marketing.png' },
+    { id: 'Social', label: 'SNS', icon: '/icons/social-network.png' },
     { id: 'Academia', label: '연구자', icon: '/icons/reserchericons.png' },
     { id: 'Education', label: '교육자', icon: '/icons/teacher.png' },
     { id: 'Healthcare', label: '의료인', icon: '/icons/doctor.png' },
@@ -91,7 +93,7 @@ export default function InstructionsHome() {
     }
 
     return (
-        <Box py="xl" style={{ paddingLeft: 180, paddingRight: 180 }}>
+        <Box py="xl" style={{ paddingLeft: 190, paddingRight: 190 }}>
             {/* 헤더 영역 */}
             <Box mb={48}>
                 <Group justify="space-between" align="flex-start">
